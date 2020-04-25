@@ -1,7 +1,14 @@
 <template>
 	<div class="page-register h100">
-		<div class="header c-fff text-c">
-			<p>注册</p>
+		<div class="header-wrap">
+			<van-nav-bar
+			  title="找回密码"
+			  left-text=""
+			  right-text=""
+			  left-arrow
+			  class="header"
+			  @click-left="onClickLeft"
+			/>
 		</div>
 		<div class="content">
 			<div class="register-form">
@@ -15,20 +22,13 @@
 					</div>
 				</div>
 				<div class="login-input pass-input">
-					<input type="password" id="txt_PassWord" v-model.trim="form.pwd" placeholder="请输入密码">
+					<input type="password" id="txt_PassWord" v-model.trim="form.pwd" placeholder="请输入新密码">
 				</div>
 				<div class="login-input pass-input">
-					<input type="password" id="txt_RePassWord" v-model.trim="form.repwd" placeholder="再次输入登录密码">
-				</div>
-				<div class="login-input text-input">
-					<input type="text" id="txt_Code" v-model.trim="form.code" placeholder="请输入邀请码（比填）" maxlength="8">
-				</div>
-				<div class="other">
-					<span class="register fl" @click="toLogin">已有账号</span>
-					<!--<span class="forget fr" @click="forgetPass">忘记密码</span>-->
+					<input type="password" id="txt_RePassWord" v-model.trim="form.repwd" placeholder="请确认密码">
 				</div>
 				<div class="btn-grop c-fff text-c" >
-					<van-button type="primary" block @click="handleRegister" :loading="loginBtn.isLoading" :loading-text="loginBtn.loadingText">注册</van-button>
+					<van-button type="primary" block @click="handleRegister" :loading="loginBtn.isLoading" :loading-text="loginBtn.loadingText">提交密码</van-button>
 				</div>
 			</div>
 		</div>
@@ -43,10 +43,9 @@
 			return {
 				form:{
 					username:"18598271043",
-					pwd:"",
-					repwd:"",
-					yzm:"",
-					code:""
+					pwd:"123456",
+					repwd:"123456",
+					yzm:"123456",
 				},
 				hasCommit:false,
 				validCode:{
@@ -55,14 +54,14 @@
 				},
 				loginBtn:{
 					isLoading: false,
-					loadingText: "注册中..."
+					loadingText: "提交中..."
 				}
 			}
 		},
 		methods:{
 			handleRegister(){
 				if(!this.hasCommit){
-					let {username, pwd, repwd, yzm, code} = this.form
+					let {username, pwd, repwd, yzm} = this.form
 					if(!checkMobilePhone(username)){
 						this.$toast('请输入正确手机号');
 					}else if(yzm==""){
@@ -71,28 +70,27 @@
 						this.$toast('密码长度必须是六位以上');
 					}else if(pwd != repwd){
 						this.$toast('两次密码输入不相同');
-					}else if(code==""){
-						this.$toast('邀请码不能为空');
 					}else{
 						let copyForm = Object.assign({}, this.form);
 						delete copyForm.repwd
 						this.hasCommit = true
 						this.loginBtn.isLoading = true
-						this.API.register(copyForm).then((data)=>{
+						this.API.editPwd(copyForm).then((data)=>{
 							if (data.ErrorCode == 100) {
 								this.loginBtn.isLoading = false
-		                        this.$toast("注册成功！");
+		                        this.$toast("设置成功！");
 		                        this.$router.push("login")
 		                    } else {
+		                    	this.hasCommit = false
 		                        this.$toast.fail(data.Content)
 		                    }
 
 						})
 					}
 				}
-
+				
 			},
-			toLogin(){
+			onClickLeft(){
 				this.$router.push("login")
 			},
 			sendCode(){
@@ -100,7 +98,7 @@
 					this.$toast('请输入正确手机号');
 				}else{
 					this.validCode.isDisabled = true
-					/*this.API.sendCode({ phone: this.form.username, txt: "用户注册", type: 1 }).then((data)=>{
+					/*this.API.getBackPwd({ phone: this.form.username}).then((data)=>{
 						if (data.ErrorCode == 100) {
 	                        this.resetBtn()
 	                    } 
@@ -137,9 +135,10 @@
 		background: #fff;
 		.header {
 			background: #EE580F;
-			height: 45px;
-			line-height: 45px;
 			font-size: 17px;
+			/deep/ .van-icon, /deep/ .van-nav-bar__title{
+				color: #fff;
+			}
 		}
 		.content {
 			.register-form {
@@ -161,13 +160,6 @@
 						top: 10px;
 						color: #EE580F;
 					}
-				}
-				.other{
-					width: 80%;
-					margin: 0 auto 20px;
-					overflow: auto;
-					.register{}
-					.forget{}
 				}
 				.btn-grop{
 					width: 80%;

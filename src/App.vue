@@ -8,12 +8,7 @@
 </template>
 
 <style>
-	*{margin:0;padding: 0;}
-	html,
-	body {
-		height: 100%;
-		overflow: hidden;
-	}
+	@import 'assets/css/common.css';
 	
 	#app {
 		background: #f4f4f4;

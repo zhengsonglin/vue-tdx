@@ -22,6 +22,14 @@ export const routes = [{
 			title: '注册'
 		}
 	},
+	{
+		path: '/forgetPwd',
+		name: 'forgetPwd',
+		component: () => import('../views/login/forgetPwd.vue'),
+		meta: {
+			title: '找回密码'
+		}
+	},
 	/*{
 		path: '*',
 		redirect: '/404'

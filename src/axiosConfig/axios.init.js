@@ -2,27 +2,28 @@ import axios from 'axios'
 import qs from 'qs'
 
 import { showFullScreenLoading, tryHideFullScreenLoading } from './axiosLoading'
-import { Message } from 'element-ui'
+import { Toast } from 'vant'
 import store from '../store'
 import router from '../router'
 
 // 配置请求头
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8'
-axios.defaults.baseURL = process.env.baseURL;
-
+//axios.defaults.baseURL = "/api"//process.env.baseURL;
+//console.log(process.env)
 // 创建axios实例
 const $ = axios.create({
 	timeout: 600000,
-	//baseURL: process.env.NODE_ENV === 'production' ? '/' : '/api', // api的API_ROOT
+	baseURL: process.env.NODE_ENV === 'production' ? '/' : '/api', // api的API_ROOT
 	headers: {
 		'Content-Type': 'application/json',
 		//"token": 'XXXX'		//如果不需要token， headers一定不能多传参数
 	}
+
 })
 
 // 请求拦截器
 $.interceptors.request.use((config) => { //config 无法注入axios内置config之外的参数， 所以自定义config.showLoading 是无法接受的
-	//console.log(config);
+	console.log(config);
 	let { token } = store.state
 	let { projectCode } = store.getters
 	
@@ -46,11 +47,12 @@ $.interceptors.request.use((config) => { //config 无法注入axios内置config�
 $.interceptors.response.use((response) => {
 	handleLoading(false).then(()=>{
 		if(response.status ==200){
-			if(response.data.code != "0"){
-				Message.error(response.data.errorMsg);
+			if(response.data.code != "100"){
+				//Message.error(response.data.errorMsg);
+				Toast.fail(response.data.Content);
 			}
 		}else{
-			Toast(response.statusText);
+			Toast.fail(response.statusText);
 			//router.push("/login")
 		}
 	})
@@ -62,10 +64,10 @@ $.interceptors.response.use((response) => {
 		
 		switch (error.response.status) {
 			case 404:
-				Message.error('网络请求不存在');
+				Toast.fail('网络请求不存在');
 				break;
 			default:
-				Message.error(error.response.data.message || "服务器异常");
+				Toast.fail(error.response.data.message || "服务器异常");
 		}
 		return Promise.reject(error.response)
 	}
