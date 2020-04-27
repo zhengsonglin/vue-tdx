@@ -10,7 +10,7 @@ export default {
 		return rsp.data
     }),
     //用户登录
-    login: (params, config) => $http.post("/Mobile/LoginCheck", params, config).then((rsp) => {
+    login: (params, config) => $http.postByQS("/Mobile/LoginCheck", params, config).then((rsp) => {
 		return rsp.data
     }),
     //获取CheckKDJ

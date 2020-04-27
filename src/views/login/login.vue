@@ -27,44 +27,64 @@
 </template>
 
 <script>
-	import {checkMobilePhone} from 'assets/js/util.js'
+	import { checkMobilePhone } from 'assets/js/util.js'
 	export default {
 		name: 'login',
-		data(){
+		data() {
 			return {
-				form:{
-					txt_UserName:"18598271043",
-					txt_PassWord:"zsl123456"
+				form: {
+					txt_UserName: "18598271043",
+					txt_PassWord: "zsl123456"
 				},
-				hasCommit:false,
+				hasCommit: false,
 			}
 		},
-		methods:{
-			handleLogin(){
-				let {txt_UserName, txt_PassWord} = this.form
-				if(!checkMobilePhone(txt_UserName)){
+		methods: {
+			handleLogin() {
+				let {
+					txt_UserName,
+					txt_PassWord
+				} = this.form
+				if(!checkMobilePhone(txt_UserName)) {
 					this.$toast('请输入正确手机号');
-				}else if(txt_PassWord==""){
+				} else if(txt_PassWord == "") {
 					this.$toast('请输入密码');
-				}else{
+				} else {
 					this.hasCommit = true
-					this.API.login(this.form).then((data)=>{
-						if(data.ErrorCode==100){
+					this.API.login(this.form).then((data) => {
+						if(data.ErrorCode == 100) {
 							this.loginSuccess(data)
-						}else{
+						} else {
 							this.hasCommit = false
-		                    this.$toast.fail(data.Content)
+							this.$toast.fail(data.Content)
 						}
 					})
 				}
 			},
-			loginSuccess(data){
+			loginSuccess(data) {
+				let type = "0"
+				if(type != "0") {
+					this.API.checkKDJ({
+						shopid: type
+					}).then((data) => {
+						if(data.ErrorCode == 100) {
+							//location.href = "http://www.taodaxiong.cn/Mobile/ProductDetail?ShopId=0"
+							//this.$router.push("homeIndex")
+						} else {
+							this.$router.push("homeIndex")
+						}
+					})
+
+				} else {
+					this.$router.push("homeIndex")
+				}
+
 				console.log(data)
 			},
-			toRegister(){
+			toRegister() {
 				this.$router.push("register")
 			},
-			forgetPass(){
+			forgetPass() {
 				this.$router.push("forgetPwd")
 			}
 		}
@@ -72,8 +92,6 @@
 </script>
 
 <style scoped lang="scss">
-	
-	
 	.page-login {
 		background: #fff;
 		.header {
@@ -92,22 +110,22 @@
 				.login-input {
 					width: 80%;
 					margin: 0 auto 20px;
-					input{
+					input {
 						width: 100%;
-					    display: block;
-					    margin: auto;
-					    border: 1px solid #ccc;
-					    text-indent: 15px;
+						display: block;
+						margin: auto;
+						border: 1px solid #ccc;
+						text-indent: 15px;
 					}
 				}
-				.other{
+				.other {
 					width: 80%;
 					margin: 0 auto 20px;
 					overflow: auto;
-					.register{}
-					.forget{}
+					.register {}
+					.forget {}
 				}
-				.btn-grop{
+				.btn-grop {
 					width: 80%;
 					margin: 0 auto;
 					background: #EE580F;

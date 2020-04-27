@@ -5,9 +5,10 @@ import store from './store'
 import 'lib-flexible'
 
 Vue.config.productionTip = false
-import { Button, NavBar, Toast } from 'vant';
+import { Button, NavBar, Toast, Tabbar, TabbarItem, Swipe, SwipeItem, Lazyload, Col, Row  } from 'vant';
 
-Vue.use(Button).use(NavBar).use(Toast);
+Vue.use(Button).use(NavBar).use(Toast).use(Tabbar).use(TabbarItem).use(Swipe).use(SwipeItem);
+Vue.use(Lazyload).use(Col).use(Row);
 
 import API from '@/api/getDatas.js'
 Vue.prototype.API = API

@@ -15,18 +15,21 @@ module.exports = {
 		hotOnly: false,
 		disableHostCheck: true,
 		// See https://github.com/vuejs/vue-cli/blob/dev/docs/cli-service.md#configuring-proxy
-		/*proxy: {
+		proxy: {
 			'/api': {
 				target: 'http://www.taodaxiong.cn/', //对应自己的接口 如：http://127.0.0.1:8100/
 				changeOrigin: true,
+				ws: true,        //如果要代理 websockets，配置这个参数
+            	secure: false,  // 如果是https接口，需要配置这个参数
 				pathRewrite: {
 					'^/api': ''
 				}
 			}
-		}, // string | Object*/
+		}, // string | Object
 		before: app => {
-			app.post('/api/Mobile/LoginCheck', function (req, res) {
+			/*app.post('/api/Mobile/LoginCheck', function (req, res) {
 			  var url = 'http://www.taodaxiong.cn/Mobile/LoginCheck'
+			  http://www.taodaxiong.cn/Mobile/LoginCheck
 			  console.log(res)
 			  console.log(123)
 			  console.log(req)
@@ -44,7 +47,7 @@ module.exports = {
 			  }).catch((e) => {
 			    console.log(e)
 			  })
-			})
+			})*/
 			
 		}
 	},
