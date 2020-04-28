@@ -70,6 +70,12 @@ li{
 .bg-fff{
 	background: #fff;;
 }
+.over-auto{
+	overflow: auto;
+}
+.over-hidden{
+	overflow: hidden;
+}
 
 
 

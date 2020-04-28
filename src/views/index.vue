@@ -1,6 +1,6 @@
 <template>
-	<div class="page-homeIndex">
-		<div class="content">
+	<div class="page-homeIndex h100">
+		<div class="content h100">
 			<keep-alive>
 		      <router-view></router-view>
 		    </keep-alive>

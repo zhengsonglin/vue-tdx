@@ -2,14 +2,17 @@
 	<div class="row-advertising">
 		<van-row class="bg-fff">
 			<van-col span="6">
-				<p class="adv-title">{{title}}</p>
+				<slot name="title"><p class="adv-title">{{title}}</p></slot>
 			</van-col>
 			<van-col span="18">
-				<div class="adv-content" v-if="datas.length">
-					<van-swipe class="adv-swipe" :autoplay="3000" vertical :show-indicators="false" :touchable="false">
-						<van-swipe-item v-for="(item) in datas" :key="item.id">{{item.text}}</van-swipe-item>
-					</van-swipe>
-				</div>
+				<slot name="right-content">
+					<div class="adv-content" v-if="datas.length">
+						<van-swipe class="adv-swipe" :autoplay="3000" vertical :show-indicators="false" :touchable="false">
+							<van-swipe-item v-for="(item) in datas" :key="item.id">{{item.text}}</van-swipe-item>
+						</van-swipe>
+					</div>
+				</slot>
+				
 			</van-col>
 		</van-row>
 
