@@ -47,7 +47,7 @@ $.interceptors.request.use((config) => { //config 无法注入axios内置config�
 $.interceptors.response.use((response) => {
 	handleLoading(false).then(()=>{
 		if(response.status ==200){
-			if(response.data.code != "100"){
+			if(response.data.code && response.data.code != "100"){
 				//Message.error(response.data.errorMsg);
 				Toast.fail(response.data.Content);
 			}

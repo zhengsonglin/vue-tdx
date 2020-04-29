@@ -1,7 +1,7 @@
 <template>
 	<div class="page-index h100 over-auto">
 		<my-swiper></my-swiper>
-		<van-row>
+		<van-row class="activity-type">
 		  <van-col span="12">
 		  	<div class="row bg-fff text-c">
 		  		<img src="../../assets/img/nav-1.png"/>
@@ -26,7 +26,24 @@
 			    finished-text="没有更多了"
 			    @load="onLoad"
 			  >
-			    <van-cell v-for="item in list" :key="item" :title="item" />
+			    
+			    <div class="product-item" v-for="(item, index) in list" :key="index">
+			    	<van-row class="bg-fff product-item-row">
+						<van-col span="8">
+							<div class="imgShow">
+								<img :src="item.FIMGUrl" class="product-pic w100 h100"/>
+							</div>
+						</van-col>
+						<van-col span="16">
+							<div class="product-info">
+								<div class="p-title">{{item.FGoodsName}}</div>
+								<div class="p-tag"><span>需晒图</span></div>
+								<div><span>垫付:</span><span>￥19.90</span><span class="buy-btn">马上抢</span></div>
+								<div></div>
+							</div>
+						</van-col>
+					</van-row>
+			    </div>
 			  </van-list>
 			</van-pull-refresh>
 		</div>
@@ -54,11 +71,14 @@
 			    loading: false,
 			    finished: false,
 			    refreshing: false,
+			    pageNo:1,
+			    pageSize:30,
+			    searchKey:"",
 			}
 		},
 		methods: {
 			onLoad() {
-			    setTimeout(() => {
+			   /* setTimeout(() => {
 			        if (this.refreshing) {
 			          	this.list = [];
 			          	this.refreshing = false;
@@ -72,9 +92,26 @@
 			        if (this.list.length >= 40) {
 			          	this.finished = true;
 			        }
-			    }, 1000);
+			    }, 1000);*/
+			   if (this.refreshing) {
+		          	this.list = [];
+		          	this.refreshing = false;
+		        }
+			    this.API.getProductList({ page: this.pageNo, size: this.pageSize, key: this.searchKey, category: 13, status: 1 }).then((data)=>{
+			   		console.log(data)
+			   		
+			   		if (data.length < this.pageSize) {
+			          	this.finished = true;
+			        }else{
+			        	this.list.push(...data);
+			   			this.loading = false;
+			   			this.pageNo++
+			        }
+			   		
+			    })
+			   
 		    },
-		    onRefresh() {
+		    onRefresh() {console.log(2)
 			      // 清空列表数据
 			      this.finished = false;
 			
@@ -92,8 +129,23 @@
 
 <style scoped lang="scss">
 	.page-index{
-		/deep/ .van-row{
+		/deep/ .activity-type{
 			margin: 10px;
+		}
+		.content{
+			.product-item{
+				height: 120px;
+				margin: 0 10px 10px;
+				.product-item-row{
+					border-radius: 6px;
+					.imgShow{
+						margin: 6px;
+						.product-pic{
+							object-fit: cover;
+						}
+					}
+				}
+			}
 		}
 	}
 </style>

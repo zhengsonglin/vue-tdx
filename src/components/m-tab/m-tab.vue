@@ -31,9 +31,7 @@
 		methods: {
 
 		},
-		created() {
-			console.log(123)
-		}
+		created() {}
 	}
 </script>
 

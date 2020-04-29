@@ -25,5 +25,9 @@ export default {
     editPwd: (params, config) => $http.post("/Mobile/EditPwd", params, config).then((rsp) => {
 		return rsp.data
     }),
+    //获取首页商品列表
+    getProductList: (params, config) => $http.post("/Mobile/GetMobileData", params, config).then((rsp) => {
+		return rsp.data
+    }),
     
 }    
