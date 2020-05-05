@@ -69,14 +69,14 @@
 					}).then((data) => {
 						if(data.ErrorCode == 100) {
 							//location.href = "http://www.taodaxiong.cn/Mobile/ProductDetail?ShopId=0"
-							//this.$router.push("homeIndex")
+							//this.$router.push("home")
 						} else {
-							this.$router.push("homeIndex")
+							this.$router.push("home")
 						}
 					})
 
 				} else {
-					this.$router.push("homeIndex")
+					this.$router.push("home")
 				}
 
 				console.log(data)
@@ -92,6 +92,15 @@
 </script>
 
 <style scoped lang="scss">
+	input[type=text],
+	input[type=password] {
+		height: 40px;
+		line-height: 20px;
+		border-radius: 3px;
+		outline: 0;
+		background-color: #fff;
+		-webkit-appearance: none;
+	}
 	.page-login {
 		background: #fff;
 		.header {

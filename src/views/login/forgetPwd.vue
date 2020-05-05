@@ -1,5 +1,5 @@
 <template>
-	<div class="page-register h100">
+	<div class="page-register h100 bg-fff">
 		<div class="header-wrap">
 			<van-nav-bar
 			  title="找回密码"
@@ -131,8 +131,16 @@
 </script>
 
 <style scoped lang="scss">
+	input[type=text],
+	input[type=password] {
+		height: 40px;
+		line-height: 20px;
+		border-radius: 3px;
+		outline: 0;
+		background-color: #fff;
+		-webkit-appearance: none;
+	}
 	.page-register {
-		background: #fff;
 		.header {
 			background: #EE580F;
 			font-size: 17px;

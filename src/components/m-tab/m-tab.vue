@@ -1,7 +1,7 @@
 <template>
 	<!--<div class="bottom-menu"></div>-->
 	<van-tabbar v-model="active" route active-color="#07c160" inactive-color="#000">
-		<!--<van-tabbar-item replace to="/homeIndex" icon="home-o">
+		<!--<van-tabbar-item replace to="/home" icon="home-o">
 			    <template #icon="props">
 			      <img :src="props.active ? icon.active : icon.inactive" />
 			    </template>

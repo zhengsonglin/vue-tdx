@@ -46,6 +46,7 @@
 			margin: 10px;
 			padding: 4px 10px;
 			border-radius: 10px;
+			line-height: 2;
 			.adv-swipe{
 				height: 18px;
 			}

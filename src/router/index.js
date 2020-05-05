@@ -14,7 +14,7 @@ VueRouter.prototype.push = function push(location) {
 
 const router =  new VueRouter({
 	routes,
-	mode: 'hash',//history, 默认hash
+	mode: 'history',//history, 默认hash
 	scrollBehavior:(to, from, savedPosition) => {
 		//console.log(savedPosition);
 		if (savedPosition && to.meta.keepAlive) {

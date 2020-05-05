@@ -45,7 +45,7 @@ export default {
     isNotEmptyAll(...params){
         var flag = true;
         for(var k in params){
-            flag = flag && isNotEmptyStr(params[k]);
+            flag = flag && this.isNotEmpty(params[k]);
         }
         return flag;
     },
@@ -53,7 +53,7 @@ export default {
     isEmptyAll(...params){
         var flag = true;
         for(var k in params){
-            flag = flag && isEmpty(params[k]);
+            flag = flag && this.isEmpty(params[k]);
         }
         return flag;
     },
@@ -79,5 +79,5 @@ export default {
 	    }else if(type==10){
 	      return "商场"
 	    }
-	}
+	},
 }

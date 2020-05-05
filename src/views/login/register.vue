@@ -9,7 +9,7 @@
 					<input type="text" id="txt_UserName" v-model.trim="form.username" placeholder="请输入账号">
 				</div>
 				<div class="login-input pass-input">
-					<input type="text" id="txt_Yzm" v-model.trim="form.yzm" placeholder="请输入验证码" maxlength="6">
+					<input type="digit" id="txt_Yzm" v-model.trim="form.yzm" placeholder="请输入验证码" maxlength="6">
 					<div class="reg-get-code">
 						<van-button type="warning" @click="sendCode" size="mini" :disabled="validCode.isDisabled">{{validCode.btnText}}</van-button>
 					</div>
@@ -133,6 +133,15 @@
 </script>
 
 <style scoped lang="scss">
+	input[type=text],
+	input[type=password] {
+		height: 40px;
+		line-height: 20px;
+		border-radius: 3px;
+		outline: 0;
+		background-color: #fff;
+		-webkit-appearance: none;
+	}
 	.page-register {
 		background: #fff;
 		.header {

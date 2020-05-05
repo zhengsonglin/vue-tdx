@@ -1,5 +1,5 @@
 <template>
-	<div class="page-homeIndex h100">
+	<div class="page-index h100">
 		<div class="content h100">
 			<keep-alive>
 		      <router-view></router-view>
@@ -30,7 +30,7 @@
 </script>
 
 <style scoped lang="scss">
-	.page-homeIndex{
+	.page-index{
 		
 	}
 </style>
