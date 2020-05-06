@@ -141,6 +141,9 @@ export default {
     hWUploadScreenShots: (params, config) => $http.post("/api/TDX/HWUploadScreenShots", params, config).then((rsp) => {
 		return rsp.data
     }),
-    
+    //查询商品售后详情
+    getTaskByFID: (params, config) => $http.post("/MobileTaskCenter/GetTaskByFID", params, config).then((rsp) => {
+		return rsp.data
+    }),
     
 }    
