@@ -145,5 +145,10 @@ export default {
     getTaskByFID: (params, config) => $http.post("/MobileTaskCenter/GetTaskByFID", params, config).then((rsp) => {
 		return rsp.data
     }),
+    //订单售后图片上传
+    uploadRefundImg: (params, config) => $http.postUpload("/MobileTaskCenter/RefundImg", params, config).then((rsp) => {
+		return rsp.data
+    }),
+    
     
 }    

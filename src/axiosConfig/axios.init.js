@@ -144,5 +144,27 @@ export default {
 				reject(err)
 			})
 		})
+	},
+	postUpload: (url, data={}, config={}) => {
+		config.headers = {
+			 'Content-Type':'multipart/form-data'
+		}
+		let mergeConfig = {...defaultConfig, ...config};
+		handleLoading(mergeConfig.showLoading);
+		
+		let param = new FormData()  // 创建form对象
+		Object.keys(data).forEach((key)=>{
+			param.append(key, data[key])  
+		})
+      	//param.append('file', data.file)  // 通过append向form对象添加数据
+      	//param.append('age', '18') // 添加form表单中其他数据
+     
+		return new Promise((resolve, reject)=>{
+			$.post(url, param, { ...mergeConfig }).then(res=>{
+				resolve(res)
+			}).catch(err=>{
+				reject(err)
+			})
+		})
 	}
 }
