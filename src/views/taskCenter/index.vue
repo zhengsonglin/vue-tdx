@@ -1,8 +1,19 @@
 <template>
 	<div class="page-taskCenter w100 h100 over-auto">
-		<div class="page-title text-c w100 c-fff">
-			<div class="slot-left">
-				<span class="iconfont right-first icon-rili"></span>
+		<div class="page-title text-c w100 c-fff fixed">
+			<div class="slot-left absolute flex">
+				<div class="slot-left-item relative h100">
+					<div class="shadow absolute h100"></div>
+					<span class="iconfont right-first icon-rili relative" @click="onRiLiClick"></span>
+					<transition name="slideDown" >
+						<div class="left-menu-wrap absolute over-hidden bold bg-fff" v-show="leftDateShow">
+							<p @click="changeTime('today')">今日订单</p>
+							<p @click="changeTime('week')">一周以内</p>
+							<p @click="changeTime('month')">一月以内</p>
+							<p @click="changeTime('all')">全部订单</p>
+						</div>
+					</transition>
+				</div>
 			</div>
 			<div class="slot-center van-ellipsis">
 				<!--任务中心-->
@@ -10,15 +21,26 @@
 				  	<van-dropdown-item v-model="value" :options="option" />
 				</van-dropdown-menu>
 			</div>
-			<div class="slot-right">
-				<span class="mui-icon iconfont mui-pull-right right-second icon-qita3"></span>
+			<div class="slot-right absolute flex">
+				<div class="slot-right-item relative h100">
+					<div class="shadow absolute h100"></div>
+					<span class="mui-icon iconfont mui-pull-right right-second icon-qita3 relative" @click="onMenuClick"></span>
+					<transition name="slideDown">
+						<div class="right-menu-wrap absolute over-hidden bold bg-fff" v-show="rightMenuShow">
+							<router-link to="home" tag="p">首页</router-link>
+							<router-link to="taskCenter" tag="p">任务列表</router-link>
+							<router-link to="financeCenter" tag="p">我的财务</router-link>
+							<router-link to="userCenter" tag="p">个人中心</router-link>
+						</div>
+					</transition>
+				</div>
 			</div>
 		</div>
-		<div class="define-table bg-fff w100">
+		<div class="define-table fixed flex bg-fff w100">
 			<div :class="['tab-item', {'active':index==activeIndex}]" v-for="(item, index) in tabs" @click="onNavClick(item)">
 				<span>{{item.name}}</span>
 				<transition name="van-slide-down" v-if="item.children && item.children.length">
-					<div class="sub-menu bg-fff w100"  v-show="visible">
+					<div class="sub-menu bg-fff w100 relative"  v-show="visible">
 						<p v-for="(sItem, sIndex) in item.children" :key="sIndex" :class="['sub-tab-item', {'active':sItem.isActive}]"
 							@click.stop="onChildNavClick(sItem, item)">{{sItem.name}}</p>
 					</div>
@@ -29,9 +51,9 @@
 		<div class="content">
 			<!--攻略-->
 			<div class="helps text-c bg-fff">
-				<router-link to="" tag="span" class="help-item line">新手攻略</router-link>
-				<router-link to="" tag="span" class="help-item line">定制评价攻略</router-link>
-				<router-link to="" tag="span" class="help-item">售后攻略</router-link>
+				<router-link to="newUserStrategy" tag="span" class="help-item relative flex-1 line">新手攻略</router-link>
+				<router-link to="strategy" tag="span" class="help-item relative flex-1 line">定制评价攻略</router-link>
+				<router-link to="saleAfterStrategy" tag="span" class="help-item relative flex-1">售后攻略</router-link>
 			</div>
 			
 			<div class="task-center-order ">
@@ -41,21 +63,21 @@
 			
 							<div class="order-item-top c-fff">
 								<div class="task-top-left-box fl ">
-									<div class="task-top-tb text-c">{{item.FHttp || "淘宝"}}</div>
+									<div class="task-top-tb text-c inline-block">{{item.FHttp || "淘宝"}}</div>
 									<div class="task-top-seller">{{item.FShopName || "无※※※※点"}}</div>
 								</div>
 								<div class="task-top-right-box fr">任务状态：{{getTaskStatus(item.FStatus)}}</div>
 							</div>
-							<div class="order-item-mid w100 over-hidden">
+							<div class="order-item-mid w100 over-hidden border-box">
 								<div class="task-mid-left-box fl">
 									<div class="left-box-img w100">
 										<img :src="(item.FIMGUrl == '' ? item.goodimg : item.FIMGUrl)" width="100%" height="100%">
 									</div>
 									<div class="left-box-user text-c">
-										<span>账号：{{item.FWang || "zold845517008"}}</span>
+										<span class="red">账号：{{item.FWang || "zold845517008"}}</span>
 									</div>
 								</div>
-								<div class="task-mid-right-box fr">
+								<div class="task-mid-right-box fr border-box">
 									<div class="task-right-info"> {{item.TaskTitle != "" ? item.TaskTitle : item.FGoodsName}} </div>
 									<div class="task-right-ordernum">订单编号：{{item.FOrderNumber != "" ? item.FOrderNumber : "(未填写)"}}</div>
 									<div class="task-right-price">
@@ -112,7 +134,7 @@
 				<div class="info-item red">下单价: ￥{{toDecimal2(productItem.FGoodsNum * productItem.FUnitPrice)}}</div>
 				<div class="info-item red">礼品: {{productItem.FGoodsName}}</div>
 				<div class="shop-img">
-					<img :src="productItem.FShopImg" width="100%"/>
+					<img :src="productItem.FShopImg" width="100%" height="100%"/>
 				</div>
 			</div>
 		</van-dialog>
@@ -138,8 +160,10 @@
 			    	{state:"done", name:"已完成", num:3},
 			    	{state:"all", name:"全部", num:4},
 			    ],
-			    activeIndex:1,	//当前nav, 从0开始
+			    activeIndex: 1,	//当前nav, 从0开始
 			    visible: false,
+			    rightMenuShow: false,
+			    leftDateShow: false,
 			    list: [],
 				loading: false,
 				finished: false,
@@ -147,7 +171,9 @@
 				pageNo: 1,
 				pageSize: 30,
 				showProductDialog:false,
-				productItem:{}	//商品信息
+				productItem:{},	//商品信息
+				DatgeType: 'all',	//订单时间，all全部，today今天，week一周内，moth一月内
+				ABOrTraffic: 'AB',
 			}
 		},
 		computed:{
@@ -157,9 +183,37 @@
 				}else{
 					return this.tabs[this.activeIndex].children.filter((item)=>item.isActive)[0].state
 				}
+			},
+			queryForm(){
+				return {
+					pageindex: this.pageNo,
+					pagesize: this.pageSize,
+					DatgeType: this.DatgeType,
+					ABOrTraffic: this.ABOrTraffic,
+					Status: this.getActiveStatus || 'have',
+				}
 			}
+			
 		},
 		methods:{
+			//导航左侧日历
+			onRiLiClick(){
+				if(this.rightMenuShow)return;
+				this.leftDateShow = !this.leftDateShow;
+			},
+			//导航右侧菜单
+			onMenuClick(){
+				if(this.leftDateShow)return;
+				this.rightMenuShow = !this.rightMenuShow;
+			},
+			//按时间筛选订单
+			changeTime(type){
+				this.DatgeType = type;
+				this.refreshing = true;
+				this.onRefresh()
+				this.leftDateShow = false
+			},
+			//tab导航切换
 			onNavClick({state, name, num}){
 				if(num){
 					let children = this.tabs[this.activeIndex].children
@@ -176,6 +230,7 @@
 					this.visible = !this.visible
 				}
 			},
+			//tab子菜单切换
 			onChildNavClick({state, name, num}, pItem){
 				this.activeIndex = pItem.num;
 				pItem.children.forEach((obj)=>{
@@ -191,15 +246,8 @@
 					this.list = [];
 					this.refreshing = false;
 				}
-				let params = {
-					pageindex: this.pageNo,
-					pagesize: this.pageSize,
-					DatgeType: 'all',
-					ABOrTraffic: 'AB',
-					Status: this.getActiveStatus || 'have',
-				}
 				
-				this.API.getTaskList(params, {showLoading: false}).then((data) => {
+				this.API.getTaskList(this.queryForm, {showLoading: false}).then((data) => {
 					this.list.push(...data);
 					if(data.length < this.pageSize) {
 						this.finished = true;
@@ -231,15 +279,8 @@
 					this.list = [];
 					this.refreshing = false;
 				}
-				let params = {
-					pageindex: this.pageNo,
-					pagesize: this.pageSize,
-					DatgeType: 'all',
-					ABOrTraffic: 'AB',
-					Status: this.getActiveStatus || 'have',
-				}
 
-				this.API.getTaskSaleList(params, {showLoading: false}).then((data)=>{
+				this.API.getTaskSaleList(this.queryForm, {showLoading: false}).then((data)=>{
 					this.list.push(...data);
 					if(data.length < this.pageSize) {
 						this.finished = true;
@@ -387,12 +428,29 @@
 </script>
 
 <style lang="scss" scoped>
+	
+	.slideDown-enter, .slideDown-leave-to{
+		/*height: 0;
+		transform: translateX(80px);*/
+		transform: translateY(-144px);
+	}
+	.slideDown-enter-to, .slideDown-leave{
+		/*top: 48px;
+		bottom: auto;
+		height: 144px;
+		transform: translateX(0px);*/
+		transform: translateY(0px);
+		
+	}
+	.slideDown-enter-active, .slideDown-leave-active {
+	  transition: all 0.4s ease;
+	}
+	
 	.red{
 		color: #fd3c3c !important;
 	}
 	.page-taskCenter{
 		.page-title{
-			position: fixed;
 			top: 0;
 			left: 0;
 			height: 48px;
@@ -401,24 +459,58 @@
 			font-size: 17px;
 			z-index: 100;
 			.slot-left, .slot-right{
-				position: absolute;
 			    top: 0;
 			    bottom: 0;
-			    display: flex;
 			    align-items: center;
-			    padding: 0 16px;
 			    font-size: 14px;
 			    cursor: pointer;
 			    .iconfont{
 			    	font-size: 20px;
+			    	z-index: 12;
 			    }
 			}
-			.slot-left{left:0}
-			.slot-right{right:0}
+			.slot-left{left:0;
+				.slot-left-item{
+					padding: 0 16px;
+					.shadow{
+						width: 80px;
+						top: 0;
+						left: 0;
+						z-index: 10;
+						background-color: #fd3c3c;
+					}
+					.left-menu-wrap{
+						left: 0;
+						top: 48px;
+						color: #333;
+						width: 80px;
+						line-height: 36px;
+					}
+				}
+			}
+			.slot-right{
+				right:0;
+				.slot-right-item{
+					padding: 0 16px;
+					.shadow{
+						width: 80px;
+						top: 0;
+						right: 0;
+						z-index: 10;
+						background-color: #fd3c3c;
+					}
+					.right-menu-wrap{
+						right: 0;
+						top: 48px;
+						color: #333;
+						width: 80px;
+						line-height: 36px;
+					}
+				}
+			}
 			.slot-center{
 				max-width: 60%;
 			    margin: 0 auto;
-			    font-weight: 500;
 			    font-size: 16px;
 			    .van-dropdown-menu{
 			    	background: inherit;
@@ -430,11 +522,9 @@
 			}
 		}
 		.define-table{
-			position: fixed;
 			z-index: 10;
 			left:0;
 			top:48px;
-			display: flex;
 			flex-direction: row;
     		justify-content: space-around;
 			height: 48px;
@@ -452,7 +542,6 @@
 				}
 			}
 			.sub-menu{
-				position: relative;
 				z-index: -2;
     			top: 3px;
     			.sub-tab-item{
@@ -472,9 +561,7 @@
 				flex-direction: row;
 				box-shadow: 0 1px 2px rgba(0,0,0,.3);
 				.help-item{
-					flex: 1;
 					width: 0;
-					position: relative;
 					&.line::after{
 						content: "";
 						position: absolute;
@@ -504,7 +591,6 @@
 					    		display: inline-block;
 					    		&.task-top-tb {
 								    background-color: orange;
-								    display: inline-block;
 								    font-size: 12px;
 								    width: 32px;
 								    height: 24px;
@@ -520,7 +606,6 @@
 					.order-item-mid{
 						font-size: 13px;
 						padding: 8px 8px 0;
-    					box-sizing: border-box;
 						.task-mid-left-box{
 							width: 40%;
 							.left-box-img{
@@ -537,7 +622,6 @@
 						.task-mid-right-box{
 							width: 60%;
 							padding-left: 10px;
-							box-sizing: border-box;
 							>div{
 								padding: 4px 0;
 								&.task-right-well{
@@ -574,6 +658,12 @@
     			margin: 20px auto;
     			line-height: 30px;
     			font-size: 18px;
+    			.shop-img{
+    				>img{
+    					object-fit: contain;
+    					max-height: 300px;
+    				}
+    			}
 			}
 		}
 	}	

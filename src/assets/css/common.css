@@ -72,6 +72,9 @@ li{
 .bg-fff{
 	background: #fff;;
 }
+.bg-f00{
+	background: #f00;
+}
 .over-auto{
 	overflow: auto;
 }
@@ -92,5 +95,24 @@ li{
 .block{
 	display: block;
 }
+.relative{
+	position: relative;
+}
+.absolute{
+	position: absolute;
+}
+.fixed{
+	position: fixed;
+}
 
-
+.flex{
+	display: flex;
+}
+.flex-1{
+	flex: 1;
+	width: 0;
+	flex-basis: 0;
+}
+.border-box{
+	box-sizing: border-box;
+}

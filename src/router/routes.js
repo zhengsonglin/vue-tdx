@@ -209,6 +209,22 @@ export const routes = [{
 			title: '申请售后'
 		},
 	},
+	{
+		path: '/strategy',
+		component: () =>
+			import('../views/userCenter/strategy.vue'),
+		meta: {
+			title: '定制评价攻略'
+		},
+	},
+	{
+		path: '/saleAfterStrategy',
+		component: () =>
+			import('../views/userCenter/saleAfterStrategy.vue'),
+		meta: {
+			title: '售后攻略'
+		},
+	},
 	
 	/*{
 		path: '*',

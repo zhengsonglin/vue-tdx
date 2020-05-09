@@ -11,7 +11,7 @@
 				
 				<div class="right-word">
 					<div class="van-ellipsis right_word_tit">{{refundBaseInfo.FGoodsName}}</div>
-	                <div class="item-sku">ssadsa阿斯顿撒萨达121</div>
+	                <div class="item-sku">测试测试</div>
 	            </div>
 			</div>
 			
