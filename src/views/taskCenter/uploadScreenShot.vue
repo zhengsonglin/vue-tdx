@@ -27,7 +27,7 @@
 					<div class="cell-title">好评截图：</div>
 					<div class="cell-content text-r">
 						<van-uploader v-model="fileList" :preview-image="false" :after-read="afterRead">
-						  	<van-button icon="photo" color="linear-gradient(to right, #4bb0ff, #6149f6)">点击上传图片</van-button>
+						  	<van-button icon="photo" color="linear-gradient(to right, #4bb0ff, #6149f6)" size="small">点击上传图片</van-button>
 						</van-uploader>
 					</div>
 				</div>
@@ -70,6 +70,8 @@
 			},
 			refresh(){
 				this.isForceEdit = false
+				this.fileList = [];
+				this.singleFile = {};
 				this.getUploadInfo()
 			},
 			 

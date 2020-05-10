@@ -5,9 +5,10 @@
 
 		<van-row class="activity-type">
 			<van-col span="12">
-				<div class="row bg-fff text-c">
+				<!--<div class="row bg-fff text-c" @click="test">
 					<img src="../../assets/img/nav-1.png" />
-				</div>
+				</div>-->
+				<router-link to="sortProduct" tag="div" class="row bg-fff text-c"><img src="../../assets/img/nav-1.png" /></router-link>
 			</van-col>
 			<van-col span="12">
 				<div class="row bg-fff text-c">
@@ -52,6 +53,9 @@
 				</van-list>
 			</van-pull-refresh>
 		</div>
+		<!--子页面-->
+		<router-view></router-view>
+		
 		<p style="height: 50px;"></p>
 	</div>
 </template>
@@ -160,7 +164,7 @@
 			}
 		},
 		mounted() {
-
+			console.log(123)
 			let box = document.getElementById("page-index")
 			this.swiperHeight = document.getElementsByClassName("mySwiper")[0].offsetHeight
 

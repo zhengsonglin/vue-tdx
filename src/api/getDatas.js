@@ -149,6 +149,10 @@ export default {
     uploadRefundImg: (params, config) => $http.postUpload("/MobileTaskCenter/RefundImg", params, config).then((rsp) => {
 		return rsp.data
     }),
+    //查询商品所属分类类别
+    getCategory: (params, config) => $http.post("/Mobile/GetCategory", params, config).then((rsp) => {
+		return rsp.data
+    }),
     
     
 }    

@@ -1,16 +1,16 @@
 <template>
-	<div class="page-taskCenter w100 h100 over-auto">
+	<div class="page-taskCenter w100 h100 over-auto" @click.stop="close">
 		<div class="page-title text-c w100 c-fff fixed">
 			<div class="slot-left absolute flex">
 				<div class="slot-left-item relative h100">
 					<div class="shadow absolute h100"></div>
-					<span class="iconfont right-first icon-rili relative" @click="onRiLiClick"></span>
+					<span class="iconfont right-first icon-rili relative" @click.stop="onRiLiClick"></span>
 					<transition name="slideDown" >
 						<div class="left-menu-wrap absolute over-hidden bold bg-fff" v-show="leftDateShow">
-							<p @click="changeTime('today')">今日订单</p>
-							<p @click="changeTime('week')">一周以内</p>
-							<p @click="changeTime('month')">一月以内</p>
-							<p @click="changeTime('all')">全部订单</p>
+							<p @click="changeTime('today')" :class="{active:DatgeType=='today'}">今日订单</p>
+							<p @click="changeTime('week')" :class="{active:DatgeType=='week'}">一周以内</p>
+							<p @click="changeTime('month')" :class="{active:DatgeType=='month'}">一月以内</p>
+							<p @click="changeTime('all')" :class="{active:DatgeType=='all'}">全部订单</p>
 						</div>
 					</transition>
 				</div>
@@ -18,15 +18,15 @@
 			<div class="slot-center van-ellipsis">
 				<!--任务中心-->
 				<van-dropdown-menu>
-				  	<van-dropdown-item v-model="value" :options="option" />
+				  	<van-dropdown-item v-model="orderType" :options="option" />
 				</van-dropdown-menu>
 			</div>
 			<div class="slot-right absolute flex">
 				<div class="slot-right-item relative h100">
 					<div class="shadow absolute h100"></div>
-					<span class="mui-icon iconfont mui-pull-right right-second icon-qita3 relative" @click="onMenuClick"></span>
+					<span class="mui-icon iconfont mui-pull-right right-second icon-qita3 relative" @click.stop="onMenuClick"></span>
 					<transition name="slideDown">
-						<div class="right-menu-wrap absolute over-hidden bold bg-fff" v-show="rightMenuShow">
+						<div class="right-menu-wrap absolute over-hidden bold bg-fff" v-show="rightMenuShow" @click.stop="rightMenuShow=false">
 							<router-link to="home" tag="p">首页</router-link>
 							<router-link to="taskCenter" tag="p">任务列表</router-link>
 							<router-link to="financeCenter" tag="p">我的财务</router-link>
@@ -50,13 +50,13 @@
 		
 		<div class="content">
 			<!--攻略-->
-			<div class="helps text-c bg-fff">
+			<div class="helps flex text-c bg-fff" v-if="orderType==0">
 				<router-link to="newUserStrategy" tag="span" class="help-item relative flex-1 line">新手攻略</router-link>
 				<router-link to="strategy" tag="span" class="help-item relative flex-1 line">定制评价攻略</router-link>
 				<router-link to="saleAfterStrategy" tag="span" class="help-item relative flex-1">售后攻略</router-link>
 			</div>
 			
-			<div class="task-center-order ">
+			<div class="task-center-order " v-if="orderType==0">
 				<van-pull-refresh v-model="refreshing" @refresh="onRefresh">
 					<van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
 						<van-cell v-for="(item, index) in list" :key="index" class="order-item bg-fff">
@@ -123,6 +123,13 @@
 				</van-pull-refresh>	
 				<!--<van-empty description="暂无数据" v-else />-->
 			</div>
+			
+			<div class="mui-card hint" v-if="orderType==1">
+                    <div class="helps relative w100 text-c" v-show="showHint">
+                       	 注：原价-优惠价=返还金
+                        <span class="inline-block absolute" @click.stop="showHint = false">X</span>
+                    </div>
+                </div>
 		</div>
 		
 		<van-dialog v-model="showProductDialog" show-cancel-button width="90%" :showConfirmButton="false">
@@ -146,7 +153,7 @@
 		name:"userCenter",
 		data() {
 			return {
-				value: 0,
+				orderType: 0,
 			    option: [
 			        { text: '免单任务中心', value: 0 },
 			        { text: '返利任务中心', value: 1 },
@@ -174,6 +181,7 @@
 				productItem:{},	//商品信息
 				DatgeType: 'all',	//订单时间，all全部，today今天，week一周内，moth一月内
 				ABOrTraffic: 'AB',
+				showHint: true,
 			}
 		},
 		computed:{
@@ -196,14 +204,24 @@
 			
 		},
 		methods:{
+			close(){
+				this.leftDateShow = false;
+				this.rightMenuShow = false;
+			},
 			//导航左侧日历
 			onRiLiClick(){
-				if(this.rightMenuShow)return;
+				if(this.rightMenuShow) {
+					this.rightMenuShow = false;
+					return;
+				}
 				this.leftDateShow = !this.leftDateShow;
 			},
 			//导航右侧菜单
 			onMenuClick(){
-				if(this.leftDateShow)return;
+				if(this.leftDateShow){
+					this.leftDateShow = false;
+					return;
+				}
 				this.rightMenuShow = !this.rightMenuShow;
 			},
 			//按时间筛选订单
@@ -485,6 +503,9 @@
 						color: #333;
 						width: 80px;
 						line-height: 36px;
+						p.active{
+							color: blueviolet;
+						}
 					}
 				}
 			}
@@ -515,6 +536,7 @@
 			    .van-dropdown-menu{
 			    	background: inherit;
 			    	color: inherit;
+			    	height: 48px;
 			    	/deep/ .van-dropdown-menu__title{
 			    		color: inherit;
 			    	}
@@ -546,7 +568,7 @@
     			top: 3px;
     			.sub-tab-item{
     				&.active{
-    					color:#fd3c3c;
+    					color: blueviolet;
     				}
     			}
 			}
@@ -557,7 +579,6 @@
 			.helps{
 				height: 32px;
 				line-height: 32px;
-				display: flex;
 				flex-direction: row;
 				box-shadow: 0 1px 2px rgba(0,0,0,.3);
 				.help-item{
@@ -574,6 +595,18 @@
 					}
 				}
 				
+			}
+			.mui-card{
+				.helps{
+					background:rgba(225, 225, 225, 0.8);
+					font-size:14px;
+					color:#fd3c3c;
+					span{
+						height:100%;
+						right: 16px;
+						top: 0;
+					}
+				}
 			}
 			.task-center-order{
 				.order-item{

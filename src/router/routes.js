@@ -8,6 +8,10 @@ export const routes = [{
 		}
 	},
 	{
+		path: '/Mobile/MobileLogin',
+		redirect: "login"
+	},
+	{
 		path: '/login',
 		name: 'login',
 		component: () =>
@@ -43,13 +47,32 @@ export const routes = [{
 			keepAlive: true
 		},
 		children: [{
-				path: '/',
+				path: '',
 				component: () =>
 					import('../views/home/index.vue'),
 				meta: {
 					title: '首页',
 					keepAlive: true
 				},
+				children: [{
+						path: '/sortProduct',
+						name: "sortProduct",
+						component: () =>
+							import('../views/home/sortProduct.vue'),
+						meta: {
+							title: '商品分类',
+						},
+					},
+					{
+						path: '/skillTaskList',
+						component: () =>
+							import('../views/home/skillTaskList.vue'),
+						meta: {
+							title: '熊抢购',
+						},
+					}
+
+				]
 			},
 			{
 				path: '/question',
@@ -85,7 +108,7 @@ export const routes = [{
 				meta: {
 					title: '返款记录'
 				},
-			}  
+			}
 		]
 	},
 	{
@@ -225,7 +248,7 @@ export const routes = [{
 			title: '售后攻略'
 		},
 	},
-	
+
 	/*{
 		path: '*',
 		redirect: '/404'

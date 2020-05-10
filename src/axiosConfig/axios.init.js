@@ -61,10 +61,17 @@ $.interceptors.response.use((response) => {
 	handleLoading(false)
 	
 	if (error && error.response && error.response.status) {
-		
+		console.log(error.response)
 		switch (error.response.status) {
 			case 404:
-				Toast.fail('网络请求不存在');
+				//Toast.fail('网络请求不存在');
+				Toast({
+					type:"fail",
+					duration: 500, // 0持续展示 toast
+				  	forbidClick: true,
+				  	message: '网络请求不存在',
+				  	onClose: ()=>{router.push("/login")}
+				})
 				break;
 			default:
 				Toast.fail(error.response.data.message || "服务器异常");
