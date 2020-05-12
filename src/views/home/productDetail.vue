@@ -1,6 +1,6 @@
 <template>
 	<!--productDetail-->
-	<div class="page-index productDetail bg-fff h100 over-auto">
+	<div class="page-index productDetail bg-fff h100 over-auto" v-if="productInfo.FID">
 		<my-swiper class="mySwiper" height="300" :datas="imgList" :autoplayTime="3500" v-if="imgList.length"></my-swiper>
 		
 		<div class="content">
@@ -12,7 +12,7 @@
 					<div class="title-price-sur fr">剩余商品 <span class="span_Num red">{{productInfo.Num}}</span>份</div>
                 </div>
 			</div>
-			<div class="com-detail ">
+			<div class="com-detail" v-if="parseInt(productInfo.RemoteRegionIsDeliver) == 0">
 	            <span class="detail-remark red">偏远地区不发货</span>
 	        </div>
 	        <!-- 活动时间介绍 -->
@@ -60,7 +60,7 @@
 	        </div>
 
 			<!-- 宝贝详情 -->
-        	<div class="com-detail-baby" v-html="productInfo.FHtmlString"></div>
+        	<div class="com-detail-baby" v-html="productInfo.FHtmlString" v-show="showSomeProductInfo"></div>
 
 		</div>
 		<div class="foot-bar fixed bg-fff text-c">
@@ -80,7 +80,9 @@
 			  	</van-col>
 			  </van-col>
 			  <van-col span="12">
-			  	<van-button type="danger" size="large" block color="#fd3c3c" class="f18" @click="submit">立即领取</van-button>
+			  	<van-button  size="large" block :color="btnInfo.color" :disabled="btnInfo.disabled" class="f18" @click="submit">{{btnInfo.text}}</van-button>
+			  	<!--<van-button  size="large" block color="#ff9800" class="f18" @click="StartTask">开始任务</van-button>
+			  	<van-button  size="large" block color="#ea7d5a" class="f18" @click="Reservations_onclick">立即预定</van-button>-->
 			  </van-col>
 			  
 			</van-row>
@@ -106,6 +108,22 @@
 		    	<div class="dialog-btn text-c c-fff" @click="handleBuy">确定</div>
 		  </div>
 		</van-overlay>
+		
+		<van-overlay :show="showReservation" @click="showReservation = false">
+		  <div class="overlay-wrapper overlay2 bg-fff over-hidden" @click.stop>
+		    	<div class="dialog-header c-fff text-c" > 预订天数</div>
+		    	<div class="dialog-content">
+		    		<div class="row-item">
+		    			<select name="days" v-model="reservationDay" class="w100" placeholder="请选择预定天数">
+		    				<option :value="n" v-for="n in 7" :key="n">{{n}}天</option>
+		    			</select>
+		    		</div>
+		    	
+		    	</div>
+		    	<div class="dialog-btn text-c c-fff" @click="AddYd">确定</div>
+		  </div>
+		</van-overlay>
+		
 	</div>
 </template>
 
@@ -121,12 +139,23 @@
 				let {zpimg, FShopImg} = this.productInfo;
 				let img = zpimg == "" ? FShopImg.replace("../", "/") : zpimg;
 				return [img, img]
-			}
+			},
+			
 		},
 		data() {
 			return {
 				productInfo:{},
 				showOverlay: false,
+				showSomeProductInfo: true,
+				activeStatus:1,	//1活动进行中, 2活动未开始，3活动已结束 , 4开始任务(取决于活动时间)
+				inventoryStatus: 1,	//库存充足， 0库存不足
+				btnInfo: {
+					color:"",
+					text:"",
+					disabled : false,
+				},
+				showReservation: false,	//立即预定
+				reservationDay:0,	//预定天数(1-7)
 			}
 		},
 		methods:{
@@ -134,24 +163,94 @@
 				this.$toast('如有疑问，请及时联系淘大熊客服（晴天或者熊大）！');
 			},
 			getProductDetail(){
-				let shopId = this.$route.query.shopId
-				this.API.getProductDetail({ShopId:shopId}).then((data)=>{
+				
+				this.API.getProductDetail({ShopId:this.shopId}).then((data)=>{
 					this.productInfo = data
+					var d2 = new Date();//取今天的日期
+                    var d1 = new Date(Date.parse(data.fsttime));
+                    var d3 = new Date(Date.parse(data.fentime));
+                    
+                    if (d1 > d2) {
+                        this.activeStatus = 2
+                        this.btnInfo = {
+							color:"#b1b5b4",
+							text:"活动未开始",
+							disabled: true
+						}
+                        this.showSomeProductInfo = false
+                    } else if (d3 <= d2) {
+                        this.activeStatus = 3
+                        this.btnInfo = {
+							color:"#b1b5b4",
+							text:"活动已结束",
+							disabled: true
+						}
+                        this.showSomeProductInfo = false
+                    } else {
+                        if(data.Num <= 0){
+                        	this.activeStatus = 1
+	                        this.inventoryStatus = 0
+	                        this.btnInfo = {
+								color:"#ea7d5a",
+								text:"立即预定",
+								disabled: false
+							}
+	                        this.showSomeProductInfo = false
+                        }else{
+                        	this.btnInfo = {
+								color: "#fd3c3c",
+								text: "立即领取",
+								disabled : false,
+							}
+                        }
+                    }
+
 				})
 			},
 			submit(){
-				this.showOverlay = true
+				let {activeStatus, inventoryStatus} = this
+				if(activeStatus == 1 && inventoryStatus == 1){	//领取任务
+					this.showOverlay = true
+					return
+				}
+				if(activeStatus ==4){	//开始任务
+					this.$dialog.confirm({
+						title: '温馨提示',
+				      	message: '如果有任何疑问，请联系淘大熊微信客服哦！',
+				    }).then(()=>{
+				    	this.startTask();
+				    });
+				}else if(activeStatus == 1 && inventoryStatus == 0){	//立即预定
+					this.showReservation = true
+				}
+				
 			},
+			//开始任务
+			startTask(){
+				this.API.startTask({ShopId: this.shopId}).then((data)=>{
+					if (data.ErrorCode == 100) {
+                        this.$router.push({path:"/startTask", query:{TaskId: data.Content}})
+                    } else {
+                        this.$router.push("login")
+                    }
+
+				})
+			},
+			//领取任务
 			handleBuy(){
 				
-				return;
-				this.API.getTheTask().then((data)=>{
+				this.API.getTheTask({ShopId: this.shopId, Mark:"M"}).then((data)=>{
 					if (data.ErrorCode == 100) {
                         this.$dialog.alert({
                         	title: '恭喜你',
 					      	message: '商品抢购成功，请按时完成任务！',
 					    }).then(() => {
-						   // this.$router.push("realNameAuthentica")
+						   this.activeStatus = 4;
+						   this.btnInfo = {
+								color:"#ff9800",
+								text:"开始任务",
+								disabled: false
+							}
 						})
                     } else if (data.ErrorCode == 101) {
                         if (data.Content == "请先进行实名认证!") {
@@ -167,20 +266,51 @@
 							  	message: data.Content
 							});
                         }
-                        $("#popout").hide();
                     } else if (data.ErrorCode == 200) {
                         if (ShopId != "0") {
-                            location.href = "/Mobile/MobileLogin?type=" + ShopId;
+                            this.$router.push({path:"/login", query:{type:ShopId}})
                         } else {
-                            location.href = "/Mobile/MobileLogin";
+                            this.$router.push("login")
                         }
 
                     }
 
 				})
 			},
+			//立即预定
+			AddYd(){
+	            var tt = /^\d+$/g,
+	            	days = this.reservationDay;
+	            if (!tt.test(days)) {
+	                this.$notify('天数输入错误！');
+	                return;
+	            }
+	            this.showReservation = false
+	            this.API.reservations({ ShopId: this.shopId, days }).then((data)=>{
+	            	if (data.ErrorCode == 100) {
+	            		this.$toast({
+                        	duration: 600, // 持续展示 toast
+						  	forbidClick: true,
+						  	type: "success",
+						  	message: '预订成功！',
+						  	onClose:()=>{this.$router.push("sortProduct")}
+						});
+                    } else if (data.ErrorCode == 101) {
+                        this.$toast({
+						  	//forbidClick: true,
+						  	type: "fail",
+						  	message: data.Content
+						});
+                    } else {
+                        this.$router.push("login")
+                    }
+	            })
+	           
+
+			}
 		},
 		created(){
+			this.shopId = this.$route.query.shopId
 			this.getProductDetail();
 		}
 	}	
@@ -358,8 +488,19 @@
 					font-size: 14px;
 				}
 			}
+			&.overlay2{
+				select{
+					height: 46px;
+				    border: 1px solid #ccc;
+				    border-radius: 4px;
+				    outline: none;
+				    padding-left: 12px;
+    				font-size: 20px;
+			    }
+			}
 			
 		}
+		
 	}
 	
 </style>

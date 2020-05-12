@@ -65,6 +65,7 @@ export const routes = [{
 					},
 					{
 						path: '/skillTaskList',
+						name: "skillTaskList",
 						component: () =>
 							import('../views/home/skillTaskList.vue'),
 						meta: {
@@ -76,6 +77,7 @@ export const routes = [{
 			},
 			{
 				path: '/question',
+				name: "question",
 				component: () =>
 					import('../views/question/index.vue'),
 				meta: {
@@ -85,6 +87,7 @@ export const routes = [{
 			},
 			{
 				path: '/taskCenter',
+				name: "taskCenter",
 				component: () =>
 					import('../views/taskCenter/index.vue'),
 				meta: {
@@ -94,6 +97,7 @@ export const routes = [{
 			},
 			{
 				path: '/userCenter',
+				name: "userCenter",
 				component: () =>
 					import('../views/userCenter/index.vue'),
 				meta: {
@@ -103,6 +107,7 @@ export const routes = [{
 			},
 			{
 				path: '/refundRecord',
+				name: "refundRecord",
 				component: () =>
 					import('../views/userCenter/refundRecord.vue'),
 				meta: {
@@ -113,6 +118,7 @@ export const routes = [{
 	},
 	{
 		path: '/recommendFriend',
+		name: "recommendFriend",
 		component: () =>
 			import('../views/userCenter/recommendFriend.vue'),
 		meta: {
@@ -121,6 +127,7 @@ export const routes = [{
 	},
 	{
 		path: '/reservationRecord',
+		name: "reservationRecord",
 		component: () =>
 			import('../views/userCenter/reservationRecord.vue'),
 		meta: {
@@ -129,6 +136,7 @@ export const routes = [{
 	},
 	{
 		path: '/realNameAuthentica',
+		name: "realNameAuthentica",
 		component: () =>
 			import('../views/userCenter/realNameAuthentica.vue'),
 		meta: {
@@ -137,6 +145,7 @@ export const routes = [{
 	},
 	{
 		path: '/cardBind',
+		name: "cardBind",
 		component: () =>
 			import('../views/userCenter/cardBind.vue'),
 		meta: {
@@ -145,6 +154,7 @@ export const routes = [{
 	},
 	{
 		path: '/financeCenter',
+		name: "financeCenter",
 		component: () =>
 			import('../views/userCenter/financeCenter.vue'),
 		meta: {
@@ -153,6 +163,7 @@ export const routes = [{
 	},
 	{
 		path: '/withDrawCash',
+		name: "withDrawCash",
 		component: () =>
 			import('../views/userCenter/withDrawCash.vue'),
 		meta: {
@@ -161,6 +172,7 @@ export const routes = [{
 	},
 	{
 		path: '/baseUserInfo',
+		name: "baseUserInfo",
 		component: () =>
 			import('../views/userCenter/baseUserInfo.vue'),
 		meta: {
@@ -169,6 +181,7 @@ export const routes = [{
 	},
 	{
 		path: '/newUserStrategy',
+		name: "newUserStrategy",
 		component: () =>
 			import('../views/userCenter/newUserStrategy.vue'),
 		meta: {
@@ -177,6 +190,7 @@ export const routes = [{
 	},
 	{
 		path: '/touSu',
+		name: "touSu",
 		component: () =>
 			import('../views/userCenter/touSu.vue'),
 		meta: {
@@ -185,6 +199,7 @@ export const routes = [{
 	},
 	{
 		path: '/changePwd',
+		name: "changePwd",
 		component: () =>
 			import('../views/userCenter/changePwd.vue'),
 		meta: {
@@ -193,6 +208,7 @@ export const routes = [{
 	},
 	{
 		path: '/feedBack',
+		name: "feedBack",
 		component: () =>
 			import('../views/userCenter/feedBack.vue'),
 		meta: {
@@ -202,6 +218,7 @@ export const routes = [{
 	},
 	{
 		path: '/addFeedBack',
+		name: "addFeedBack",
 		component: () =>
 			import('../views/userCenter/addFeedBack.vue'),
 		meta: {
@@ -210,6 +227,7 @@ export const routes = [{
 	},
 	{
 		path: '/updateDescription',
+		name: "updateDescription",
 		component: () =>
 			import('../views/userCenter/updateDescription.vue'),
 		meta: {
@@ -218,6 +236,7 @@ export const routes = [{
 	},
 	{
 		path: '/uploadScreenShot',
+		name: "uploadScreenShot",
 		component: () =>
 			import('../views/taskCenter/uploadScreenShot.vue'),
 		meta: {
@@ -226,6 +245,7 @@ export const routes = [{
 	},
 	{
 		path: '/refundDetial',
+		name: "refundDetial",
 		component: () =>
 			import('../views/taskCenter/refundDetial.vue'),
 		meta: {
@@ -234,6 +254,7 @@ export const routes = [{
 	},
 	{
 		path: '/strategy',
+		name: "strategy",
 		component: () =>
 			import('../views/userCenter/strategy.vue'),
 		meta: {
@@ -242,6 +263,7 @@ export const routes = [{
 	},
 	{
 		path: '/saleAfterStrategy',
+		name: "saleAfterStrategy",
 		component: () =>
 			import('../views/userCenter/saleAfterStrategy.vue'),
 		meta: {
@@ -250,10 +272,20 @@ export const routes = [{
 	},
 	{
 		path: '/productDetail',
+		name: "productDetail",
 		component: () =>
 			import('../views/home/productDetail.vue'),
 		meta: {
 			title: '商品详情'
+		},
+	},
+	{
+		path: '/startTask',
+		name: "startTask",
+		component: () =>
+			import('../views/home/startTask.vue'),
+		meta: {
+			title: '开始任务'
 		},
 	},
 

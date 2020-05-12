@@ -161,5 +161,13 @@ export default {
     getTheTask: (params, config) => $http.post("/Mobile/GetTheTask", params, config).then((rsp) => {
 		return rsp.data
     }),
+    //开始任务
+    startTask: (params, config) => $http.post("/Mobile/StartTask", params, config).then((rsp) => {
+		return rsp.data
+    }),
+    //商品预定
+    reservations: (params, config) => $http.post("/Mobile/Reservations", params, config).then((rsp) => {
+		return rsp.data
+    }),
     
 }    

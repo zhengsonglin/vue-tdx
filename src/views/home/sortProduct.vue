@@ -33,7 +33,7 @@
 													<span class="title">垫付:</span> <p class="red inline-block">￥<span class="price bold">{{item.PayMentAmount}}</span></p></span>
 												</div>
 												<div class="right fr" v-if="status !=2">
-													<span class="btn inline-block c-fff  text-c">{{status==1?'马上抢&gt;':status==3?'预定 &gt;':''}}</span>
+													<span class="btn inline-block c-fff  text-c" @click="toProductDetail(item)">{{status==1?'马上抢&gt;':status==3?'预定 &gt;':''}}</span>
 												</div>
 											</div>
 											<div class="row-4 relative">
@@ -138,6 +138,9 @@
 						this.pageNo++
 					}
 				})
+			},
+			toProductDetail(item){
+				this.$router.push({path:"/productDetail", query:{shopId:item.FID, mark:"M"}})
 			}
 		},
 		created(){
