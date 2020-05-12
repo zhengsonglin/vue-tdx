@@ -248,6 +248,14 @@ export const routes = [{
 			title: '售后攻略'
 		},
 	},
+	{
+		path: '/productDetail',
+		component: () =>
+			import('../views/home/productDetail.vue'),
+		meta: {
+			title: '商品详情'
+		},
+	},
 
 	/*{
 		path: '*',

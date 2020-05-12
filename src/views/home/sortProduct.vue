@@ -5,50 +5,48 @@
 		</div>
 		<div class="content flex">
 			<div class="left-item h100 over-auto">
-				<div class="nav-item" v-for="(item,index) in categoryList" :key="index" @clcik.stop="changeCategory(item)">
+				<div :class="['nav-item', {active: category== item.FID}]" v-for="(item,index) in categoryList" :key="index" @click.stop="changeCategory(item)">
 					{{item.FName}}
 				</div>
 			</div>
 			<div class="right-item flex-1 h100 over-auto">
 				<div class="right-wraper h100">
 					<div class="top-item flex">
-						<div class="status-tag flex-1" v-for="(statusItem, num) in productStatus" :key="num" @clcik.stop="changeQueryStatus(statusItem)">{{statusItem.name}}</div>
+						<div :class="['status-tag flex-1 border-box', {active:statusItem.status == status}]" v-for="(statusItem, num) in productStatus" :key="num"
+							 @click.stop="changeQueryStatus(statusItem)">{{statusItem.name}}</div>
 					</div>
 					<div class="bottom-item over-auto">
-						<div class="product-item flex bg-fff" v-for="(item, i) in productList" :key="i">
-							<div class="left-img">
-								<img :src="(item.FIMGUrl == '' ? item.ShopImg.replace('../', '/') : item.FIMGUrl)" width="100%" height="100%"/>
-							</div>
-							<div class="right-content flex-1">
-								<div class="row-1 van-ellipsis">{{item.FGoodsName}}</div>
-								<div class="row-2">
-									<span v-show="item.FGoodsObjectID == 25 && item.SlideShow == 1">需晒图</span>
-								</div>
-								<div class="row-3 over-hidden">
-									<div class="left fl">
-										<span class="title">垫付:</span> <p class="red inline-block">￥<span class="price bold">{{item.PayMentAmount}}</span></p></span>
+						<van-pull-refresh v-model="refreshing" @refresh="onRefresh">
+							<van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad" :immediate-check="false">
+								<van-cell v-for="(item, index) in productList" :key="index" class="product-item">
+									<div class="flex bg-fff">
+										<div class="left-img">
+											<img :src="(item.FIMGUrl == '' ? item.ShopImg.replace('../', '/') : item.FIMGUrl)" width="100%" height="100%"/>
+										</div>
+										<div class="right-content flex-1">
+											<div class="row-1 van-ellipsis">{{item.FGoodsName}}</div>
+											<div class="row-2">
+												<span class="storeTag" v-show="item.FGoodsObjectID == 25 && item.SlideShow == 1">需晒图</span>
+											</div>
+											<div class="row-3 over-hidden">
+												<div class="left fl">
+													<span class="title">垫付:</span> <p class="red inline-block">￥<span class="price bold">{{item.PayMentAmount}}</span></p></span>
+												</div>
+												<div class="right fr" v-if="status !=2">
+													<span class="btn inline-block c-fff  text-c">{{status==1?'马上抢&gt;':status==3?'预定 &gt;':''}}</span>
+												</div>
+											</div>
+											<div class="row-4 relative">
+												<div class="bar_box h100" :style="{color:'#666',width:percent(item.NumberRemain/item.FTaskNum, 3)}"></div>
+												<div class="bar_word w100 h100 c-fff absolute border-box">剩余{{item.NumberRemain}}件/共{{item.FTaskNum}}件 
+													{{percent( parseInt(item.NumberRemain)/item.FTaskNum, 0) }}</div>
+												
+											</div>
+										</div>
 									</div>
-									<div class="right fr">
-										<span class="btn inline-block c-fff  text-c">预定 &gt;</span>
-									</div>
-								</div>
-								<div class="row-4 relative">
-									<div class="bar_box h100" :style="{color:'#666',width:percent(item.NumberRemain/item.FTaskNum, 3)}"></div>
-									<div class="bar_word w100 h100 c-fff absolute border-box">剩余{{item.NumberRemain}}件/共{{item.FTaskNum}}件 
-										{{percent( parseInt(item.NumberRemain)/item.FTaskNum, 0) }}</div>
-									
-									<!--
-										
-										var hasbuy = parseInt(data[i].NumberRemain);
-                        var tcount = data[i].FTaskNum;
-                        var bfb = Math.round(hasbuy / tcount * 10000) / 100.00 + "%";
-
-										
-									-->
-									
-								</div>
-							</div>
-						</div>
+								</van-cell>
+							</van-list>	
+						</van-pull-refresh>
 					</div>
 				</div>
 			</div>
@@ -73,6 +71,9 @@
 				searchKey: "",
 				category: 13,
 				status: 1,
+				loading: false,
+				finished: false,
+				refreshing: false,
 			}
 		},
 		computed:{
@@ -93,12 +94,14 @@
 			//改变查询商品类别
 			changeCategory(item){
 				this.category = item.FID;
-				this.getProductList()
+				this.refreshing = true;
+				this.onRefresh()
 			},
 			//改变查询商品状态
 			changeQueryStatus(item){
 				this.status = item.status
-				this.getProductList()
+				this.refreshing = true;
+				this.onRefresh()
 			},
 			//查询所有商品类别
 			getCategory(){
@@ -106,10 +109,34 @@
 					this.categoryList = data
 				})
 			},
+			onLoad(){
+				if(this.refreshing) {
+					this.pageNo = 1;
+					this.productList = [];
+					this.refreshing = false;
+				}
+				this.getProductList()
+			},
+			onRefresh() {
+				// 清空列表数据
+				this.finished = false;
+
+				// 重新加载数据
+				// 将 loading 设置为 true，表示处于加载状态
+				this.loading = true;
+				this.onLoad();
+			},
 			//查询单个类别下商品列表
 			getProductList(){
-				this.API.getProductList(this.getParams).then((data)=>{
-					this.productList = data
+				this.API.getProductList(this.getParams, {showLoading: false}).then((data)=>{
+					//this.productList = data
+					this.productList.push(...data);
+					if(data.length < this.pageSize) {
+						this.finished = true;
+					} else {
+						this.loading = false;
+						this.pageNo++
+					}
 				})
 			}
 		},
@@ -139,9 +166,9 @@
 			}
 		}
 		.content {
-			margin-top: 46px;
+			margin-top: 46px;/*no*/
 			/*padding: 10px;*/
-			height: calc(100% - 46px);
+			height: calc(100% - 46px); /*no*/
 			.left-item{
 				width: 64px;
 				flex-basis: 64px;
@@ -152,6 +179,9 @@
 					text-align: center;
 					font-size: 14px;
 					border-bottom: 1px solid #ddd;
+					&.active{
+						color: #e92322;
+					}
 				}
 			}
 			.right-item{
@@ -162,63 +192,78 @@
 							height: 48px;
 							line-height: 48px;
 							text-align: center;
+							&.active{
+								border-bottom: 2px solid #fd3c3c;
+							}
+							&:not(last){
+								border-right: 1px solid #ddd;
+							}
 						}
 					}
 					.bottom-item{
 						background-color: #efeff4;
 						height: calc(100% - 48px);
-						.product-item{
-							flex-direction: row;
-							margin-bottom: 10px;
-							padding: 5px 10px;
-							.left-img{
-								width: 94px;
-								flex-basis: 94px;
-								height: 94px;
-							} 
-							.right-content{
-								box-sizing: border-box;
-								padding-left: 16px;
-								.row-1{
-									font-size: 16px;
-									line-height: 30px;
-								}
-								.row-2{
-									height: 20px;
-								}
-								.row-3{
-									.left{
-										span.title{
-											color: #8f8f94;
-											font-size: 12px;
-										}
-										p.red{
-											color: #fd3c3c;
-											font-size: 16px;
+						/deep/ {
+							.product-item{
+								flex-direction: row;
+								margin-bottom: 10px;
+								padding: 5px 6px;
+								.left-img{
+									width: 94px;
+									flex-basis: 94px;
+									height: 94px;
+									border: 1px solid #eee; /*no*/
+								} 
+								.right-content{
+									box-sizing: border-box;
+									padding-left: 16px;
+									.row-1{
+										font-size: 16px;
+										line-height: 30px;
+									}
+									.row-2{
+										height: 20px;
+										.storeTag{
+											color: #ed7739;
+	   	 									background: #fde9e0;
+	   	 									padding: 2px 3px;
 										}
 									}
-									.right{
-										.btn{
-											background-color: #fd3c3c;
-											padding: 4px 8px;
-    										border-radius: 6px;
+									.row-3{
+										.left{
+											span.title{
+												color: #8f8f94;
+												font-size: 12px;
+											}
+											p.red{
+												color: #fd3c3c;
+												font-size: 16px;
+											}
+										}
+										.right{
+											.btn{
+												background-color: #fd3c3c;
+												padding: 0px 6px;
+	    										border-radius: 6px;
+	    										font-size: 10px;
+											}
 										}
 									}
-								}
-								.row-4{
-									width: 70%;
-									height: 14px;
-									margin-top: 10px;
-									background-color: #ecc5ba;
-									border-radius: 6px;
-									line-height: 1;
-									.bar_box{
-										background-color: rgb(253, 60, 60);  border-radius: 0.5rem;
-									} 
-									.bar_word{
-										padding-left:12px;
-										font-size: 10px;
-										top: 0;left: 0;
+									.row-4{
+										width: 70%;
+										height: 14px;
+										margin-top: 10px;
+										background-color: #ecc5ba;
+										border-radius: 6px;
+										line-height: 1;
+										.bar_box{
+											background-color: rgb(253, 60, 60);  border-radius: 0.5rem;
+										} 
+										.bar_word{
+											padding-left:12px;
+											font-size: 10px;
+											top: 0;left: 0;
+										}
 									}
 								}
 							}

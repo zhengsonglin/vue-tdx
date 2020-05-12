@@ -1,6 +1,6 @@
 <template>
-	<van-swipe class="my-swipe" :autoplay="3000" indicator-color="white" height="200">
-		<van-swipe-item v-for="(image, index) in images" :key="index">
+	<van-swipe class="my-swipe" :autoplay="autoplayTime" indicator-color="white" :height="height">
+		<van-swipe-item v-for="(image, index) in datas" :key="index">
 			<img v-lazy="image" width="100%" height="100%" />
 		</van-swipe-item>
 	</van-swipe>
@@ -9,6 +9,27 @@
 <script>
 	export default {
 		name:"MySwiper",
+		props:{
+			autoplayTime: {
+				type: String|Number,
+				default: "3000",
+			},
+			height:{
+				type: String|Number,
+				default:"200"
+			},
+			datas:{
+				type: Array,
+				default: ()=>{
+					return [
+						require('assets/img/s-1.jpg'),
+						require('assets/img/s-2.jpg'),
+						require('assets/img/s-3.jpg'),
+						require('assets/img/s-4.jpg'),
+					]
+				}
+			}
+		},
 		data() {
 			return {
 				images: [

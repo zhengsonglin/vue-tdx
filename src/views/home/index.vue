@@ -1,7 +1,7 @@
 <template>
 	<div class="page-index h100 over-auto" id="page-index">
 		<van-search v-model="searchKey" shape="round" :background="searchBg" placeholder="请输入搜索关键词" @search="onSearch" class="search-com w100" />
-		<my-swiper class="mySwiper"></my-swiper>
+		<my-swiper class="mySwiper" height="200"></my-swiper>
 
 		<van-row class="activity-type">
 			<van-col span="12">
@@ -28,7 +28,7 @@
 				<van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
 					<van-cell v-for="(item, index) in list" :key="index" class="product-item">
 						
-							<van-row class="bg-fff product-item-row">
+							<van-row class="bg-fff product-item-row" @click.stop="toProductDetail(item)">
 								<van-col span="8">
 									<div class="imgShow">
 										<img :src="item.FIMGUrl" class="product-pic w100 h100" />
@@ -161,7 +161,10 @@
 				this.finished = false;
 
 				this.onLoad();
-			}
+			},
+			toProductDetail(item){
+				this.$router.push({path:"/productDetail", query:{shopId: item.FID}});
+			},
 		},
 		mounted() {
 			console.log(123)

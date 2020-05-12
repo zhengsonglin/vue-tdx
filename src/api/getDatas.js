@@ -153,6 +153,13 @@ export default {
     getCategory: (params, config) => $http.post("/Mobile/GetCategory", params, config).then((rsp) => {
 		return rsp.data
     }),
-    
+    //查询商品详情
+    getProductDetail: (params, config) => $http.post("/Mobile/GetProductDetail", params, config).then((rsp) => {
+		return rsp.data
+    }),
+    //提交领取任务
+    getTheTask: (params, config) => $http.post("/Mobile/GetTheTask", params, config).then((rsp) => {
+		return rsp.data
+    }),
     
 }    
