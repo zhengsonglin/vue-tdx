@@ -3,6 +3,16 @@
 	<div class="page-index productDetail bg-fff h100 over-auto" v-if="productInfo.FID">
 		<my-swiper class="mySwiper" height="300" :datas="imgList" :autoplayTime="3500" v-if="imgList.length"></my-swiper>
 		
+		<div class="nav-btn btn-left absolute text-c c-fff" @click="$router.back()"><i class="iconfont icon-zuojiantou"></i></div>
+		<div class="nav-btn btn-right absolute text-c c-fff"><i class="iconfont icon-other" @click.stop="showMenuNav=!showMenuNav"></i>
+			<div class="menu-nav bold" v-show="showMenuNav" @click.stop="showMenuNav=false">
+				<router-link to="home" tag="p">首页</router-link>
+				<router-link to="taskCenter" tag="p">任务列表</router-link>
+				<router-link to="financeCenter" tag="p">我的财务</router-link>
+				<router-link to="userCenter" tag="p">个人中心</router-link>
+			</div>
+		</div>
+		
 		<div class="content">
 			<div class="com-detail detail-title over-hidden">
 				<div class="cell-row row-1">
@@ -114,7 +124,8 @@
 		    	<div class="dialog-header c-fff text-c" > 预订天数</div>
 		    	<div class="dialog-content">
 		    		<div class="row-item">
-		    			<select name="days" v-model="reservationDay" class="w100" placeholder="请选择预定天数">
+		    			<select name="days" v-model="reservationDay" class="w100">
+		    				<option value='' disabled selected style='display:none;'>请选择预定天数</option>
 		    				<option :value="n" v-for="n in 7" :key="n">{{n}}天</option>
 		    			</select>
 		    		</div>
@@ -144,6 +155,7 @@
 		},
 		data() {
 			return {
+				showMenuNav: false,
 				productInfo:{},
 				showOverlay: false,
 				showSomeProductInfo: true,
@@ -155,7 +167,7 @@
 					disabled : false,
 				},
 				showReservation: false,	//立即预定
-				reservationDay:0,	//预定天数(1-7)
+				reservationDay:'',	//预定天数(1-7)
 			}
 		},
 		methods:{
@@ -238,7 +250,7 @@
 			},
 			//领取任务
 			handleBuy(){
-				
+				this.showOverlay = false
 				this.API.getTheTask({ShopId: this.shopId, Mark:"M"}).then((data)=>{
 					if (data.ErrorCode == 100) {
                         this.$dialog.alert({
@@ -318,6 +330,31 @@
 
 <style lang="scss" scoped>
 	.page-index{
+		>.nav-btn{
+			width: 36px;
+			height: 36px;
+    		line-height: 36px;
+			top: 10px;
+			background: rgba(0,0,0,.4);
+			border-radius: 50%;
+		}
+		.btn-left{
+			left: 20px;
+		}
+		.btn-right{
+			right: 20px;
+			.menu-nav{
+				position: absolute;
+			    background: rgba(255,255,255,.8);
+			    border: 1px solid black;
+			    border-radius: 8px;
+			    width: 110px;
+			    right: 0;
+			    top: 42px;
+			    color: #000;
+    			font-size: 14px;
+			}
+		}
 		.content{
 			padding-bottom: 70px;/*no*/
 			.red{

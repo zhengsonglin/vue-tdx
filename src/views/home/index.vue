@@ -38,8 +38,8 @@
 									<div class="product-info">
 										<div class="p-title">{{item.FGoodsName}}</div>
 										<div class="p-tag"><span class="inline-block">需晒图</span></div>
-										<div class="p-price over-auto"><span>垫付:</span><span class="price">￥19.90</span>
-											<van-button type="danger" size="small" class="buy-btn fr c-fff" url="/vant/mobile.html">马上抢</van-button>
+										<div class="p-price over-auto"><span>垫付:</span><span class="price">￥{{item.PayMentAmount}}</span>
+											<van-button type="danger" size="small" class="buy-btn fr c-fff"  @click.stop="toProductDetail(item)">马上抢</van-button>
 										</div>
 										<div class="progress">
 											<div class="bar_box inline-block h100" :style="{width:dyHeight}"></div>

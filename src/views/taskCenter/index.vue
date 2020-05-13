@@ -104,16 +104,20 @@
 								</div>
 							</div>
 							<div class="order-item-bot over-hidden">
+								<div class="over-hidden">
+									
+								
 								<div class="fl">申请时间：<span>{{moment(item.FTime).format("YYYY-MM-DD HH:mm")}}</span></div>
 								<div class="fr">完成时间：
 									<span>{{item.FStatus == 4?moment(item.FCompletionTime).format("YYYY-MM-DD HH:mm"):"(未完成)"}}</span>
 								</div>
+								</div>
 								<div class="AB-assets" v-if="item.FPingJiastatus != 0 && item.FPingJiastatus != 3 && item.FNewStar != '作废'">
 									<router-link class="red" :to="{path:'/customEvaluation', query:{TaskId:item.FID}}" tag="span">点击查看评价内容 （请按商家要求评价，奖励{{item.FBuyUserPrice}}元哦）</router-link>
 								</div>
-								<div class="if_do" v-if="item.FStatus == 1">
-									<div class="if_no" @click="chargeBack(item)">我要退单</div>
-									<div class="if_is" @click="startTask(item)">开始任务</div>
+								<div class="if_do flex" v-if="item.FStatus == 1">
+									<div class="if_no inline-block text-c flex-1" @click="chargeBack(item)">我要退单</div>
+									<div class="if_is inline-block text-c flex-1" @click="startTask(item)">开始任务</div>
 								</div>
 									
 							</div>
@@ -227,7 +231,6 @@
 			//按时间筛选订单
 			changeTime(type){
 				this.DatgeType = type;
-				this.refreshing = true;
 				this.onRefresh()
 				this.leftDateShow = false
 			},
@@ -242,7 +245,6 @@
 					}
 					this.activeIndex = num
 					this.visible = false
-					this.refreshing = true;
 					this.onRefresh()
 				}else{
 					this.visible = !this.visible
@@ -255,7 +257,6 @@
 					obj.isActive = (obj.num == num)
 				})
 				this.visible = !this.visible
-				this.refreshing = true;
 				this.onRefresh()
 			},
 			onLoad() {
@@ -277,6 +278,8 @@
 
 			},
 			onRefresh() {
+				//下拉刷新调用onRefresh方法时内部已经处理refreshing = true, 但其他方法调用onRefresh时，并没有设置refreshing为true,所以下面再设置一次(兼容默认刷新)
+				this.refreshing = true;
 				// 清空列表数据
 				this.finished = false;
 
@@ -409,7 +412,7 @@
 			},
 			//开始退单
 			handleChargeBack(id){
-				this.API.FID({ TaskId: id }).then((data)=>{
+				this.API.handleChargeBack({ TaskId: id }).then((data)=>{
 					if (data.ErrorCode == 100) {
                         this.$toast("退单成功！");
                         this.onRefresh()
@@ -676,6 +679,12 @@
 					.order-item-bot{
 						padding: 0 8px 8px;
 						font-size: 12px;
+						.if_do{
+							color: #3b8df3;
+							height: 24px;
+							line-height: 24px;
+							margin-top: 10px;
+						}
 					}
 				}
 			}

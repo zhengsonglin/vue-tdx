@@ -94,13 +94,11 @@
 			//改变查询商品类别
 			changeCategory(item){
 				this.category = item.FID;
-				this.refreshing = true;
 				this.onRefresh()
 			},
 			//改变查询商品状态
 			changeQueryStatus(item){
 				this.status = item.status
-				this.refreshing = true;
 				this.onRefresh()
 			},
 			//查询所有商品类别
@@ -118,6 +116,8 @@
 				this.getProductList()
 			},
 			onRefresh() {
+				//下拉刷新调用onRefresh方法时内部已经处理refreshing = true, 但其他方法调用onRefresh时，并没有设置refreshing为true,所以下面再设置一次(兼容默认刷新)
+				this.refreshing = true;
 				// 清空列表数据
 				this.finished = false;
 
