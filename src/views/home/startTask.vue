@@ -23,18 +23,18 @@
 	                    <p color="red">★复制关键词切换到淘宝APP搜索</p>
 	                    <p>☆关键词:</p>
 	                    <div class="keyword-inp">
-	                        <input type="text" class="keyWords" :value="taskInfo.FSelect" readonly>
+	                        <input type="text" class="keyWords border-box" :value="taskInfo.FSelect" readonly>
 	                        <van-button type="danger" v-clipboard:copy="taskInfo.FSelect" v-clipboard:success="onCopy" v-clipboard:error="onError">复制</van-button>
 	                    </div>
 	                    <p class="no-product">
 	                    	<span>找不到商品？</span><span class="juBao"onclick="OpenJB();">举报</span>
 	                    </p>
 	                </div>
-	                <div class="select_Key select_Key_2" v-if="taskInfo.FSelectKey !=2 ">
+	                <div class="select_Key select_Key_2" v-if="taskInfo.FSelectKey !=1 ">
 	                    <p color="red">★复制淘口令切换到淘宝APP(不搜索),等待弹出窗口,点打开</p>
 	                    <p>☆淘口令:</p>
 	                    <div class="keyword-inp">
-	                        <input type="text" class="keyWords" :value="taskInfo.FCommodityKey" readonly >
+	                        <input type="text" class="keyWords border-box" :value="taskInfo.FCommodityKey" readonly >
 	                        <van-button type="danger" v-clipboard:copy="taskInfo.FCommodityKey" v-clipboard:success="onCopy" v-clipboard:error="onError">复制</van-button>
 	                    </div>
 	                </div>
@@ -71,18 +71,18 @@
 					<p class="lbl_bz">☆<span>{{taskInfo.Fbz}}</span></p>
 					<p class="part-green">★商品主图</p>
 					<p class="img text-c">
-						<img id="lbl_Img" height="100%" :src="taskInfo.FShopImg.replace('../', '/')">
+						<img id="lbl_Img" height="100%" :src="taskInfo.FShopImg && taskInfo.FShopImg.replace('../', '/')">
 					</p>
 					<p class="part-red" v-if="parseInt(taskInfo.RemoteRegionIsDeliver) != 0">★提示</p>
 					<p v-if="parseInt(taskInfo.RemoteRegionIsDeliver) != 0">偏远地区不发货</p>
 					<p class="part-green">★核对宝贝，请提交宝贝链接或淘口令</p>
 					<div class="keyword-inp">
 	                    <span class="left-input inline-block relative border-box">
-	                        <input type="text" placeholder="请输入宝贝链接或淘口令进行验证" id="txt_ShopReallyName" onpaste="return true" onclick="clickInp()">
-	                        <span class="iconfont icon-cha dis_none" id="ic-cha" style="position:absolute;height:20px;width:20px;right:3px;top:50%;margin-top:-10px;" onclick="clearVal()"></span>
+	                        <input type="text" placeholder="请输入宝贝链接或淘口令进行验证" v-model="productLink" onpaste="return true" >
+	                        <span class="iconfont icon-cha absolute"  @click="productLink=''"></span>
 	                    </span>
 	                    <!--<input type="button" value="验证" onclick="ConfirmGoodsUrl();">-->
-	                    <van-button type="danger" class="right-btn">验证</van-button>
+	                    <van-button type="danger" class="right-btn" @click="validProductLink">验证</van-button>
 	                </div>
 					<p class="part-red">获取链接方法：长按宝贝标题获取宝贝链接<br>
 						淘口令获取方法：宝贝标题右边点击“分享”-左下角点击复制链接-粘贴至空格点击验证
@@ -95,7 +95,7 @@
             	注意：收到货后再确认收货，五星好评，然后上传好评截图到平台，等待商家审核之后申请提现返款。
         	</div>
         	
-        	<div class="task-step flex bg-fff step-4" v-if="taskInfo.FIsValidation == 1">
+        	<div class="task-step flex bg-fff step-4" v-if="taskInfo.FIsValidation == 1 || isValidSuccess">
 				<div class="left-num">{{taskInfo.FSelectKey !=2 ?"4":"3"}}</div>
 				<div class="right-text flex-1">
 					<p class="part-green">★活动信息</p>
@@ -105,15 +105,15 @@
 	                </div>
 	                <div class="task-co-user-info">
 	                    <p>任务金额</p>
-	                    <input type="text"  placeholder="如有差价联系淘大熊客服" >
+	                    <input type="text"  v-model="form.orderPrice" placeholder="如有差价联系淘大熊客服" @blur="validPrice">
 	                </div>
 	                <div class="task-co-user-info">
 	                    <p>订单编号</p>
-	                    <input type="text" placeholder="请输入订单号">
+	                    <input type="text" placeholder="请输入订单号" v-model="form.orderNum">
 	                </div>
 	                <div class="task-co-user-info">
 	                    <p>买家备注</p>
-	                    <input type="text"  placeholder="20字以内（可不填）">
+	                    <input type="text"  placeholder="20字以内（可不填）" v-model="form.remark">
 	                </div>
 	                <div class="task-co-user-info">
 	                    <van-button type="danger" block size="small" @click="submit">提交信息</van-button>
@@ -121,6 +121,30 @@
 
 				</div>
 			</div>	
+			
+			<!--举报商品弹窗-->
+			<van-overlay :show="showOverlay" @click="showOverlay = false">
+			  <div class="overlay-wrapper bg-fff over-hidden" @click.stop>
+			    	<div class="dialog-header c-fff text-c" >举报内容</div>
+			    	<div class="dialog-content">
+			    		<div class="row-item">
+			    			<van-radio-group v-model="reportContent">
+							  	<van-radio name="任务价格不一致">任务价格不一致</van-radio>
+							  	<van-radio name="淘宝找不到宝贝">淘宝找不到宝贝</van-radio>
+							  	<van-radio name="任务图片不一致">任务图片不一致</van-radio>
+							  	<van-radio name="没有指定规格的宝贝">没有指定规格的宝贝</van-radio>
+							  	<van-radio name="商家有运费">商家有运费</van-radio>
+							</van-radio-group>
+			    		</div>
+			    		
+			    	</div>
+			    	<div class="dialog-btn-group text-c c-fff">
+			    		<div class="btn-left " @click="showOverlay=false">取消</div>
+			    		<div class="btn-right " @click="handleReport">确定</div>
+			    	</div>
+			    	
+			  </div>
+			</van-overlay>
 		</div>
 	</div>	
 </template>
@@ -133,12 +157,17 @@
 			return {
 				taskId:"",
 				taskInfo:{},
-				form:{}
+				form:{},
+				productLink: "",	//商品链接或者淘口令
+				isValidSuccess: false,	//商品验证通过
+				showOverlay: false,	//是否显示举报弹窗
+				reportContent:"",	//举报原因
 			}
 		},
 		
 		created(){
-			this.taskId = this.$route.query.TaskId
+			this.taskId = this.$route.query.TaskId;
+			this.getTaskInfo()
 		},
 		methods:{
 			onClickLeft(){
@@ -149,15 +178,109 @@
 					this.taskInfo = data
 				})
 			},
+			//验证商品价格
+			validPrice(){
+				if(this.form.orderPrice != this.taskInfo.FGoodsUnitPrice){
+					this.$toast("您的实付金额与任务金额不一致，请及时联系客服处理，以免影响亲的返款。")
+                	return;
+				}
+			},
+			//完成任务
 			submit(){
 				console.log(this.form)
+				let {orderNum, orderPrice, remark} = this.form
+				if(orderPrice != this.taskInfo.FGoodsUnitPrice){
+					this.$toast("您的实付金额与任务金额不一致，请及时联系客服处理，以免影响亲的返款。")
+                	return;
+				}
+				if(!this.taskInfo.FIsValidation || !this.isValidSuccess){//0未验证， 1已验证
+					if (this.productLink == "") {
+	                    this.$toast("请验证宝贝链接");
+	                    return;
+	                }
+				}
+				if (orderNum.length != 18 && orderNum.length != 19) {
+	                this.$toast("订单号必须是18-19位");
+	                return;
+	            }
+	            var re = /^[1-9]+[0-9]*]*$/;
+	
+	            if (!re.test(orderNum)) {
+	                this.$toast("订单号必须是纯数字组成");
+	                return;
+	            }
+
+
+				this.API.complateTask({ TaskId: this.taskId, OrderNum: orderNum, remark }).then((data)=>{
+					if (data.ErrorCode == 100) {
+                        this.$toast({
+                        	duration: 600, // 持续展示 toast
+						  	forbidClick: true,
+						  	type: "success",
+						  	message: '提交成功',
+						  	onClose:()=>{this.$router.push("taskCenter")}
+						});
+                    } else {
+                        this.$toast({
+						  	//forbidClick: true,
+						  	type: "fail",
+						  	message: data.Content
+						});
+                    }
+
+				})
+			},
+			//确定举报
+			handleReport(){
+				let {FID} = this.taskInfo
+				this.API.addOrderReport( { orderId: this.taskId, fid: FID, reson: this.reportContent }).then((data)=>{
+					if (data.ErrorCode == 100) {
+						this.$toast({
+                        	duration: 600, // 持续展示 toast
+						  	forbidClick: true,
+						  	type: "success",
+						  	message: '举报成功，请等待平台处理！',
+						  	onClose:()=>{this.$router.push("home")}
+						});
+                    } else {
+                    	this.$toast({
+						  	//forbidClick: true,
+						  	type: "fail",
+						  	message: data.Content
+						});
+                    }
+
+				})
 			},
 			onCopy(){
-				
+				this.$toast("复制成功")
+				//taskInfo.FSelect
 			},
 			onError(){
-				
+				this.$toast("复制失败")
+			},
+			//验证商品链接或者淘口令
+			validProductLink(){
+				if(this.productLink == ""){
+					this.$toast("请先填写宝贝链接地址!")
+				}else{
+					this.API.checkGoodsUrl({ "TaskId": this.taskId, "GoodsUrl": encodeURI(this.productLink) }).then((data)=>{
+						if (data.ErrorCode == 100) {
+                            this.isValidSuccess = true
+                            this.$toast("验证成功");
+                        }
+                        else {
+                        	this.$toast({
+							  	//forbidClick: true,
+							  	type: "fail",
+							  	message: "验证失败"
+							});
+                        }
+					})
+				}
 			}
+			
+
 		}
 	}	
 </script>
@@ -240,6 +363,7 @@
 								width: calc(100% - 85px); /*no*/
 								margin-right: 15px; /*no*/
 								border-radius: 3px;
+								padding: 0 10px;
 							}
 						}
 						p.no-product{
@@ -275,7 +399,13 @@
 							    border: 1px solid #ccc;/*no*/
 							    border-radius: 4px;
 							    padding: 0 5px;
-							    box-sizing: border-box;
+							}
+							.icon-cha{
+								height:20px;
+								width:20px;
+								right:3px;
+								top:50%;
+								margin-top:-10px;
 							}
 						}
 					}
@@ -311,6 +441,43 @@
 			    font-size: 13px;
 			    background-color: #fd3c3c;
 			    box-shadow: 0 1px 2px rgba(0,0,0,.3);
+			}
+			.overlay-wrapper{
+				width: 80%;
+				height: fit-content;
+				position: absolute;
+			    left: 0;
+			    right: 0;
+			    top: -10px;
+			    bottom: 0;
+			    margin: auto;
+				border-radius: 8px;
+				.dialog-header, .dialog-btn{
+					background: linear-gradient(90deg, #ff7459, #eb3c3c);
+					height: 46px;
+					line-height: 46px;
+					font-size: 16px;
+				}
+				.dialog-content{
+					padding: 25px 15px 35px;
+					.row-item{
+						font-size: 15px;
+						margin: 10px 0;
+						line-height: 30px;
+						.title{
+							width: 70px;
+							flex-basis: 70px;
+						}
+						.price{
+							color: #f94545;
+						}
+					}
+					.popout-red{
+						color: #f94545;
+						line-height: 30px;
+						font-size: 14px;
+					}
+				}
 			}
 		}
 	}		

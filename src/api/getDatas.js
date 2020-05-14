@@ -169,5 +169,17 @@ export default {
     reservations: (params, config) => $http.post("/Mobile/Reservations", params, config).then((rsp) => {
 		return rsp.data
     }),
+    //验证商品链接或者淘口令是否正确
+    checkGoodsUrl: (params, config) => $http.post("/MobileTaskCenter/CheckGoodsUrl", params, config).then((rsp) => {
+		return rsp.data
+    }),
+    //完成任务
+    complateTask: (params, config) => $http.post("/MobileTaskCenter/ComplateTask", params, config).then((rsp) => {
+		return rsp.data
+    }),
+    //举报订单(提交)
+    addOrderReport: (params, config) => $http.post("/MobileTaskCenter/AddOrderReport", params, config).then((rsp) => {
+		return rsp.data
+    }),
     
 }    
