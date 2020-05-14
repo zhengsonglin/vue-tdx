@@ -114,7 +114,7 @@
 			}
 		}
 		.content {
-			margin-top: 46px;
+			margin-top: 46px;/*no*/
 			padding: 20px 0;
 			.form-group{
 				padding: 0 20px;

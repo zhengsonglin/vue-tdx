@@ -17,7 +17,8 @@ Vue.use(Image).use(Search).use(Tab).use(Tabs).use(Dialog).use(Form).use(Field).u
 Vue.use(Picker).use(Popup).use(Area).use(Overlay).use(Notify).use(Empty).use(DropdownMenu).use(DropdownItem).use(TreeSelect)
 
 
-
+import VueClipboard from 'vue-clipboard2'
+Vue.use(VueClipboard)
 
 new Vue({
   router,

@@ -184,7 +184,7 @@
 			}
 		}
 		.content {
-			margin-top: 46px;
+			margin-top: 46px;/*no*/
 			padding: 0 10px;
 			.cell-group {
 				.tb-tips {
