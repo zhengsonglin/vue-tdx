@@ -31,7 +31,7 @@
 					  			<!--<van-icon name="sign"  size="26" color="#d17575"/>-->
 					  		</p>
 					  		<p>已申请</p>
-					  		<p>{{userInfo.ABdsh}}</p>
+					  		<p>{{userInfo.ABylq}}</p>
 					  	</div>
 					  </van-col>
 					  <van-col span="6">
