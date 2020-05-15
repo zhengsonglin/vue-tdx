@@ -27,7 +27,7 @@
 					</template>
 				</van-field>
 				<!--<van-field label="提现方式 :" value="输入框已禁用" readonly input-align="right" label-align="right" label-width="94"/>-->
-			  	<van-field name="radio" label="提现方式 :" readonly class="cell-radio-field">
+			  	<van-field name="radio" label="提现方式 :" label-align="right" readonly class="cell-radio-field">
 					  <template #input>
 					    <van-radio-group v-model="withdrawalWay" direction="horizontal">
 					      <van-radio name="0">银行卡</van-radio>
@@ -35,10 +35,10 @@
 					    </van-radio-group>
 					  </template>
 				</van-field>
-			  	<van-field label="姓名 :" :value="withDrawCashInfo.FReallyName" readonly input-align="right" label-align="right" label-width="94"/>
-			  	<van-field label="银行名称 :" :value="withDrawCashInfo.FName" readonly input-align="right" label-align="right" label-width="94"/>
-			  	<van-field label="银行卡号 :" :value="withDrawCashInfo.FBankNum" readonly input-align="right" label-align="right" label-width="94"/>
-			  	<van-field label="提现金额 :" :value="toDecimal2(withDrawCashInfo.FAccountBalance)" readonly input-align="right" label-align="right" label-width="94"/>
+			  	<van-field label="姓名 :" :value="withDrawCashInfo.FReallyName" readonly input-align="right" label-align="right" />
+			  	<van-field label="银行名称 :" :value="withDrawCashInfo.FName" readonly input-align="right" label-align="right" />
+			  	<van-field label="银行卡号 :" :value="withDrawCashInfo.FBankNum" readonly input-align="right" label-align="right" />
+			  	<van-field label="提现金额 :" :value="toDecimal2(withDrawCashInfo.FAccountBalance)" readonly input-align="right" label-align="right" />
 			  	
 			  	
 			</van-cell-group>

@@ -442,8 +442,13 @@
 			},
 			
 		},
+		beforeUpdate(){
+			//console.log(this.$route)
+		},
 		created(){
 			//this.onRefresh()
+			let activeIndex = this.$route.params.activeIndex || 1
+			this.activeIndex = activeIndex
 		}
 	}
 </script>

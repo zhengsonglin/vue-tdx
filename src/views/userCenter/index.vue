@@ -4,19 +4,19 @@
 		<div class="content">
 			<div class="user-info">
 				<div class="order-num-info c-fff text-c">
-					<p><span class="total-num">{{userInfo.AB30Count || 999}}</span></p>
+					<p><span class="total-num">{{userInfo.AB30Count | parseExcludeZero(999) }}</span></p>
 					<p><span class="total-num-desc">免单30天总单量</span></p>
-				</div>
+				</div><!--userInfo.FAccountBalance ? userInfo.FAccountBalance:999.98-->
 				<div class="btn-grop c-fff text-c">
-					<div class="btn-plain inline-block">账户余额：<span>{{userInfo.FAccountBalance || 999.98}}</span></div>
+					<div class="btn-plain inline-block">账户余额：<span>{{userInfo.FAccountBalance | parseExcludeZero(999.98)}}</span></div>
 					<div class="btn-plain inline-block">积分：<span>0</span></div>
 					<p class="tips">100积分=1元</p>
 				</div>
 				<div class="per-bill-img"></div>
 			</div>
 			<div class="invit-info">
-				<div class="con-per-username">用户名：<label id="lbl_UserName">{{userInfo.FUserName || 18899996666}}</label></div>
-				<div class="con-per-invide">邀请码：<label id="lbl_InviteCode">{{userInfo.FInvitationCode || 888888}}</label></div>
+				<div class="con-per-username">用户名：<label id="lbl_UserName">{{userInfo.FUserName | parseExcludeZero(18899996666) }}</label></div>
+				<div class="con-per-invide">邀请码：<label id="lbl_InviteCode">{{userInfo.FInvitationCode | parseExcludeZero(888888) }}</label></div>
 			</div>
 			
 			<div class="card-info bg-fff">
@@ -30,7 +30,7 @@
 					  		<p><span class="li-icon iconfont icon-moban c_red f22" style="color:#d17575"/></span>
 					  			<!--<van-icon name="sign"  size="26" color="#d17575"/>-->
 					  		</p>
-					  		<p>已申请</p>
+					  		<router-link :to="{name:'taskCenter', params:{activeIndex:1}}" tag="p">已申请</router-link>
 					  		<p>{{userInfo.ABylq}}</p>
 					  	</div>
 					  </van-col>
@@ -39,7 +39,7 @@
 					  		<p><span class="li-icon iconfont icon-tijiao c_blue f22" style="color:#509de8"></span>
 					  			<!--<van-icon name="certificate"  size="26" color="#509de8"/>-->
 					  		</p>
-					  		<p>已提交</p>
+					  		<router-link :to="{name:'taskCenter', params:{activeIndex:1}}" tag="p">已提交</router-link>
 					  		<p>{{userInfo.ABytj}}</p>
 					  	</div>
 					  </van-col>
@@ -47,9 +47,8 @@
 					  	<div class="order-state text-c">
 					  		<p><span class="li-icon iconfont icon-shenhe2 c_orange f22" style="color:#ecb071"></span>
 					  			<!--<van-icon name="records" size="26" color="#ecb071"/>-->
-					  			
 					  		</p>
-					  		<p>待审核</p>
+					  		<router-link :to="{name:'taskCenter', params:{activeIndex:2}}" tag="p">待审核</router-link>
 					  		<p>{{userInfo.ABdsh}}</p>
 					  	</div>
 					  </van-col>
@@ -58,7 +57,7 @@
 					  		<p><span class="li-icon iconfont icon-wancheng c_black f22" style="color:#e9769f"></span>
 					  			<!--<van-icon name="passed"  size="26" color="#e9769f"/>-->
 					  		</p>
-					  		<p>已完成</p>
+					  		<router-link :to="{name:'taskCenter', params:{activeIndex:3}}" tag="p">已完成</router-link>
 					  		<p>{{userInfo.ABywc}}</p>
 					  	</div>
 					  </van-col>
@@ -71,13 +70,13 @@
 				  <van-col span="12">
 				  	<div class="item bg-fff h100">
 				  		<p>推荐人数</p>
-				  		<p class="red">{{userInfo.InviteCount || 998}}</p>
+				  		<p class="red">{{userInfo.InviteCount | parseExcludeZero(998) }}</p>
 				  	</div>
 				  </van-col>
 				  <van-col span="12">
 				  	<div class="item bg-fff">
 					  	<p>免单总数</p>
-					  	<p class="red">{{userInfo.ABCount || 999}}</p>
+					  	<p class="red">{{userInfo.ABCount | parseExcludeZero(999) }}</p>
 				  	</div>
 				  </van-col>
 				</van-row>
@@ -133,7 +132,7 @@
 			</div>
 		</div>
 		<div class="login-out over-hidden">
-			<van-button type="danger" block >退出登录</van-button>
+			<van-button type="danger" block @click="logout">退出登录</van-button>
 		</div>
 		<p style="height: 50px;"></p>
 	</div>
@@ -154,6 +153,12 @@
 					this.userInfo = data
 				})
 			},
+			logout(){
+				//this.$cookies.set("user_session","25j_7Sl6xDq2Kc3ym0fmrSSk2xV2XkUkX")   
+				console.log(this.$cookies.get("UserInfo"))
+				console.log(document.cookie)
+				this.$router.push("login")
+			}
 		},
 		created(){
 			this.getIndexInfo();

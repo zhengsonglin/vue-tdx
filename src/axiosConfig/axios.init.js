@@ -23,7 +23,7 @@ const $ = axios.create({
 
 // 请求拦截器
 $.interceptors.request.use((config) => { //config 无法注入axios内置config之外的参数， 所以自定义config.showLoading 是无法接受的
-	console.log(config);
+	//console.log(config);
 	let { token } = store.state
 	let { projectCode } = store.getters
 	

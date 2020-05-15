@@ -1,9 +1,9 @@
 <template>
 	<div class="page-index h100">
 		<div class="content h100">
-			<keep-alive>
+			<!--<keep-alive></keep-alive>-->
 		      <router-view></router-view>
-		    </keep-alive>
+		    
 		</div>
 		<m-tab></m-tab>
 	</div>

@@ -16,8 +16,8 @@
 				<div class="left-num">1</div>
 				<div class="right-text flex-1">
 					<p>请打开淘宝APP使用账号
-						<span class="blue">{{taskInfo.FWang}}</span>登陆。如果已登陆请点击“我的淘宝”-“头像”，确认会员名是否与
-						<span class="blue">{{taskInfo.FWang}}</span>一致
+						<span class="blue">{{userLoginInfo.FWang}}</span>登陆。如果已登陆请点击“我的淘宝”-“头像”，确认会员名是否与
+						<span class="blue">{{userLoginInfo.FWang}}</span>一致
 					</p>
 					<div class="select_Key" v-if="taskInfo.FSelectKey !=2 ">
 	                    <p color="red">★复制关键词切换到淘宝APP搜索</p>
@@ -27,7 +27,7 @@
 	                        <van-button type="danger" v-clipboard:copy="taskInfo.FSelect" v-clipboard:success="onCopy" v-clipboard:error="onError">复制</van-button>
 	                    </div>
 	                    <p class="no-product">
-	                    	<span>找不到商品？</span><span class="juBao"onclick="OpenJB();">举报</span>
+	                    	<span>找不到商品？</span><span class="juBao" @click="showOverlay=true">举报</span>
 	                    </p>
 	                </div>
 	                <div class="select_Key select_Key_2" v-if="taskInfo.FSelectKey !=1 ">
@@ -78,10 +78,9 @@
 					<p class="part-green">★核对宝贝，请提交宝贝链接或淘口令</p>
 					<div class="keyword-inp">
 	                    <span class="left-input inline-block relative border-box">
-	                        <input type="text" placeholder="请输入宝贝链接或淘口令进行验证" v-model="productLink" onpaste="return true" >
+	                        <input type="text" placeholder="请输入宝贝链接或淘口令进行验证" class="border-box" v-model="productLink" onpaste="return true" >
 	                        <span class="iconfont icon-cha absolute"  @click="productLink=''"></span>
 	                    </span>
-	                    <!--<input type="button" value="验证" onclick="ConfirmGoodsUrl();">-->
 	                    <van-button type="danger" class="right-btn" @click="validProductLink">验证</van-button>
 	                </div>
 					<p class="part-red">获取链接方法：长按宝贝标题获取宝贝链接<br>
@@ -101,7 +100,7 @@
 					<p class="part-green">★活动信息</p>
 					<div class="task-co-user-info">
                     	<p>接手旺旺</p>
-	                    <input type="text" readonly v-model="form.FWang">
+	                    <input type="text" readonly v-model="userLoginInfo.FWang">
 	                </div>
 	                <div class="task-co-user-info">
 	                    <p>任务金额</p>
@@ -123,7 +122,8 @@
 			</div>	
 			
 			<!--举报商品弹窗-->
-			<van-overlay :show="showOverlay" @click="showOverlay = false">
+			<van-overlay :show="showOverlay" z-index="10"><!--@click="showOverlay = false"-->
+				
 			  <div class="overlay-wrapper bg-fff over-hidden" @click.stop>
 			    	<div class="dialog-header c-fff text-c" >举报内容</div>
 			    	<div class="dialog-content">
@@ -138,12 +138,13 @@
 			    		</div>
 			    		
 			    	</div>
-			    	<div class="dialog-btn-group text-c c-fff">
-			    		<div class="btn-left " @click="showOverlay=false">取消</div>
-			    		<div class="btn-right " @click="handleReport">确定</div>
+			    	<div class="dialog-btn-group text-c c-fff flex">
+			    		<div class="btn-left flex-1" @click="showOverlay=false">取消</div>
+			    		<div class="btn-right flex-1" @click="handleReport">确定</div>
 			    	</div>
 			    	
 			  </div>
+			  
 			</van-overlay>
 		</div>
 	</div>	
@@ -151,6 +152,7 @@
 
 <script>
 	import utils from "@/utils/utils"
+	import { mapState } from'vuex'
 	export default {
 		name: 'startTask',
 		data(){
@@ -161,12 +163,16 @@
 				productLink: "",	//商品链接或者淘口令
 				isValidSuccess: false,	//商品验证通过
 				showOverlay: false,	//是否显示举报弹窗
-				reportContent:"",	//举报原因
+				reportContent:"任务价格不一致",	//举报原因
 			}
 		},
-		
+		computed:{
+			...mapState(["userLoginInfo"])
+		},
 		created(){
 			this.taskId = this.$route.query.TaskId;
+			console.log(this.userLoginInfo)
+			//this.taskInfo.FWang = this.userLoginInfo.FWang
 			this.getTaskInfo()
 		},
 		methods:{
@@ -193,7 +199,7 @@
 					this.$toast("您的实付金额与任务金额不一致，请及时联系客服处理，以免影响亲的返款。")
                 	return;
 				}
-				if(!this.taskInfo.FIsValidation || !this.isValidSuccess){//0未验证， 1已验证
+				if(this.taskInfo.FIsValidation !=1 && !this.isValidSuccess){//0未验证， 1已验证
 					if (this.productLink == "") {
 	                    this.$toast("请验证宝贝链接");
 	                    return;
@@ -315,9 +321,12 @@
 				p.title{
 					font-size: 17px;
 					color: #fd3c3c;
-					
+					margin-bottom: 6px;
 				}
-				
+				span{
+					color: #fd3c3c;
+    				font-weight: 800;
+				}
 			}
 			.task-step{
 				box-shadow: 0 1px 2px rgba(0,0,0,.3);
@@ -394,8 +403,8 @@
 							margin-right: 15px; /*no*/
 							input{
 								width: 100%;
-							    height: 46px;/*no*/
-							    line-height: 46px;/*no*/
+							    height: 44px;/*no*/
+							    line-height: 44px;/*no*/
 							    border: 1px solid #ccc;/*no*/
 							    border-radius: 4px;
 							    padding: 0 5px;
@@ -452,24 +461,26 @@
 			    bottom: 0;
 			    margin: auto;
 				border-radius: 8px;
-				.dialog-header, .dialog-btn{
+				.dialog-header, .dialog-btn-group{
 					background: linear-gradient(90deg, #ff7459, #eb3c3c);
 					height: 46px;
 					line-height: 46px;
 					font-size: 16px;
+					.btn-left{
+						border-right: 1px solid #fff;
+					}
+					.btn-right{
+						border-left: 1px solid #fff;
+					}
 				}
 				.dialog-content{
-					padding: 25px 15px 35px;
+					padding: 15px 20px;
 					.row-item{
 						font-size: 15px;
 						margin: 10px 0;
 						line-height: 30px;
-						.title{
-							width: 70px;
-							flex-basis: 70px;
-						}
-						.price{
-							color: #f94545;
+						/deep/ .van-radio{
+							margin-bottom: 10px;
 						}
 					}
 					.popout-red{
@@ -478,6 +489,7 @@
 						font-size: 14px;
 					}
 				}
+				
 			}
 		}
 	}		

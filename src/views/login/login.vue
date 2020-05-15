@@ -77,6 +77,10 @@
 
 				} else {
 					this.$router.push("home")
+					this.API.getLoginUserInfo().then((data)=>{
+						this.$store.commit("setUserLoginInfo", data)
+						this.$router.push("home")
+					})
 				}
 
 				console.log(data)

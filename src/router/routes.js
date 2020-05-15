@@ -44,7 +44,7 @@ export const routes = [{
 		component: () =>
 			import('../views/index.vue'),
 		meta: {
-			keepAlive: true
+			//keepAlive: true
 		},
 		children: [{
 				path: '',
@@ -52,7 +52,7 @@ export const routes = [{
 					import('../views/home/index.vue'),
 				meta: {
 					title: '首页',
-					keepAlive: true
+					//keepAlive: true
 				},
 				children: [{
 						path: '/sortProduct',
@@ -82,7 +82,7 @@ export const routes = [{
 					import('../views/question/index.vue'),
 				meta: {
 					title: '问题集',
-					keepAlive: true
+					//keepAlive: true
 				},
 			},
 			{
@@ -92,7 +92,7 @@ export const routes = [{
 					import('../views/taskCenter/index.vue'),
 				meta: {
 					title: '任务中心',
-					keepAlive: true
+					//keepAlive: true
 				},
 			},
 			{
@@ -102,7 +102,7 @@ export const routes = [{
 					import('../views/userCenter/index.vue'),
 				meta: {
 					title: '会员中心',
-					keepAlive: true
+					//keepAlive: true
 				},
 			},
 			{

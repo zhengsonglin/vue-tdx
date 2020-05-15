@@ -10,6 +10,24 @@ export default {
 
 		Vue.prototype.API = API		//使用this.API.test().then()
 
+		Vue.filter('toUpperCase', function(value) {
+			return value.toUpperCase();
+		});
+		//返回除null和undefined之外默认值(0正常返回)
+		Vue.filter('parseExcludeZero', function(value, defaultValue) {
+			if(value || value==0){
+				return value
+			}
+			return defaultValue;
+		});
+		Vue.mixin({　　
+			methods: {　　　　
+				demo: function() {　　　　　　
+					alert(1);　　　　
+				}　　
+			}
+		});
+	
 		Vue.prototype.moment = (formateTime, relativeTime)=>{
 			if(formateTime !=null){	//formateTime为'/Date(1586829908893)/'居然能解析
 				/*if(typeof formateTime == "string"){
