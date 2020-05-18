@@ -13,7 +13,7 @@ axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded
 // 创建axios实例
 const $ = axios.create({
 	timeout: 600000,
-	baseURL: process.env.NODE_ENV === 'production' ? '/' : '/api', // api的API_ROOT
+	baseURL: process.env.NODE_ENV === 'production' ? '/api' : '/api', // api的API_ROOT
 	headers: {
 		'Content-Type': 'application/json',
 		//"token": 'XXXX'		//如果不需要token， headers一定不能多传参数

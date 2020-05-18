@@ -22,7 +22,7 @@
 						<div class="order-item-mid w100 over-hidden border-box">
 							<div class="task-mid-left-box fl">
 								<div class="left-box-img w100">
-									<img :src="(item.FIMGUrl == '' ? item.goodimg : item.FIMGUrl)" width="100%" height="100%">
+									<img :src="(item.FIMGUrl == '' ? item.goodimg : item.FIMGUrl)" width="100%" height="100%" v-lazy="(item.FIMGUrl == '' ? item.goodimg : item.FIMGUrl)">
 								</div>
 							</div>
 							<div class="task-mid-right-box fr border-box">

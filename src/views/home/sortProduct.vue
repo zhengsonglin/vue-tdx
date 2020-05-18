@@ -21,7 +21,8 @@
 								<van-cell v-for="(item, index) in productList" :key="index" class="product-item">
 									<div class="flex bg-fff">
 										<div class="left-img">
-											<img :src="(item.FIMGUrl == '' ? item.ShopImg.replace('../', '/') : item.FIMGUrl)" width="100%" height="100%"/>
+											<img :src="(item.FIMGUrl == '' ? item.ShopImg.replace('../', '/') : item.FIMGUrl)" width="100%" height="100%"
+												v-lazy="(item.FIMGUrl == '' ? item.ShopImg.replace('../', '/') : item.FIMGUrl)"/>
 										</div>
 										<div class="right-content flex-1">
 											<div class="row-1 van-ellipsis">{{item.FGoodsName}}</div>

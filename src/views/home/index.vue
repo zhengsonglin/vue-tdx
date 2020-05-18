@@ -36,7 +36,7 @@
 						<van-row class="bg-fff product-item-row" @click.stop="toProductDetail(item)">
 							<van-col span="8">
 								<div class="imgShow">
-									<img :src="item.FIMGUrl" class="product-pic w100 h100" />
+									<img :src="item.FIMGUrl" class="product-pic w100 h100" v-lazy="item.FIMGUrl"/>
 								</div>
 							</van-col>
 							<van-col span="16">
