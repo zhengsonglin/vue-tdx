@@ -258,11 +258,21 @@
 
 				})
 			},
-			onCopy(){
+			//也可以使用这种方式复制 (@click="doCopy")
+			doCopy: function () {
+		        this.$copyText(this.message).then(function (e) {
+		          alert('Copied')
+		          console.log(e)
+		        }, function (e) {
+		          alert('Can not copy')
+		          console.log(e)
+		        })
+		    },
+			onCopy(e){//e.text
 				this.$toast("复制成功")
 				//taskInfo.FSelect
 			},
-			onError(){
+			onError(e){
 				this.$toast("复制失败")
 			},
 			//验证商品链接或者淘口令
