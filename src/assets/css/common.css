@@ -51,6 +51,10 @@ li{
 .c-fff{
 	color: #fff;
 }
+.red{
+	color: #fd3c3c !important;
+}
+	
 .f12{
 	font-size: 12px;
 }
@@ -115,4 +119,11 @@ li{
 }
 .border-box{
 	box-sizing: border-box;
+}
+
+.line-through{
+	text-decoration: line-through;
+}
+.underline{
+	text-decoration: underline;
 }

@@ -1,5 +1,6 @@
 //vue 扩展方法
 import API from '@/api/getDatas.js'
+import utils from "@/utils/utils.js"
 var moment = require('moment');
 moment.locale('zh-cn');	//设置为中文
 
@@ -22,8 +23,12 @@ export default {
 		});
 		Vue.mixin({　　
 			methods: {　　　　
-				demo: function() {　　　　　　
-					alert(1);　　　　
+				parseAttribute: function(value, defaultValue) {　　　//和上面过滤器功能差不多　　　
+					if(utils.isNotEmpty(value)){
+						return value
+					}else{
+						return defaultValue;
+					}
 				}　　
 			}
 		});

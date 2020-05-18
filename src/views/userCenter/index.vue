@@ -21,44 +21,37 @@
 			
 			<div class="card-info bg-fff">
 				<div class="row-1">
-					<span class="free_activity color_red">限量免单任务</span><span class="second_activity">熊抢购任务</span>
+					<span :class="['free_activity', {'color_red':orderType==0}]" @click="orderType=0">限量免单任务</span>
+					<span :class="['second_activity', {'color_red':orderType==1}]" @click="orderType=1">熊抢购任务</span>
 				</div>
 				<div class="row-2">
 					<van-row>
 					  <van-col span="6">
 					  	<div class="order-state text-c">
-					  		<p><span class="li-icon iconfont icon-moban c_red f22" style="color:#d17575"/></span>
-					  			<!--<van-icon name="sign"  size="26" color="#d17575"/>-->
-					  		</p>
-					  		<router-link :to="{name:'taskCenter', params:{activeIndex:1}}" tag="p">已申请</router-link>
-					  		<p>{{userInfo.ABylq}}</p>
+					  		<p><span class="li-icon iconfont icon-moban c_red f22" style="color:#d17575"/></span></p>
+					  		<router-link :to="{name:'taskCenter', params:{activeIndex:1, orderType}}" tag="p">已申请</router-link>
+					  		<p>{{orderType==0?userInfo.ABylq:userInfo.msylq}}</p>
+					  	</div>
+					  </van-col>
+					  <van-col span="6" v-if="orderType==0">
+					  	<div class="order-state text-c">
+					  		<p><span class="li-icon iconfont icon-tijiao c_blue f22" style="color:#509de8"></span></p>
+					  		<router-link :to="{name:'taskCenter', params:{activeIndex:1, orderType}}" tag="p">已提交</router-link>
+					  		<p>{{orderType==0?userInfo.ABytj:userInfo.msdsh}}</p>
 					  	</div>
 					  </van-col>
 					  <van-col span="6">
 					  	<div class="order-state text-c">
-					  		<p><span class="li-icon iconfont icon-tijiao c_blue f22" style="color:#509de8"></span>
-					  			<!--<van-icon name="certificate"  size="26" color="#509de8"/>-->
-					  		</p>
-					  		<router-link :to="{name:'taskCenter', params:{activeIndex:1}}" tag="p">已提交</router-link>
-					  		<p>{{userInfo.ABytj}}</p>
+					  		<p><span class="li-icon iconfont icon-shenhe2 c_orange f22" style="color:#ecb071"></span></p>
+					  		<router-link :to="{name:'taskCenter', params:{activeIndex:2, orderType}}" tag="p">待审核</router-link>
+					  		<p>{{orderType==0?userInfo.ABdsh:userInfo.msdsh}}</p>
 					  	</div>
 					  </van-col>
 					  <van-col span="6">
 					  	<div class="order-state text-c">
-					  		<p><span class="li-icon iconfont icon-shenhe2 c_orange f22" style="color:#ecb071"></span>
-					  			<!--<van-icon name="records" size="26" color="#ecb071"/>-->
-					  		</p>
-					  		<router-link :to="{name:'taskCenter', params:{activeIndex:2}}" tag="p">待审核</router-link>
-					  		<p>{{userInfo.ABdsh}}</p>
-					  	</div>
-					  </van-col>
-					  <van-col span="6">
-					  	<div class="order-state text-c">
-					  		<p><span class="li-icon iconfont icon-wancheng c_black f22" style="color:#e9769f"></span>
-					  			<!--<van-icon name="passed"  size="26" color="#e9769f"/>-->
-					  		</p>
-					  		<router-link :to="{name:'taskCenter', params:{activeIndex:3}}" tag="p">已完成</router-link>
-					  		<p>{{userInfo.ABywc}}</p>
+					  		<p><span class="li-icon iconfont icon-wancheng c_black f22" style="color:#e9769f"></span></p>
+					  		<router-link :to="{name:'taskCenter', params:{activeIndex:3, orderType}}" tag="p">已完成</router-link>
+					  		<p>{{orderType==0?userInfo.ABywc:userInfo.msywc}}</p>
 					  	</div>
 					  </van-col>
 					</van-row>
@@ -143,7 +136,8 @@
 		name:"userCenter",
 		data() {
 			return {
-				userInfo:{}
+				userInfo:{},
+				orderType:0,	//0淘抢购订单，1熊抢购订单
 			}
 		},
 		methods:{
@@ -264,10 +258,12 @@
     				font-size: 16px;
     				padding: 12px;
     				position: relative;
-    				.color_red{
-					    color: #fd3c3c;
-					    margin-right: 10px;
-					    font-weight: 900;
+    				.free_activity, .second_activity{
+    					margin-right: 10px;
+    					&.color_red{
+						    color: #fd3c3c;
+						    font-weight: 900;
+	    				}
     				}
     				&::after {
 					    position: absolute;

@@ -1,5 +1,5 @@
 <template>
-	<!--productDetail-->
+	<!--skillTaskDetail-->
 	<div class="page-index productDetail bg-fff h100 over-auto" v-if="productInfo.FID">
 		<my-swiper class="mySwiper" height="300" :datas="imgList" :autoplayTime="3500" v-if="imgList.length"></my-swiper>
 		
@@ -22,9 +22,7 @@
 					<div class="title-price-sur fr">剩余商品 <span class="span_Num red">{{productInfo.Num}}</span>份</div>
                 </div>
 			</div>
-			<div class="com-detail" v-if="parseInt(productInfo.RemoteRegionIsDeliver) == 0">
-	            <span class="detail-remark red">偏远地区不发货</span>
-	        </div>
+			
 	        <!-- 活动时间介绍 -->
 	        <div class="com-detail detail-time">
 	            <span class="iconfont icon-clock"></span>活动时间结束
@@ -35,22 +33,22 @@
 	        <div class="com-detail detail-num">
 	            <span>任务金额：</span>
 	            <span class="num red">￥{{productInfo.price}}</span>元 | 返还金额：
-	            <span class="num red">￥{{productInfo.price}}</span>元
+	            <span class="num red">￥{{productInfo.SkillPrice}}</span>元
 	        </div>
 
 			 <!-- 保险金 -->
-	        <div class="com-detail detail-insu">
-	            <span class="iconfont icon-yinxingqia"></span>商家已存入保证金{{productInfo.FALLprice}}元平台担保返款
+	        <div class="com-detail bold detail-blue">
+	           	熊抢购非免单任务，返款金额=原价-优惠价+积分抵扣金额
 	        </div>
+
 
 			<!-- 任务流程 -->
 	        <div class="com-detail detail-proc">
 	            <p class="proc-title"><span class="iconfont icon-tianping"></span>任务流程</p>
 	            <p>1、点击“立即领取”，获取免单资格</p>
 	            <p>2、点击"开始任务"，按照任务提示，以<span class="price">{{productInfo.price}}</span>元价格去指定平台购买</p>
-	            <p>3、复制宝贝链接，点击验证通过之后，填写订单号，并提交任务。</p>
-	            <p>4、卖家发货→收到快递后到淘宝确认收货→给予五星好评并上传好评截图到平台→等待卖家确认。</p>
-	            <p>5、卖家确认无误后，平台返款<span class="price">{{productInfo.price}}</span>元到您的账户中供您提现</p>
+	            <p>3、填写订单号，并提交任务。</p>
+            	<p>4、卖家确认无误后，平台返款<span class="price">{{productInfo.SkillPrice}}</span>元到您的账户中供您提现</p>
 	        </div>
 
 			<!-- 注意事项 -->
@@ -109,9 +107,7 @@
 		    			<span class="title">商品价格:</span><span class="info price flex-1 text-c">￥{{productInfo.price}}</span>
 		    		</div>
 		    		<div class="popout-red popout-item m-top10">
-	                    	注：1、领取任务后，<span>{{productInfo.HourDiff != "" ? productInfo.HourDiff : "2"}}</span>小时有效，超过<span>{{productInfo.HourDiff != "" ? productInfo.HourDiff : "2"}}</span>小时，任务自动退回，请在自动时间内退回
-	                    
-	                    2、每天<span>00:00</span>平台将停止抢单，<span>00:00</span>没有提交任务的订单将会自动退单，请及时完成任务！
+	                    	注：领取任务后，<span>{{productInfo.HourDiff != "" ? productInfo.HourDiff : "2"}}</span>小时有效，超过<span>{{productInfo.HourDiff != "" ? productInfo.HourDiff : "2"}}</span>小时，任务自动退回，请在自动时间内退回
 	                    
 	                </div>
 		    	</div>
@@ -141,7 +137,7 @@
 <script>
 	import MySwiper from 'components/swiper/swiper'
 	export default {
-		name:"productDetail",
+		name:"skillTaskDetail",
 		components: {
 			MySwiper,
 		},
@@ -174,9 +170,9 @@
 			handleHelp(){
 				this.$toast('如有疑问，请及时联系淘大熊客服（晴天或者熊大）！');
 			},
-			getProductDetail(){
+			getSkillTaskDetail(){
 				
-				this.API.getProductDetail({ShopId:this.shopId}).then((data)=>{
+				this.API.getSkillTaskDetail({fid:this.fid}).then((data)=>{
 					this.productInfo = data
 					var d2 = new Date();//取今天的日期
                     var d1 = new Date(Date.parse(data.fsttime));
@@ -239,9 +235,9 @@
 			},
 			//开始任务
 			startTask(){
-				this.API.startTask({ShopId: this.shopId}).then((data)=>{
+				this.API.startTask({fid: this.fid}).then((data)=>{
 					if (data.ErrorCode == 100) {
-                        this.$router.push({path:"/startTask", query:{TaskId: data.Content}})
+                        this.$router.push({path:"/startSkillTask", query:{TaskId: data.Content}})
                     } else {
                         this.$router.push("login")
                     }
@@ -251,7 +247,7 @@
 			//领取任务
 			handleBuy(){
 				this.showOverlay = false
-				this.API.getTheTask({ShopId: this.shopId, Mark:"M"}).then((data)=>{
+				this.API.getSkillTask({fid: this.fid, Mark:"M"}).then((data)=>{
 					if (data.ErrorCode == 100) {
                         this.$dialog.alert({
                         	title: '恭喜你',
@@ -279,8 +275,8 @@
 							});
                         }
                     } else if (data.ErrorCode == 200) {
-                        if (ShopId != "0") {
-                            this.$router.push({path:"/login", query:{type:ShopId}})
+                        if (fid != "0") {
+                            this.$router.push({path:"/login", query:{type:fid}})
                         } else {
                             this.$router.push("login")
                         }
@@ -298,7 +294,7 @@
 	                return;
 	            }
 	            this.showReservation = false
-	            this.API.reservations({ ShopId: this.shopId, days }).then((data)=>{
+	            this.API.reservations({ fid: this.fid, days }).then((data)=>{
 	            	if (data.ErrorCode == 100) {
 	            		this.$toast({
                         	duration: 600, // 持续展示 toast
@@ -322,8 +318,8 @@
 			}
 		},
 		created(){
-			this.shopId = this.$route.query.shopId
-			this.getProductDetail();
+			this.fid = this.$route.query.shopId
+			this.getSkillTaskDetail();
 		}
 	}	
 </script>
@@ -462,6 +458,10 @@
 					p>span{
 						color: mediumseagreen;
 					}
+				}
+				&.detail-blue{
+					font-size: 13px;
+					    color: #0107f7;
 				}
 			}
 		}

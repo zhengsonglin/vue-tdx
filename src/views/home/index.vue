@@ -11,50 +11,83 @@
 				<router-link to="sortProduct" tag="div" class="row bg-fff text-c"><img src="../../assets/img/nav-1.png" /></router-link>
 			</van-col>
 			<van-col span="12">
-				<div class="row bg-fff text-c">
+				<div class="row bg-fff text-c" @click="changeSkillTaskList">
 					<img src="../../assets/img/nav-2.png" />
 				</div>
+				<!--<router-link to="skillTaskList" tag="div" class="row bg-fff text-c"><img src="../../assets/img/nav-2.png" /></router-link>-->
 			</van-col>
+			
+			
 		</van-row>
-		<advertising-vertical :datas="advertisingList">
+		<advertising-vertical :datas="advertisingList" v-if="pageType==1">
 			<template v-slot:title>
 				<p class="adv-title">商城头条
 					<van-icon name="bullhorn-o" />
 				</p>
 			</template>
 		</advertising-vertical>
+		<div class="scroll-tips bold border-box bg-fff" v-if="pageType==2">熊抢购非免单任务，返款金额=原价-优惠价+积分抵扣金额</div>
+            
 		<div class="content">
 			<van-pull-refresh v-model="refreshing" @refresh="onRefresh">
 				<van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
-					<van-cell v-for="(item, index) in list" :key="index" class="product-item">
-						
-							<van-row class="bg-fff product-item-row" @click.stop="toProductDetail(item)">
-								<van-col span="8">
-									<div class="imgShow">
-										<img :src="item.FIMGUrl" class="product-pic w100 h100" />
+					<!--淘抢购-->
+					<van-cell v-for="(item, index) in list" :key="index" class="product-item" v-if="pageType==1">
+						<van-row class="bg-fff product-item-row" @click.stop="toProductDetail(item)">
+							<van-col span="8">
+								<div class="imgShow">
+									<img :src="item.FIMGUrl" class="product-pic w100 h100" />
+								</div>
+							</van-col>
+							<van-col span="16">
+								<div class="product-info">
+									<div class="p-title">{{item.FGoodsName}}</div>
+									<div class="p-tag"><span class="inline-block">需晒图</span></div>
+									<div class="p-price over-auto"><span>垫付:</span><span class="price">￥{{item.PayMentAmount}}</span>
+										<van-button type="danger" size="small" class="buy-btn fr c-fff"  @click.stop="toProductDetail(item)">马上抢</van-button>
 									</div>
-								</van-col>
-								<van-col span="16">
-									<div class="product-info">
-										<div class="p-title">{{item.FGoodsName}}</div>
-										<div class="p-tag"><span class="inline-block">需晒图</span></div>
-										<div class="p-price over-auto"><span>垫付:</span><span class="price">￥{{item.PayMentAmount}}</span>
-											<van-button type="danger" size="small" class="buy-btn fr c-fff"  @click.stop="toProductDetail(item)">马上抢</van-button>
+									<div class="progress">
+										<div class="bar_box inline-block h100" :style="{width:dyHeight}"></div>
+										<div class="bar_txt w100 h100 c-fff">剩余2件/共5件40% </div>
+									</div>
+								</div>
+							</van-col>
+						</van-row>
+					</van-cell>
+					
+					<!--熊抢购-->
+					<van-cell v-for="(item, index) in skillTaskList" :key="index" class="product-item skillTask-item" v-if="pageType==2">
+						<van-row class="bg-fff product-item-row">
+							<van-col span="8">
+								<div class="imgShow">
+									<img :src="item.FIMGUrl" class="product-pic w100 h100" />
+								</div>
+							</van-col>
+							<van-col span="16">
+								<div class="product-info flex">
+									<div class="ski-name">
+										<p class="ski-title">{{item.FGoodsName}}</p>
+										<div class="desc inline-block" v-if="(item.FUnitPrice - item.SkillPrice) > 0">拍下后平台返还{{(item.FUnitPrice - item.SkillPrice).toFixed(2)}}元</div>
+									</div>
+									<div class="ski-num flex">
+										<div class="ski-num-left">
+											<p class="preferentialPrice">优惠价：<span class="bold">￥{{item.SkillPrice}}</span></p>
+											<p class="originalPrice">原价：<span class="line-through">￥{{item.FUnitPrice }}</span></p>
 										</div>
-										<div class="progress">
-											<div class="bar_box inline-block h100" :style="{width:dyHeight}"></div>
-											<div class="bar_txt w100 h100 c-fff">剩余2件/共5件40% </div>
+										<div class="ski-num-right">
+											<van-button type="danger" size="small" @click.stop="toProductDetail(item)">立即抢购</van-button>
 										</div>
 									</div>
-								</van-col>
-							</van-row>
-						
+								</div>
+							</van-col>
+						</van-row>
 					</van-cell>
 				</van-list>
 			</van-pull-refresh>
+			<!--<router-view></router-view>-->
 		</div>
-		<!--子页面-->
-		<router-view></router-view>
+		<!--子页面
+		<router-view></router-view>-->
 		
 		<p style="height: 50px;"></p>
 	</div>
@@ -71,32 +104,8 @@
 
 		data() {
 			return {
-				advertisingList: [{
-						id: "1",
-						text: "全国商品免费包邮领取"
-					},
-					{
-						id: "2",
-						text: "【紧急通知】禁止吸粉"
-					},
-					{
-						id: "3",
-						text: "淘大熊商家操作教程"
-					},
-					{
-						id: "4",
-						text: "平台内测，实名认证"
-					},
-					{
-						id: "5",
-						text: "实名认证联系客服审核"
-					},
-					{
-						id: "6",
-						text: "【必读】放单节奏问题"
-					},
-				],
-				list: [],
+				advertisingList: this.$store.state.advertisingList,
+				list: [],	//淘抢购礼品列表
 				loading: false,
 				finished: false,
 				refreshing: false,
@@ -106,6 +115,8 @@
 				dyHeight: "40%",
 				searchBg: "rgba(255, 0, 0, 0.2)", //rgba(79, 192, 141, 0.2)
 				swiperHeight: "",
+				pageType: 1,	//1淘抢购， 2熊抢购
+				skillTaskList:[],	//熊抢购礼品列表
 			}
 		},
 		methods: {
@@ -115,23 +126,36 @@
 					this.list = [];
 					this.refreshing = false;
 				}
-				this.API.getProductList({
+				let base = {
 					page: this.pageNo,
 					size: this.pageSize,
 					key: this.searchKey,
-					category: 13,
-					status: 1,
-				},{showLoading: false}).then((data) => {
-					//console.log(data)
-					this.list.push(...data);
-					if(data.length < this.pageSize) {
-						this.finished = true;
-					} else {
-						this.loading = false;
-						this.pageNo++
-					}
-
-				})
+				}
+				if(this.pageType==1){
+					let params = Object.assign({}, base, {category: 13, status: 1})
+					this.API.getProductList(params,{showLoading: false}).then((data) => {
+						//console.log(data)
+						this.list.push(...data);
+						if(data.length < this.pageSize) {
+							this.finished = true;
+						} else {
+							this.loading = false;
+							this.pageNo++
+						}
+	
+					})
+				}if(this.pageType==2){
+					this.API.getSkillTaskList(base).then((data)=>{
+						this.skillTaskList.push(...data);
+						if(data.length < this.pageSize) {
+							this.finished = true;
+						} else {
+							this.loading = false;
+							this.pageNo++
+						}
+					})
+				}
+				
 
 			},
 			onRefresh() {
@@ -163,8 +187,18 @@
 				this.onLoad();
 			},
 			toProductDetail(item){
-				this.$router.push({path:"/productDetail", query:{shopId: item.FID}});
+				if(this.pageType==1){
+					this.$router.push({path:"/productDetail", query:{shopId: item.FID}});
+				}else if(this.pageType == 2){
+					this.$router.push({path:"/skillTaskDetail", query:{shopId: item.FID}});
+				}
+				
 			},
+			changeSkillTaskList(){
+				this.pageType = 2;
+				this.pageNo = 1;
+				this.onRefresh();
+			}
 		},
 		mounted() {
 			console.log(123)
@@ -190,6 +224,14 @@
 			left: 0;
 			z-index: 10;
 		}
+		.scroll-tips{
+			font-size:13px;
+			padding-left:10px;
+			color:#0107f7;
+			margin: 10px;
+    		padding: 6px;
+    		border-radius: 6px;
+		} 
 		.content {
 			.product-item {
 				min-height: 120px;
@@ -259,6 +301,35 @@
 								text-indent: 10px;
 							}
 						}
+					}
+				}
+				&.skillTask-item{
+					.product-info{
+						flex-direction: column;
+					    justify-content: space-between;
+					    padding-left: 10px;
+					    .ski-name, .ski-num{
+					    	padding: 10px;
+					    	.desc{
+						    	font-size: 13px;color:#848484;
+						    }
+						    .ski-num-left{
+						    	.preferentialPrice{
+						    		color: #fd3c3c;
+						    		span{
+						    			font-size: 18px;
+						    		}
+						    	}
+						    }
+						    .ski-num-right{
+						    	
+						    }
+					    } 
+					    .ski-num{
+					    	flex-direction: row;
+						    justify-content: space-between;
+						    align-items: flex-end;
+					    }
 					}
 				}
 			}

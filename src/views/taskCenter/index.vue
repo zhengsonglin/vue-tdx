@@ -18,7 +18,7 @@
 			<div class="slot-center van-ellipsis">
 				<!--任务中心-->
 				<van-dropdown-menu>
-				  	<van-dropdown-item v-model="orderType" :options="option" />
+				  	<van-dropdown-item v-model="orderType" :options="option" @change="onDropDownMenuChange"/>
 				</van-dropdown-menu>
 			</div>
 			<div class="slot-right absolute flex">
@@ -36,7 +36,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="define-table fixed flex bg-fff w100">
+		<div class="define-tab fixed flex bg-fff w100">
 			<div :class="['tab-item', {'active':index==activeIndex}]" v-for="(item, index) in tabs" @click="onNavClick(item)">
 				<span>{{item.name}}</span>
 				<transition name="van-slide-down" v-if="item.children && item.children.length">
@@ -49,91 +49,9 @@
 		</div>
 		
 		<div class="content">
-			<!--攻略-->
-			<div class="helps flex text-c bg-fff" v-if="orderType==0">
-				<router-link to="newUserStrategy" tag="span" class="help-item relative flex-1 line">新手攻略</router-link>
-				<router-link to="strategy" tag="span" class="help-item relative flex-1 line">定制评价攻略</router-link>
-				<router-link to="saleAfterStrategy" tag="span" class="help-item relative flex-1">售后攻略</router-link>
-			</div>
-			
-			<div class="task-center-order " v-if="orderType==0">
-				<van-pull-refresh v-model="refreshing" @refresh="onRefresh">
-					<van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
-						<van-cell v-for="(item, index) in list" :key="index" class="order-item bg-fff">
-			
-							<div class="order-item-top c-fff">
-								<div class="task-top-left-box fl ">
-									<div class="task-top-tb text-c inline-block">{{item.FHttp || "淘宝"}}</div>
-									<div class="task-top-seller">{{item.FShopName || "无※※※※点"}}</div>
-								</div>
-								<div class="task-top-right-box fr">任务状态：{{getTaskStatus(item.FStatus)}}</div>
-							</div>
-							<div class="order-item-mid w100 over-hidden border-box">
-								<div class="task-mid-left-box fl">
-									<div class="left-box-img w100">
-										<img :src="(item.FIMGUrl == '' ? item.goodimg : item.FIMGUrl)" width="100%" height="100%">
-									</div>
-									<div class="left-box-user text-c">
-										<span class="red">账号：{{item.FWang || "zold845517008"}}</span>
-									</div>
-								</div>
-								<div class="task-mid-right-box fr border-box">
-									<div class="task-right-info"> {{item.TaskTitle != "" ? item.TaskTitle : item.FGoodsName}} </div>
-									<div class="task-right-ordernum">订单编号：{{item.FOrderNumber != "" ? item.FOrderNumber : "(未填写)"}}</div>
-									<div class="task-right-price">
-										<span>总价：</span><span class="red">￥ {{item.FUnitPrice + "（" + item.FGoodsNum + "件*" + toDecimal2(item.price2) + "）"}}</span>
-									</div>
-									<div class="task-right-trueprice">
-										<span> 实拍：</span><span class="red">￥{{toDecimal2(item.FUnitPrice - item.FdiffPrice)}}</span>
-									</div>
-									<div class="" v-if="item.IsPoint == 1">
-										赠送积分：<span style="color:#fd3c3c"> {{item.PointNum}}</span>
-									</div>
-									<div v-if="item.FActivityTypeID == 1">
-										红包金额：<span style="color:#fd3c3c">￥{{item.RedEnvelopes}}</span>
-									</div>
-									<div class="task-right-well over-auto bold">
-										<div class="task-right-goods fl w40" @click="showGoodsInfo(item)">商品信息</div>
-										<div class="task-right-goodpic fr" @click="uploadImg(item)">{{parseStateName(item)}}</div>
-										<div class="task-right-goodpic fl w40 red" @click="toRefundAfter(item)" 
-											v-if="item.FStatus != 1 && item.TaskID > 0">查看售后</div>
-										<div class="task-right-goodpic fl w40 red" @click="applyAftersale(item)" 
-											v-if="item.FStatus != 1 && item.TaskID <= 0">申请售后</div>
-										<div class="task-right-goodpic fr" @click="checkRemark(item)">查看商家备注</div>
-									</div>
-								</div>
-							</div>
-							<div class="order-item-bot over-hidden">
-								<div class="over-hidden">
-									
-								
-								<div class="fl">申请时间：<span>{{moment(item.FTime).format("YYYY-MM-DD HH:mm")}}</span></div>
-								<div class="fr">完成时间：
-									<span>{{item.FStatus == 4?moment(item.FCompletionTime).format("YYYY-MM-DD HH:mm"):"(未完成)"}}</span>
-								</div>
-								</div>
-								<div class="AB-assets" v-if="item.FPingJiastatus != 0 && item.FPingJiastatus != 3 && item.FNewStar != '作废'">
-									<router-link class="red" :to="{path:'/customEvaluation', query:{TaskId:item.FID}}" tag="span">点击查看评价内容 （请按商家要求评价，奖励{{item.FBuyUserPrice}}元哦）</router-link>
-								</div>
-								<div class="if_do flex" v-if="item.FStatus == 1">
-									<div class="if_no inline-block text-c flex-1" @click="chargeBack(item)">我要退单</div>
-									<div class="if_is inline-block text-c flex-1" @click="startTask(item)">开始任务</div>
-								</div>
-									
-							</div>
+			<task-list ref="taskList" :activeIndex="activeIndex" :baseParam="queryBaseParam" v-if="orderType==0"></task-list>
 				
-						</van-cell>
-					</van-list>
-				</van-pull-refresh>	
-				<!--<van-empty description="暂无数据" v-else />-->
-			</div>
-			
-			<div class="mui-card hint" v-if="orderType==1">
-                    <div class="helps relative w100 text-c" v-show="showHint">
-                       	 注：原价-优惠价=返还金
-                        <span class="inline-block absolute" @click.stop="showHint = false">X</span>
-                    </div>
-                </div>
+			<skill-task-list ref="skillTaskList" :activeIndex="activeIndex" :baseParam="queryBaseParam" v-if="orderType==1"></skill-task-list>	
 		</div>
 		
 		<van-dialog v-model="showProductDialog" show-cancel-button width="90%" :showConfirmButton="false">
@@ -153,14 +71,19 @@
 </template>
 
 <script>
+	import taskList from "./children/taskList";
+	import skillTaskList from './children/skillTaskList'
 	export default {
 		name:"userCenter",
+		components:{
+			taskList, skillTaskList
+		},
 		data() {
 			return {
 				orderType: 0,
 			    option: [
-			        { text: '免单任务中心', value: 0 },
-			        { text: '返利任务中心', value: 1 },
+			        { text: '免单任务中心', value: 0 },	//淘抢购订单
+			        { text: '返利任务中心', value: 1 },	//熊抢购订单
 			    ],
 			    tabs:[
 			    	{state:"", name:"售后", num:0, 
@@ -175,17 +98,10 @@
 			    visible: false,
 			    rightMenuShow: false,
 			    leftDateShow: false,
-			    list: [],
-				loading: false,
-				finished: false,
-				refreshing: false,
-				pageNo: 1,
-				pageSize: 30,
 				showProductDialog:false,
 				productItem:{},	//商品信息
 				DatgeType: 'all',	//订单时间，all全部，today今天，week一周内，moth一月内
 				ABOrTraffic: 'AB',
-				showHint: true,
 			}
 		},
 		computed:{
@@ -196,10 +112,8 @@
 					return this.tabs[this.activeIndex].children.filter((item)=>item.isActive)[0].state
 				}
 			},
-			queryForm(){
+			queryBaseParam(){
 				return {
-					pageindex: this.pageNo,
-					pagesize: this.pageSize,
 					DatgeType: this.DatgeType,
 					ABOrTraffic: this.ABOrTraffic,
 					Status: this.getActiveStatus || 'have',
@@ -231,8 +145,11 @@
 			//按时间筛选订单
 			changeTime(type){
 				this.DatgeType = type;
-				this.onRefresh()
 				this.leftDateShow = false
+			},
+			//切换订单类型(0淘抢购，1熊抢购)
+			onDropDownMenuChange(value){
+				//console.log(value)
 			},
 			//tab导航切换
 			onNavClick({state, name, num}){
@@ -245,7 +162,6 @@
 					}
 					this.activeIndex = num
 					this.visible = false
-					this.onRefresh()
 				}else{
 					this.visible = !this.visible
 				}
@@ -257,198 +173,13 @@
 					obj.isActive = (obj.num == num)
 				})
 				this.visible = !this.visible
-				this.onRefresh()
-			},
-			onLoad() {
-				if(this.refreshing) {
-					this.pageNo = 1;
-					this.list = [];
-					this.refreshing = false;
-				}
-				
-				this.API.getTaskList(this.queryForm, {showLoading: false}).then((data) => {
-					this.list.push(...data);
-					if(data.length < this.pageSize) {
-						this.finished = true;
-					} else {
-						this.loading = false;
-						this.pageNo++
-					}
-				})
-
-			},
-			onRefresh() {
-				//下拉刷新调用onRefresh方法时内部已经处理refreshing = true, 但其他方法调用onRefresh时，并没有设置refreshing为true,所以下面再设置一次(兼容默认刷新)
-				this.refreshing = true;
-				// 清空列表数据
-				this.finished = false;
-
-				// 重新加载数据
-				// 将 loading 设置为 true，表示处于加载状态
-				this.loading = true;
-				if(this.activeIndex == 0){
-					this.getTaskSaleList()
-				}else{
-					this.onLoad();
-				}
-				
-			},
-			//查询售后订单列表(包括用户发起和商家发起)
-			getTaskSaleList(){
-				if(this.refreshing) {
-					this.pageNo = 1;
-					this.list = [];
-					this.refreshing = false;
-				}
-
-				this.API.getTaskSaleList(this.queryForm, {showLoading: false}).then((data)=>{
-					this.list.push(...data);
-					if(data.length < this.pageSize) {
-						this.finished = true;
-					} else {
-						this.loading = false;
-						this.pageNo++
-					}
-				})
-			},
-			getTaskStatus(FStatus){
-				let text = ""
-				switch(FStatus) {
-				     case 1:
-				        text = "已领取"
-				        break;
-				     case 2:
-				        text = "已提交"	
-				        break;
-				     case 4:
-				        text = "已完成"
-				        break;
-				    case 27:
-				        text = "待审核"
-				        break;
-				     default:
-				}
-				return text;
-			},
-			//查看商品信息
-			showGoodsInfo(item){
-				//return;
-				/*$.ajax({
-	                url: "/MobileTaskCenter/GetTaskInfo",
-	                type: "POST",
-	                data: { TaskId: fid },
-	                dataType: "json",
-	                success: function (data) {
-	                    $(".isSure-word-price").html(" 下单价：￥" + toDecimal2(data.FGoodsNum * data.FUnitPrice) + "");
-	                    $("#FGoodsURL").attr("src", data.FShopImg.replace("../", "/"));
-	                }
-	            });*/
-				
-				this.API.getTaskInfo({ TaskId: item.FID }).then((data)=>{
-					this.productItem = data
-					this.showProductDialog = true
-				})
-			},
-			//上传或查看好评图片
-			uploadImg(item){
-				this.$router.push({path:"/uploadScreenShot", query: {TaskId: item.FID, Status:"have"}})
-			},
-			parseStateName(item){
-				let statname = "";
-				let {FStatus, FPingJiastatus, FNewStar} = item
-                if (FStatus != 1) {
-                    if (FPingJiastatus == 0) {
-                        if (FStatus == 2) {
-                            statname = "上传好评截图";
-                        }else {
-                            statname = "查看好评截图";
-                        }
-                    } else {
-                        if (FPingJiastatus == 1) {
-                            statname = "上传定制评价截图";
-                        }
-                        if (FPingJiastatus == 27 ||( FPingJiastatus == 4 && FNewStar != "作废")) {
-                            statname = "查看定制评价截图";
-                        }else{
-                            if (FStatus == 2){
-                                statname = "上传好评截图";
-                            }else{
-                                statname = "查看好评截图";
-                            }                                        
-                        }
-                        //else {
-                        //    statname = "查看定制评价截图";
-                        //}
-                    }
-                }
-				return statname
-			},
-			//查看售后
-			toRefundAfter(item){//item.FID
-				this.$router.push({path:"/chooseSaledType", query:{taskId: item.FID, taskType:1}})
-			}, 
-			//申请售后
-			applyAftersale(item, saleID = -1){//item.FID
-				this.$router.push({path:"/refundDetial", query:{TaskID:item.FID, SalesID:saleID, taskType:1}})
-			},
-			//查看商家备注
-			checkRemark(item){//item.FID
-				this.API.getBussinessTaskInfo({ UserTaskId: item.FID }).then((data)=>{
-					let message = ""
-					if (data.BusinessRemark != "") {
-                        message = data.BusinessRemark;
-                    } else {
-                        message = data.Fbz == "" ? "暂无相关备注信息" : data.Fbz
-                    }
-					this.$dialog.alert({
-					  	title: '商家备注信息',
-					  	message: message,
-					  	confirmButtonText:"知道了"
-					}).then(() => {
-					  // on close
-					});
-				})
-				
-			},
-			//开始退单
-			handleChargeBack(id){
-				this.API.handleChargeBack({ TaskId: id }).then((data)=>{
-					if (data.ErrorCode == 100) {
-                        this.$toast("退单成功！");
-                        this.onRefresh()
-                    } else {
-                        this.$toast("退单失败！");
-                    }
-				})
-			},
-			//我要退单
-			chargeBack(item){
-				let {FID, FStatus} = item
-				if (FStatus != 1) {
-	                this.$toast("该阶段不能退单");
-	                return;
-	            }
-				
-				this.$dialog.confirm({
-					title: '提示',
-			      	message: '确定退单？',
-			    }).then(()=>{
-			    	this.handleChargeBack(FID);
-			    });
-			},
-			//开始任务
-			startTask(item){
-				this.$router.push({path: "/startTask", query:{TaskId: item.FID}})
 			},
 			
 		},
-		beforeUpdate(){
-			//console.log(this.$route)
-		},
 		created(){
-			//this.onRefresh()
-			let activeIndex = this.$route.params.activeIndex || 1
+			let {activeIndex=1, orderType=0} = this.$route.params
 			this.activeIndex = activeIndex
+			this.orderType = orderType
 		}
 	}
 </script>
@@ -472,9 +203,6 @@
 	  transition: all 0.4s ease;
 	}
 	
-	.red{
-		color: #fd3c3c !important;
-	}
 	.page-taskCenter{
 		.page-title{
 			top: 0;
@@ -551,7 +279,7 @@
 			    }
 			}
 		}
-		.define-table{
+		.define-tab{
 			z-index: 10;
 			left:0;
 			top:48px;
@@ -584,115 +312,7 @@
 		.content{
 			margin-top: 96px;
 			padding: 14px 8px 50px;
-			.helps{
-				height: 32px;
-				line-height: 32px;
-				flex-direction: row;
-				box-shadow: 0 1px 2px rgba(0,0,0,.3);
-				.help-item{
-					width: 0;
-					&.line::after{
-						content: "";
-						position: absolute;
-						right: 0;
-						top: 0;
-						height: 100%;
-						width: 0px;
-						border: 1px solid #ccc;
-						-webkit-transform: scaleX(.5);
-					}
-				}
-				
-			}
-			.mui-card{
-				.helps{
-					background:rgba(225, 225, 225, 0.8);
-					font-size:14px;
-					color:#fd3c3c;
-					span{
-						height:100%;
-						right: 16px;
-						top: 0;
-					}
-				}
-			}
-			.task-center-order{
-				.order-item{
-					margin-top: 16px;
-					padding: 0;
-					line-height: initial;
-					.order-item-top{
-					    height: 32px;
-					    line-height: 32px;
-					    padding: 0 6px;
-					    background: #cdc0bf;
-					    font-size: 14px;
-					    .task-top-left-box{
-					    	>div{
-					    		display: inline-block;
-					    		&.task-top-tb {
-								    background-color: orange;
-								    font-size: 12px;
-								    width: 32px;
-								    height: 24px;
-								    line-height: 24px;
-								}
-								&.task-top-seller{
-    								margin-left: 10px;
-								}
-					    	}
-					    	
-					    }
-					}
-					.order-item-mid{
-						font-size: 13px;
-						padding: 8px 8px 0;
-						.task-mid-left-box{
-							width: 40%;
-							.left-box-img{
-								height: 128px;
-								img{
-									object-fit: cover;
-								}
-							}
-							.left-box-user{
-								height: 40px;
-    							line-height: 40px;
-							}
-						} 
-						.task-mid-right-box{
-							width: 60%;
-							padding-left: 10px;
-							>div{
-								padding: 4px 0;
-								&.task-right-well{
-									.w40{
-										width: 40%;
-									}
-									>div{
-										padding: 5px 0;
-										&.task-right-goodpic, &.task-right-goods {
-										    color: #3b8df3;
-    										display: inline-block;
-										}
-									}
-									
-								}
-							}
-						}
-					}
-					.order-item-bot{
-						padding: 0 8px 8px;
-						font-size: 12px;
-						.if_do{
-							color: #3b8df3;
-							height: 24px;
-							line-height: 24px;
-							margin-top: 10px;
-						}
-					}
-				}
-			}
+			
 		}
 		.van-dialog{
 			.custom-title{

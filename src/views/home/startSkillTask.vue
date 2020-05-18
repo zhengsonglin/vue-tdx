@@ -1,10 +1,12 @@
 <template>
-	<div class="page-index bg-fff h100 over-auto startTask">
+	<div class="page-index bg-fff h100 over-auto startSkillTask">
 		<div class="header-wrap">
 			<van-nav-bar title="开始任务" left-text="" right-text="" left-arrow fixed z-index="10" class="header" @click-left="onClickLeft"/>
 		</div>
 		<div class="content">
 			<div class="task-demand bg-fff c-fff">禁止联系卖家咨询任务相关情况，如有疑问请联系平台客服</div>
+			<div class="task-demand bg-fff c-fff">熊抢购非免单任务，返款金额=原价-优惠价+积分抵扣金额</div>
+			
 			<div class="task-notice bg-fff">
 				<p class="title text-c bold">注意事项</p>
                 <p>1、与商家旺旺聊天时禁止提及<span>“淘大熊 、刷单”</span>等信息，否则取消平台任务合作机会！</p>
@@ -19,30 +21,30 @@
 						<span class="blue">{{userLoginInfo.FWang}}</span>登陆。如果已登陆请点击“我的淘宝”-“头像”，确认会员名是否与
 						<!--<span class="blue">{{userLoginInfo.FWang}}</span>-->一致
 					</p>
-					<div class="select_Key" v-if="taskInfo.FSelectKey !=2 ">
+					<div class="select_Key" v-if="skillTaskInfo.FSelectKey !=2 ">
 	                    <p color="red">★复制关键词切换到淘宝APP搜索</p>
 	                    <p>☆关键词:</p>
 	                    <div class="keyword-inp">
-	                        <input type="text" class="keyWords border-box" :value="taskInfo.FSelect" readonly>
-	                        <van-button type="danger" v-clipboard:copy="taskInfo.FSelect" v-clipboard:success="onCopy" v-clipboard:error="onError">复制</van-button>
+	                        <input type="text" class="keyWords border-box" :value="skillTaskInfo.FSelect" readonly>
+	                        <van-button type="danger" v-clipboard:copy="skillTaskInfo.FSelect" v-clipboard:success="onCopy" v-clipboard:error="onError">复制</van-button>
 	                    </div>
 	                    <p class="no-product">
 	                    	<span>找不到商品？</span><span class="juBao" @click="showOverlay=true">举报</span>
 	                    </p>
 	                </div>
-	                <div class="select_Key select_Key_2" v-if="taskInfo.FSelectKey !=1 ">
+	                <div class="select_Key select_Key_2" v-if="skillTaskInfo.FSelectKey !=1 ">
 	                    <p color="red">★复制淘口令切换到淘宝APP(不搜索),等待弹出窗口,点打开</p>
 	                    <p>☆淘口令:</p>
 	                    <div class="keyword-inp">
-	                        <input type="text" class="keyWords border-box" :value="taskInfo.FCommodityKey" readonly >
-	                        <van-button type="danger" v-clipboard:copy="taskInfo.FCommodityKey" v-clipboard:success="onCopy" v-clipboard:error="onError">复制</van-button>
+	                        <input type="text" class="keyWords border-box" :value="skillTaskInfo.FCommodityKey" readonly >
+	                        <van-button type="danger" v-clipboard:copy="skillTaskInfo.FCommodityKey" v-clipboard:success="onCopy" v-clipboard:error="onError">复制</van-button>
 	                    </div>
 	                </div>
                 
 				</div>
 			</div>
 			
-			<div class="task-step flex bg-fff step-2" v-if="taskInfo.FSelectKey !=2">
+			<div class="task-step flex bg-fff step-2" v-if="skillTaskInfo.FSelectKey !=2">
 				<div class="left-num">2</div>
 				<div class="right-text flex-1 flex">
 					★货比三家,每个商品页从上到下浏览三分钟左右。
@@ -50,31 +52,30 @@
 	        </div>
 	        
 	        <div class="task-step flex bg-fff step-3">
-				<div class="left-num">{{taskInfo.FSelectKey !=2 ?"3":"2"}}</div>
+				<div class="left-num">{{skillTaskInfo.FSelectKey !=2 ?"3":"2"}}</div>
 				<div class="right-text flex-1">
 					<p class="part-3">根据下面的商品信息找到需要购买的宝贝</p>
 					<p class="part-green">★店铺名称</p>
-					<p class="shop-name">☆ <span>{{taskInfo.FShopName}}<!--暖※※※※品--></span></p>
+					<p class="shop-name">☆ <span>{{skillTaskInfo.FShopName}}<!--暖※※※※品--></span></p>
 					<p class="part-green">★商品价格</p>
 					<p class="total-price"> ☆合计：
-						<span class="total">{{taskInfo.FGoodsUnitPrice}}</span>元
-						<span class="single-price">{{taskInfo.FUnitPrice}}</span>元/件*
-						<span class="num">{{taskInfo.FGoodsNum}}</span>件
+						<span class="total">{{ parseFloat(skillTaskInfo.FUnitPrice * 100) / 100 }}</span>元
+						(<span class="single-price">{{parseFloat(skillTaskInfo.FUnitPrice * 100) / 100}}</span>元/件)
 					</p>
 					<p class="part-green">★发货地</p>
-					<p class="place">☆ <span>{{taskInfo.Ffhd}}</span></p>
+					<p class="place">☆ <span>{{skillTaskInfo.Ffhd}}</span></p>
 					<p class="part-green"> ★价格区间</p>
 					<p>☆<span class="lbl_jgqj">
-						{{taskInfo.Fjgqj != "" && taskInfo.Fjgqj_end != "" ? (taskInfo.Fjgqj + " - " + taskInfo.Fjgqj_end) : ""}}</span>
+						{{skillTaskInfo.Fjgqj != "" && skillTaskInfo.Fjgqj_end != "" ? (skillTaskInfo.Fjgqj + " - " + skillTaskInfo.Fjgqj_end) : ""}}</span>
 					</p>
-					<p class="part-green">★注意事项</p>
-					<p class="lbl_bz">☆<span>{{taskInfo.Fbz}}</span></p>
+					<p class="part-green">★备注</p>
+					<p class="lbl_bz">☆<span>{{skillTaskInfo.Fbz}}</span></p>
 					<p class="part-green">★商品主图</p>
 					<p class="img text-c">
-						<img id="lbl_Img" height="100%" :src="taskInfo.FShopImg && taskInfo.FShopImg.replace('../', '/')">
+						<img id="lbl_Img" height="100%" :src="skillTaskInfo.FShopImg && skillTaskInfo.FShopImg.replace('../', '/')">
 					</p>
-					<p class="part-red" v-if="parseInt(taskInfo.RemoteRegionIsDeliver) != 0">★提示</p>
-					<p v-if="parseInt(taskInfo.RemoteRegionIsDeliver) != 0">偏远地区不发货</p>
+					<p class="part-red" v-if="parseInt(skillTaskInfo.RemoteRegionIsDeliver) != 0">★提示</p>
+					<p v-if="parseInt(skillTaskInfo.RemoteRegionIsDeliver) != 0">偏远地区不发货</p>
 					<p class="part-green">★核对宝贝，请提交宝贝链接或淘口令</p>
 					<div class="keyword-inp">
 	                    <span class="left-input inline-block relative border-box">
@@ -94,8 +95,8 @@
             	注意：收到货后再确认收货，五星好评，然后上传好评截图到平台，等待商家审核之后申请提现返款。
         	</div>
         	
-        	<div class="task-step flex bg-fff step-4" v-if="taskInfo.FIsValidation == 1 || isValidSuccess">
-				<div class="left-num">{{taskInfo.FSelectKey !=2 ?"4":"3"}}</div>
+        	<div class="task-step flex bg-fff step-4" v-if="skillTaskInfo.FIsValidation == 1 || isValidSuccess">
+				<div class="left-num">{{skillTaskInfo.FSelectKey !=2 ?"4":"3"}}</div>
 				<div class="right-text flex-1">
 					<p class="part-green">★活动信息</p>
 					<div class="task-co-user-info">
@@ -103,9 +104,21 @@
 	                    <input type="text" readonly v-model="userLoginInfo.FWang">
 	                </div>
 	                <div class="task-co-user-info">
-	                    <p>任务金额</p>
-	                    <input type="text"  v-model="form.orderPrice" placeholder="如有差价联系淘大熊客服" @blur="validPrice">
+	                    <p>实际支付金额</p>
+	                    <input type="text"  v-model="form.orderPrice" placeholder="请输入你支付的金额" @blur="validPrice">
 	                </div>
+	                <div class="task-co-user-info">
+	                    <van-radio-group v-model="form.radio" direction="horizontal">
+	                    	<p style="width: 94px;">积分抵换</p>
+						  	<van-radio name="1">否</van-radio>
+						  	<van-radio name="0">是</van-radio>
+						</van-radio-group>
+	                </div>
+	                <div class="task-co-user-info" v-if="form.radio==2">
+	                    <p>积分兑换数量</p>
+	                    <input type="number" placeholder="请输入抵换积分数量" v-model="form.point">
+	                </div>
+	                
 	                <div class="task-co-user-info">
 	                    <p>订单编号</p>
 	                    <input type="text" placeholder="请输入订单号" v-model="form.orderNum">
@@ -154,11 +167,11 @@
 	import utils from "@/utils/utils"
 	import { mapState } from'vuex'
 	export default {
-		name: 'startTask',
+		name: 'startSkillTask',
 		data(){
 			return {
 				taskId:"",
-				taskInfo:{},
+				skillTaskInfo:{},
 				form:{},
 				productLink: "",	//商品链接或者淘口令
 				isValidSuccess: false,	//商品验证通过
@@ -172,21 +185,21 @@
 		created(){
 			this.taskId = this.$route.query.TaskId;
 			console.log(this.userLoginInfo)
-			//this.taskInfo.FWang = this.userLoginInfo.FWang
-			this.getTaskInfo()
+			console.log(this.taskId)
+			this.getSkillTaskInfo()
 		},
 		methods:{
 			onClickLeft(){
 				this.$router.back();
 			},
-			getTaskInfo(){
-				this.API.getTaskInfo({TaskId: this.taskId}).then((data)=>{
-					this.taskInfo = data
+			getSkillTaskInfo(){
+				this.API.getSkillTaskInfo({TaskId: this.taskId}).then((data)=>{
+					this.skillTaskInfo = data
 				})
 			},
 			//验证商品价格
 			validPrice(){
-				if(this.form.orderPrice != this.taskInfo.FGoodsUnitPrice){
+				if(this.form.orderPrice != this.skillTaskInfo.FGoodsUnitPrice){
 					this.$toast("您的实付金额与任务金额不一致，请及时联系客服处理，以免影响亲的返款。")
                 	return;
 				}
@@ -194,17 +207,25 @@
 			//完成任务
 			submit(){
 				console.log(this.form)
-				let {orderNum, orderPrice, remark} = this.form
-				if(orderPrice != this.taskInfo.FGoodsUnitPrice){
-					this.$toast("您的实付金额与任务金额不一致，请及时联系客服处理，以免影响亲的返款。")
-                	return;
-				}
-				if(this.taskInfo.FIsValidation !=1 && !this.isValidSuccess){//0未验证， 1已验证
-					if (this.productLink == "") {
-	                    this.$toast("请验证宝贝链接");
+				let {orderNum, orderPrice, remark, radio, point} = this.form
+				let FUnitPrice = parseFloat(skillTaskInfo.FUnitPrice * 100) / 100
+				if(radio==0){
+	                var re = /^[1-9]+[0-9]*]*$/;
+	                if (!re.test(point)) {
+	                    this.$toast("积分必须为整数");
+	                    return;
+	                }
+	                if (parseInt(point) == 0) {
+	                    this.$toast("积分抵换数量必须大于0");
 	                    return;
 	                }
 				}
+
+				if(orderPrice != FUnitPrice){
+					this.$toast("您的实付金额与任务金额不一致，请及时联系客服处理，以免影响亲的返款。")
+                	return;
+				}
+				
 				if (orderNum.length != 18 && orderNum.length != 19) {
 	                this.$toast("订单号必须是18-19位");
 	                return;
@@ -216,15 +237,15 @@
 	                return;
 	            }
 
-
-				this.API.complateTask({ TaskId: this.taskId, OrderNum: orderNum, remark }).then((data)=>{
+				point = point==""?0:point;
+				this.API.complateSkillTask({ TaskId: this.taskId, OrderNum: orderNum, remark, price:orderPrice, point }).then((data)=>{
 					if (data.ErrorCode == 100) {
                         this.$toast({
                         	duration: 600, // 持续展示 toast
 						  	forbidClick: true,
 						  	type: "success",
 						  	message: '提交成功',
-						  	onClose:()=>{this.$router.push("taskCenter")}
+						  	onClose:()=>{this.$router.push({name:"taskCenter", params:{orderType:1}})}
 						});
                     } else {
                         this.$toast({
@@ -238,7 +259,7 @@
 			},
 			//确定举报
 			handleReport(){
-				let {FID} = this.taskInfo
+				let {FID} = this.skillTaskInfo
 				this.API.addOrderReport( { orderId: this.taskId, fid: FID, reson: this.reportContent }).then((data)=>{
 					if (data.ErrorCode == 100) {
 						this.$toast({
@@ -260,7 +281,7 @@
 			},
 			onCopy(){
 				this.$toast("复制成功")
-				//taskInfo.FSelect
+				//skillTaskInfo.FSelect
 			},
 			onError(){
 				this.$toast("复制失败")
@@ -270,7 +291,9 @@
 				if(this.productLink == ""){
 					this.$toast("请先填写宝贝链接地址!")
 				}else{
-					this.API.checkGoodsUrl({ "TaskId": this.taskId, "GoodsUrl": encodeURI(this.productLink) }).then((data)=>{
+					console.log(this.taskId, this.productLink)
+					
+					this.API.checkSkillGoodsUrl({ "taskId": this.taskId, "goodsUrl": encodeURI(this.productLink) }).then((data)=>{
 						if (data.ErrorCode == 100) {
                             this.isValidSuccess = true
                             this.$toast("验证成功");
@@ -308,8 +331,8 @@
 			.task-demand{
 				box-shadow: 0 1px 2px rgba(0,0,0,.3);
 				background-color: #fd3c3c;
-				font-size: 15px;
-			    /*margin: 10px;*/
+				font-size: 16px;
+			    margin-bottom: 10px;
 			    padding: 8px 10px;
 			}
 			.task-notice{
@@ -425,12 +448,12 @@
 						margin-bottom: 10px;
 						padding-right: 10px;
 						>p{
-							width: 60px;
+							width: 80px;
 							float: left;
 							line-height: 34px;
 						}
 						>input{
-							width: calc(100% - 75px);
+							width: calc(100% - 95px);
 							float: right;
 							height: 34px;
 							line-height: 34px;
