@@ -30,7 +30,7 @@
 							</div>
 							<div class="task-mid-right-box fr border-box">
 								<div class="task-right-info"> {{item.TaskTitle != "" ? item.TaskTitle : item.FGoodsName}} </div>
-								<div class="task-right-ordernum">订单编号：{{item.FOrderNumber != "" ? item.FOrderNumber : "(未填写)"}}</div>
+								<div class="task-right-ordernum" @click="doCopy(item)">订单编号：{{item.FOrderNumber != "" ? item.FOrderNumber : "(未填写)"}}</div>
 								<div class="task-right-price">
 									<span>总价：</span><span class="red">￥ {{item.FUnitPrice + "（" + item.FGoodsNum + "件*" + toDecimal2(item.price2) + "）"}}</span>
 								</div>
@@ -278,6 +278,18 @@
 					}
 				})
 			},
+			//也可以使用这种方式复制 (@click="doCopy")
+			doCopy(item) {
+				if(item.FOrderNumber != ""){
+			        this.$copyText(item.FOrderNumber).then( (e)=> {
+			          this.$toast('订单号复制成功')
+			          console.log(e)
+			        }, (e)=> {
+			          this.$toast('订单号复制失败')
+			          console.log(e)
+			        })
+		        }
+		    },
 		},
 		watch:{
 			queryForm:{

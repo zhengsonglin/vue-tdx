@@ -259,7 +259,7 @@
 				})
 			},
 			//也可以使用这种方式复制 (@click="doCopy")
-			doCopy: function () {
+			doCopy() {
 		        this.$copyText(this.message).then(function (e) {
 		          alert('Copied')
 		          console.log(e)
