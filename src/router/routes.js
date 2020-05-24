@@ -44,7 +44,7 @@ export const routes = [{
 		component: () =>
 			import('../views/index.vue'),
 		meta: {
-			keepAlive: true
+			//keepAlive: true
 		},
 		children: [{
 				path: '',
@@ -52,9 +52,9 @@ export const routes = [{
 					import('../views/home/index.vue'),
 				meta: {
 					title: '首页',
-					keepAlive: true
+					//keepAlive: true
 				},
-				children: [{
+				children: [/*{
 						path: '/sortProduct',
 						name: "sortProduct",
 						component: () =>
@@ -62,8 +62,8 @@ export const routes = [{
 						meta: {
 							title: '商品分类',
 						},
-					},
-					{
+					},*/
+					/*{
 						path: '/skillTaskList',
 						name: "skillTaskList",
 						component: () =>
@@ -71,9 +71,18 @@ export const routes = [{
 						meta: {
 							title: '熊抢购',
 						},
-					}
-
+					}*/
+					
 				]
+			},
+			{
+				path: '/sortProduct',
+				name: "sortProduct",
+				component: () =>
+					import('../views/home/sortProduct.vue'),
+				meta: {
+					title: '商品分类',
+				},
 			},
 			{
 				path: '/question',
@@ -82,7 +91,7 @@ export const routes = [{
 					import('../views/question/index.vue'),
 				meta: {
 					title: '问题集',
-					keepAlive: true
+					//keepAlive: true
 				},
 			},
 			{
@@ -92,7 +101,7 @@ export const routes = [{
 					import('../views/taskCenter/index.vue'),
 				meta: {
 					title: '任务中心',
-					keepAlive: true
+					//keepAlive: true
 				},
 			},
 			{
@@ -102,7 +111,7 @@ export const routes = [{
 					import('../views/userCenter/index.vue'),
 				meta: {
 					title: '会员中心',
-					keepAlive: true
+					//keepAlive: true
 				},
 			},
 			{
@@ -271,10 +280,19 @@ export const routes = [{
 		},
 	},
 	{
-		path: '/productDetail',
+		path: '/productDetail',	//淘抢购商品详情
 		name: "productDetail",
 		component: () =>
 			import('../views/home/productDetail.vue'),
+		meta: {
+			title: '商品详情'
+		},
+	},
+	{
+		path: '/skillTaskDetail',	//熊抢购商品详情
+		name: "skillTaskDetail",
+		component: () =>
+			import('../views/home/skillTaskDetail.vue'),
 		meta: {
 			title: '商品详情'
 		},
@@ -285,7 +303,16 @@ export const routes = [{
 		component: () =>
 			import('../views/home/startTask.vue'),
 		meta: {
-			title: '开始任务'
+			title: '开始淘抢购任务'
+		},
+	},
+	{
+		path: '/startSkillTask',
+		name: "startSkillTask",
+		component: () =>
+			import('../views/home/startSkillTask.vue'),
+		meta: {
+			title: '开始熊抢购任务'
 		},
 	},
 

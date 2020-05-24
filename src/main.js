@@ -20,6 +20,9 @@ Vue.use(Picker).use(Popup).use(Area).use(Overlay).use(Notify).use(Empty).use(Dro
 import VueClipboard from 'vue-clipboard2'
 Vue.use(VueClipboard)
 
+import VueCookies from 'vue-cookies'
+Vue.use(VueCookies)
+
 new Vue({
   router,
   store,

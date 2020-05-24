@@ -25,10 +25,15 @@ export default {
     editPwd: (params, config) => $http.post("/Mobile/EditPwd", params, config).then((rsp) => {
 		return rsp.data
     }),
-    //获取首页商品列表
+    //获取首页淘抢购商品列表
     getProductList: (params, config) => $http.post("/Mobile/GetMobileData", params, config).then((rsp) => {
 		return rsp.data
     }),
+    //获取首页熊抢购商品列表
+    getSkillTaskList: (params, config) => $http.post("MobileSkill/GetSkillTaskList", params, config).then((rsp) => {
+		return rsp.data
+    }),
+    
     //获取用户信息
     getIndexInfo: (params, config) => $http.post("/MobileUserCenter/GetIndexInfo", params, config).then((rsp) => {
 		return rsp.data
@@ -113,20 +118,33 @@ export default {
     getSysInfo: (params, config) => $http.post("/MobileUserCenter/GetSysInfo", params, config).then((rsp) => {
 		return rsp.data
     }),
-    //获取订单列表（任务列表）
-    getTaskList: (params, config) => $http.post("/MobileTaskCenter/GetTask", params, config).then((rsp) => {
+    //获取淘抢购订单列表（任务列表）
+    getTaskOrderList: (params, config) => $http.post("/MobileTaskCenter/GetTask", params, config).then((rsp) => {
 		return rsp.data
     }),
+    //获取熊抢购订单列表（任务列表）
+    getSkillTaskOrderList: (params, config) => $http.post("/MobileSkill/GetTaskList", params, config).then((rsp) => {
+		return rsp.data
+    }),
+    
     //查看售后订单列表(包含用户发起和商家发起)
     getTaskSaleList: (params, config) => $http.post("/MobileTaskCenter/GetTaskSale", params, config).then((rsp) => {
 		return rsp.data
     }),
-    //查看商品信息
+    //查看淘抢购商品信息
     getTaskInfo: (params, config) => $http.post("/MobileTaskCenter/GetTaskInfo", params, config).then((rsp) => {
 		return rsp.data
     }),
-    //我要退单
+    //查看熊抢购商品信息
+    getSkillTaskInfo: (params, config) => $http.post("/MobileSkill/GetTaskInfo", params, config).then((rsp) => {
+		return rsp.data
+    }),
+    //我要退单(淘抢购退单)
     handleChargeBack: (params, config) => $http.post("/MobileTaskCenter/ChargeBack", params, config).then((rsp) => {
+		return rsp.data
+    }),
+    //我要退单(熊抢购退单)
+    handleSkillChargeBack: (params, config) => $http.post("/MobileSkill/SkillChargeBack", params, config).then((rsp) => {
 		return rsp.data
     }),
      //查看订单商家备注信息
@@ -157,8 +175,12 @@ export default {
     getProductDetail: (params, config) => $http.post("/Mobile/GetProductDetail", params, config).then((rsp) => {
 		return rsp.data
     }),
-    //提交领取任务
+    //提交淘抢购领取任务
     getTheTask: (params, config) => $http.post("/Mobile/GetTheTask", params, config).then((rsp) => {
+		return rsp.data
+    }),
+    //提交熊抢购领取任务
+    getSkillTask: (params, config) => $http.post("/MobileSkill/GetSkillTask", params, config).then((rsp) => {
 		return rsp.data
     }),
     //开始任务
@@ -169,16 +191,29 @@ export default {
     reservations: (params, config) => $http.post("/Mobile/Reservations", params, config).then((rsp) => {
 		return rsp.data
     }),
-    //验证商品链接或者淘口令是否正确
+    //验证淘抢购商品链接或者淘口令是否正确
     checkGoodsUrl: (params, config) => $http.post("/MobileTaskCenter/CheckGoodsUrl", params, config).then((rsp) => {
 		return rsp.data
     }),
-    //完成任务
+    //验证熊抢购商品链接或者淘口令是否正确
+    checkSkillGoodsUrl: (params, config) => $http.post("/MobileSkill/SkillCheckGoodsUrl", params, config).then((rsp) => {
+		return rsp.data
+    }),
+    
+    //完成淘抢购任务
     complateTask: (params, config) => $http.post("/MobileTaskCenter/ComplateTask", params, config).then((rsp) => {
+		return rsp.data
+    }),
+    //完成熊抢购任务
+    complateSkillTask: (params, config) => $http.post("/MobileSkill/SkillComplateTask", params, config).then((rsp) => {
 		return rsp.data
     }),
     //举报订单(提交)
     addOrderReport: (params, config) => $http.post("/MobileTaskCenter/AddOrderReport", params, config).then((rsp) => {
+		return rsp.data
+    }),
+    //熊抢购商品详情
+    getSkillTaskDetail: (params, config) => $http.post("MobileSkill/GetSkillTaskDetail", params, config).then((rsp) => {
 		return rsp.data
     }),
     

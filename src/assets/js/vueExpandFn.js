@@ -1,5 +1,6 @@
 //vue 扩展方法
 import API from '@/api/getDatas.js'
+import utils from "@/utils/utils.js"
 var moment = require('moment');
 moment.locale('zh-cn');	//设置为中文
 
@@ -10,6 +11,28 @@ export default {
 
 		Vue.prototype.API = API		//使用this.API.test().then()
 
+		Vue.filter('toUpperCase', function(value) {
+			return value.toUpperCase();
+		});
+		//返回除null和undefined之外默认值(0正常返回)
+		Vue.filter('parseExcludeZero', function(value, defaultValue) {
+			if(value || value==0){
+				return value
+			}
+			return defaultValue;
+		});
+		Vue.mixin({　　
+			methods: {　　　　
+				parseAttribute: function(value, defaultValue) {　　　//和上面过滤器功能差不多　　　
+					if(utils.isNotEmpty(value)){
+						return value
+					}else{
+						return defaultValue;
+					}
+				}　　
+			}
+		});
+	
 		Vue.prototype.moment = (formateTime, relativeTime)=>{
 			if(formateTime !=null){	//formateTime为'/Date(1586829908893)/'居然能解析
 				/*if(typeof formateTime == "string"){

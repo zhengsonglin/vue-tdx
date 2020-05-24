@@ -13,7 +13,7 @@ axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded
 // 创建axios实例
 const $ = axios.create({
 	timeout: 600000,
-	baseURL: process.env.NODE_ENV === 'production' ? '/' : '/api', // api的API_ROOT
+	baseURL: process.env.NODE_ENV === 'production' ? '/api' : '/api', // api的API_ROOT
 	headers: {
 		'Content-Type': 'application/json',
 		//"token": 'XXXX'		//如果不需要token， headers一定不能多传参数
@@ -23,7 +23,7 @@ const $ = axios.create({
 
 // 请求拦截器
 $.interceptors.request.use((config) => { //config 无法注入axios内置config之外的参数， 所以自定义config.showLoading 是无法接受的
-	console.log(config);
+	//console.log(config);
 	let { token } = store.state
 	let { projectCode } = store.getters
 	

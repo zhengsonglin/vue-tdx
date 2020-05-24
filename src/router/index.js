@@ -14,7 +14,7 @@ VueRouter.prototype.push = function push(location) {
 
 const router =  new VueRouter({
 	routes,
-	mode: 'history',//history, 默认hash
+	mode: 'hash',//history, 默认hash,	//history默认打包后刷新会出现404，需要服务端配合修改
 	scrollBehavior:(to, from, savedPosition) => {
 		//console.log(savedPosition);
 		if (savedPosition && to.meta.keepAlive) {
