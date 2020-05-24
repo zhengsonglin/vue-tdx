@@ -38,7 +38,7 @@
 <script>
 	import {checkMobilePhone} from 'assets/js/util.js'
 	export default {
-		name: 'register',
+		name: 'forgetPwd',
 		data(){
 			return {
 				form:{

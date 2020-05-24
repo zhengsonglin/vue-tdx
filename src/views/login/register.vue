@@ -6,22 +6,22 @@
 		<div class="content">
 			<div class="register-form">
 				<div class="login-input text-input">
-					<input type="text" id="txt_UserName" v-model.trim="form.username" placeholder="请输入账号">
+					<input type="text" id="txt_UserName" class="input-height" v-model.trim="form.username" placeholder="请输入账号">
 				</div>
 				<div class="login-input pass-input">
-					<input type="digit" id="txt_Yzm" v-model.trim="form.yzm" placeholder="请输入验证码" maxlength="6">
+					<input type="digit" id="txt_Yzm" class="input-height" v-model.trim="form.yzm" placeholder="请输入验证码" maxlength="6">
 					<div class="reg-get-code">
 						<van-button type="warning" @click="sendCode" size="mini" :disabled="validCode.isDisabled">{{validCode.btnText}}</van-button>
 					</div>
 				</div>
 				<div class="login-input pass-input">
-					<input type="password" id="txt_PassWord" v-model.trim="form.pwd" placeholder="请输入密码">
+					<input type="password" id="txt_PassWord" class="input-height" v-model.trim="form.pwd" placeholder="请输入密码">
 				</div>
 				<div class="login-input pass-input">
-					<input type="password" id="txt_RePassWord" v-model.trim="form.repwd" placeholder="再次输入登录密码">
+					<input type="password" id="txt_RePassWord" class="input-height" v-model.trim="form.repwd" placeholder="再次输入登录密码">
 				</div>
 				<div class="login-input text-input">
-					<input type="text" id="txt_Code" v-model.trim="form.code" placeholder="请输入邀请码（比填）" maxlength="8">
+					<input type="text" id="txt_Code" class="input-height" v-model.trim="form.code" placeholder="请输入邀请码（比填）" maxlength="8">
 				</div>
 				<div class="other">
 					<span class="register fl" @click="toLogin">已有账号</span>
@@ -133,8 +133,7 @@
 </script>
 
 <style scoped lang="scss">
-	input[type=text],
-	input[type=password] {
+	input.input-height{
 		height: 40px;
 		line-height: 20px;
 		border-radius: 3px;
