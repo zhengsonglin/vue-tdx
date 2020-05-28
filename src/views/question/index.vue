@@ -436,6 +436,7 @@
 	.page-question{
 		.page-title{
 			position: fixed;
+			/*position: sticky;*/
 			top: 0;
 			left: 0;
 			height: 48px;
