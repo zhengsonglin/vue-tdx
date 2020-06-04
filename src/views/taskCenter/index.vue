@@ -37,7 +37,7 @@
 			</div>
 		</div>
 		<div class="define-tab fixed flex bg-fff w100">
-			<div :class="['tab-item', {'active':index==activeIndex}]" v-for="(item, index) in tabs" @click="onNavClick(item)">
+			<div :class="['tab-item', {'active':index==activeIndex}]" v-for="(item, index) in tabs" :key="index" @click="onNavClick(item)">
 				<span>{{item.name}}</span>
 				<transition name="van-slide-down" v-if="item.children && item.children.length">
 					<div class="sub-menu bg-fff w100 relative"  v-show="visible">
@@ -54,19 +54,7 @@
 			<skill-task-list ref="skillTaskList" :activeIndex="activeIndex" :baseParam="queryBaseParam" v-if="orderType==1"></skill-task-list>	
 		</div>
 		
-		<van-dialog v-model="showProductDialog" show-cancel-button width="90%" :showConfirmButton="false">
-			<template #title>
-			    <div class="custom-title c-fff van-ellipsis">【{{productItem.FShopName}}】</div>
-		  	</template>
-			<div class="product-info">
-				<div class="info-item red">店铺名: {{productItem.FShopName}}</div>
-				<div class="info-item red">下单价: ￥{{toDecimal2(productItem.FGoodsNum * productItem.FUnitPrice)}}</div>
-				<div class="info-item red">礼品: {{productItem.FGoodsName}}</div>
-				<div class="shop-img">
-					<img :src="productItem.FShopImg" width="100%" height="100%"/>
-				</div>
-			</div>
-		</van-dialog>
+		
 	</div>
 </template>
 
@@ -98,8 +86,6 @@
 			    visible: false,
 			    rightMenuShow: false,
 			    leftDateShow: false,
-				showProductDialog:false,
-				productItem:{},	//商品信息
 				DatgeType: 'all',	//订单时间，all全部，today今天，week一周内，moth一月内
 				ABOrTraffic: 'AB',
 			}
@@ -273,8 +259,11 @@
 			    	background: inherit;
 			    	color: inherit;
 			    	height: 48px;
-			    	/deep/ .van-dropdown-menu__title{
-			    		color: inherit;
+			    	/deep/ .van-dropdown-menu__bar{
+			    		background: inherit;
+			    		.van-dropdown-menu__title{
+				    		color: inherit;
+				    	}
 			    	}
 			    }
 			}
@@ -314,24 +303,6 @@
 			padding: 14px 8px 50px;
 			
 		}
-		.van-dialog{
-			.custom-title{
-				background: linear-gradient(to right, #f0785d, #e35e40);
-    			padding: 10px 6px;
-    			margin-top: -24px;
-			}
-			.product-info{
-				width: 90%;
-    			margin: 20px auto;
-    			line-height: 30px;
-    			font-size: 18px;
-    			.shop-img{
-    				>img{
-    					object-fit: contain;
-    					max-height: 300px;
-    				}
-    			}
-			}
-		}
+		
 	}	
 </style>

@@ -15,7 +15,7 @@
 			<div class="link">http://www.taodaxiong.cn/Mobile/MobileRegister?code=30234671</div>
 			<div class="title">2、长按二维码保存到手机分享给好友或朋友圈</div>
 			<div class="rec_fri_img text-c">
-				<img src="../../assets/img/recommend-qrcode1.png"/>
+				<img src="img/recommend-qrcode1.png"/>
 			</div>
 		</div>
 	</div>

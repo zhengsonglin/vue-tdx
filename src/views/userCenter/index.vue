@@ -78,40 +78,40 @@
 			<div class="other-info over-hidden">
 				<van-grid clickable :column-num="3" :border="true">
 				  <van-grid-item  text="分析给好友" to="/recommendFriend">
-				  	<span class="mui-icon iconfont icon-fenxiang pink" slot="icon"></span>
+				  	<span class="mui-icon iconfont icon-fenxiang bg-pink" slot="icon"></span>
 				  </van-grid-item>
 				  <van-grid-item text="定制金返款" to="/refundRecord" >
-				  	<span class="mui-icon iconfont icon-baozhengjin1 green" slot="icon"></span>
+				  	<span class="mui-icon iconfont icon-baozhengjin1 bg-green" slot="icon"></span>
 				  </van-grid-item>
 				  <van-grid-item text="预定任务" to="/reservationRecord" >
-				  	<span class="mui-icon iconfont icon-yuding blue" slot="icon"></span>
+				  	<span class="mui-icon iconfont icon-yuding bg-blue" slot="icon"></span>
 				  </van-grid-item>
 				  <van-grid-item text="实名认证" to="/realNameAuthentica" >
-				  	<span class="mui-icon iconfont icon-shimingrenzheng red" slot="icon"></span>
+				  	<span class="mui-icon iconfont icon-shimingrenzheng bg-red" slot="icon"></span>
 				  </van-grid-item>
 				  <van-grid-item text="银行卡绑定" to="/cardBind" >
-				  	<span class="mui-icon iconfont icon-yinxingqia orange" slot="icon"></span>
+				  	<span class="mui-icon iconfont icon-yinxingqia bg-orange" slot="icon"></span>
 				  </van-grid-item>
 				  <van-grid-item text="提现记录" to="/financeCenter" >
-				  	<span class="mui-icon iconfont icon-tixianfc blue" slot="icon"></span>
+				  	<span class="mui-icon iconfont icon-tixianfc bg-blue" slot="icon"></span>
 				  </van-grid-item>
 				  <van-grid-item text="账户提现" to="/withDrawCash" >
-				  	<span class="mui-icon iconfont icon-tixian blue" slot="icon"></span>
+				  	<span class="mui-icon iconfont icon-tixian bg-blue" slot="icon"></span>
 				  </van-grid-item>
 				  <van-grid-item text="财务中心" to="/financeCenter" >
-				  	<span class="mui-icon iconfont icon-caiwu yellow" slot="icon"></span>
+				  	<span class="mui-icon iconfont icon-caiwu bg-yellow" slot="icon"></span>
 				  </van-grid-item>
 				  <van-grid-item text="基本资料" to="/baseUserInfo" >
-				  	<span class="mui-icon iconfont icon-iconfontgerenzhongxin green" slot="icon"></span>
+				  	<span class="mui-icon iconfont icon-iconfontgerenzhongxin bg-green" slot="icon"></span>
 				  </van-grid-item>
 				  <van-grid-item text="新手攻略" to="/newUserStrategy" >
-				  	<span class="mui-icon iconfont icon-bangzhu purple" slot="icon"></span>
+				  	<span class="mui-icon iconfont icon-bangzhu bg-purple" slot="icon"></span>
 				  </van-grid-item>
 				  <van-grid-item text="投诉与建议" to="/touSu" >
-				  	<span class="mui-icon mui-icon-qq pink" slot="icon"></span>
+				  	<span class="mui-icon van-icon van-icon-manager bg-pink" slot="icon"></span>
 				  </van-grid-item>
 				  <van-grid-item text="修改密码" to="/changePwd" >
-				  	<span class="mui-icon iconfont icon-xiugaimima2 black" slot="icon"></span>
+				  	<span class="mui-icon iconfont icon-xiugaimima2 bg-black" slot="icon"></span>
 				  </van-grid-item>
 				</van-grid>
 			</div>
@@ -325,28 +325,28 @@
 				/deep/ .van-grid-item__content--clickable{
 					padding: 22px 0;
 				}
-				.pink{
+				.bg-pink{
 			        background: linear-gradient(to right,#f0785d,#e35e40);
 			    }
-			    .purple{
+			    .bg-purple{
 			        background: linear-gradient(to right,#edb2f8,#df93ed);
 			    }
-			    .blue{
+			    .bg-blue{
 			        background: linear-gradient(to right,#509de8,#006fd9);
 			    }
-			    .red{
+			    .bg-red{
 			        background: linear-gradient(to right,#d17575,#a93d3d) ;  
 			    }
-			    .orange{
+			    .bg-orange{
 			        background: linear-gradient(to right,#ecb071,#fa8103);
 			    }
-			    .black{
+			    .bg-black{
 			        background: linear-gradient(to right,#9be8e6,#16ccec) ;
 			    }
-			    .green{
+			    .bg-green{
 			        background: linear-gradient(to right,#a3e4a6,#06c00e);
 			    }
-			    .yellow{
+			    .bg-yellow{
 			        background: linear-gradient(to right,#db916f,#d36331);
 			    }
 			}

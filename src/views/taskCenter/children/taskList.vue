@@ -44,13 +44,13 @@
 									红包金额：<span style="color:#fd3c3c">￥{{item.RedEnvelopes}}</span>
 								</div>
 								<div class="task-right-well over-auto bold">
-									<div class="task-right-goods fl w40" @click="showGoodsInfo(item)">商品信息</div>
-									<div class="task-right-goodpic fr" @click="uploadImg(item)">{{parseStateName(item)}}</div>
-									<div class="task-right-goodpic fl w40 red" @click="toRefundAfter(item)" 
+									<div class="task-right-goods fl w40" @click.stop="showGoodsInfo(item)">商品信息</div>
+									<div class="task-right-goodpic fr" @click.stop="uploadImg(item)">{{parseStateName(item)}}</div>
+									<div class="task-right-goodpic fl w40 red" @click.stop="toRefundAfter(item)" 
 										v-if="item.FStatus != 1 && item.TaskID > 0">查看售后</div>
-									<div class="task-right-goodpic fl w40 red" @click="applyAftersale(item)" 
+									<div class="task-right-goodpic fl w40 red" @click.stop="applyAftersale(item)" 
 										v-if="item.FStatus != 1 && item.TaskID <= 0">申请售后</div>
-									<div class="task-right-goodpic fr" @click="checkRemark(item)">查看商家备注</div>
+									<div class="task-right-goodpic fr" @click.stop="checkRemark(item)">查看商家备注</div>
 								</div>
 							</div>
 						</div>
@@ -77,6 +77,19 @@
 				</van-list>
 			</van-pull-refresh>	
 		</div>
+		<van-dialog v-model="showProductDialog" show-cancel-button width="90%" :showConfirmButton="false">
+			<template #title>
+			    <div class="custom-title c-fff van-ellipsis">【{{productItem.FShopName}}】</div>
+		  	</template>
+			<div class="product-info">
+				<div class="info-item red">店铺名: {{productItem.FShopName}}</div>
+				<div class="info-item red">下单价: ￥{{toDecimal2(productItem.FGoodsNum * productItem.FUnitPrice)}}</div>
+				<div class="info-item red">礼品: {{productItem.FGoodsName}}</div>
+				<div class="shop-img">
+					<img :src="productItem.FShopImg" width="100%" height="100%"/>
+				</div>
+			</div>
+		</van-dialog>
 	</div>
 </template>
 
@@ -101,6 +114,8 @@
 				refreshing: false,
 				pageNo: 1,
 				pageSize: 30,
+				showProductDialog:false,
+				productItem:{},	//商品信息
 			}
 		},
 		computed:{
@@ -412,6 +427,25 @@
 						margin-top: 10px;
 					}
 				}
+			}
+		}
+		.van-dialog{
+			.custom-title{
+				background: linear-gradient(to right, #f0785d, #e35e40);
+    			padding: 10px 6px;
+    			margin-top: -24px;
+			}
+			.product-info{
+				width: 90%;
+    			margin: 20px auto;
+    			line-height: 30px;
+    			font-size: 18px;
+    			.shop-img{
+    				>img{
+    					object-fit: contain;
+    					max-height: 300px;
+    				}
+    			}
 			}
 		}
 	}

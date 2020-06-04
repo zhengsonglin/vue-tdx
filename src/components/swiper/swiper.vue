@@ -21,11 +21,11 @@
 			datas:{
 				type: Array,
 				default: ()=>{
-					return [
-						require('assets/img/s-1.jpg'),
-						require('assets/img/s-2.jpg'),
-						require('assets/img/s-3.jpg'),
-						require('assets/img/s-4.jpg'),
+					return ['img/s-1.jpg', 'img/s-2.jpg', 'img/s-3.jpg', 'img/s-4.jpg'
+						/*require('img/s-1.jpg'),
+						require('img/s-2.jpg'),
+						require('img/s-3.jpg'),
+						require('img/s-4.jpg'),*/
 					]
 				}
 			}
@@ -33,11 +33,11 @@
 		data() {
 			return {
 				images: [
-					require('assets/img/s-1.jpg'),
-					require('assets/img/s-2.jpg'),
-					require('assets/img/s-3.jpg'),
-					require('assets/img/s-4.jpg'),
-					
+					/*require('img/s-1.jpg'),
+					require('img/s-2.jpg'),
+					require('img/s-3.jpg'),
+					require('img/s-4.jpg'),
+					*/
 				],
 			};
 		},

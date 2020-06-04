@@ -52,6 +52,7 @@ const config =  {
 app.use('/api', proxyMiddlewar(config))
 
 app.use(express.static('./dist'))
+app.use(express.static('./src/assets'))	//可以同时定义多个静态目录
 
 module.exports = app.listen(port, function (err) {
   if (err) {

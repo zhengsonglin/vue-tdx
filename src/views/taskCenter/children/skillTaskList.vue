@@ -83,6 +83,20 @@
 				</van-list>
 			</van-pull-refresh>	
 		</div>
+		
+		<van-dialog v-model="showProductDialog" show-cancel-button width="90%" :showConfirmButton="false">
+			<template #title>
+			    <div class="custom-title c-fff van-ellipsis">【{{productItem.FShopName}}】</div>
+		  	</template>
+			<div class="product-info">
+				<div class="info-item red">店铺名: {{productItem.FShopName}}</div>
+				<div class="info-item red">下单价: ￥{{toDecimal2(productItem.FGoodsNum * productItem.FUnitPrice)}}</div>
+				<div class="info-item red">礼品: {{productItem.FGoodsName}}</div>
+				<div class="shop-img">
+					<img :src="productItem.FShopImg" width="100%" height="100%"/>
+				</div>
+			</div>
+		</van-dialog>
 	</div>
 </template>
 
@@ -110,6 +124,8 @@
 				pageNo: 1,
 				pageSize: 30,
 				showHint: true,
+				showProductDialog:false,
+				productItem:{},	//商品信息
 			}
 		},
 		computed:{
@@ -417,6 +433,25 @@
 						margin-top: 10px;
 					}
 				}
+			}
+		}
+		.van-dialog{
+			.custom-title{
+				background: linear-gradient(to right, #f0785d, #e35e40);
+    			padding: 10px 6px;
+    			margin-top: -24px;
+			}
+			.product-info{
+				width: 90%;
+    			margin: 20px auto;
+    			line-height: 30px;
+    			font-size: 18px;
+    			.shop-img{
+    				>img{
+    					object-fit: contain;
+    					max-height: 300px;
+    				}
+    			}
 			}
 		}
 	}

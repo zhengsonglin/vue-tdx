@@ -55,6 +55,7 @@ module.exports = {
 	lintOnSave: true,
 	chainWebpack: (config) => {
 		config.resolve.alias
+			.set('img', resolve('public/img'))
 			.set('@', resolve('src'))
 			.set('assets', resolve('src/assets'))
 			.set('components', resolve('src/components'))
