@@ -5,6 +5,7 @@ function resolve(dir) {
 }
 module.exports = {
 	runtimeCompiler: true,
+	productionSourceMap: false,
 	publicPath: '/', // 设置打包文件相对路径
 	outputDir: 'dist',
 	devServer: {

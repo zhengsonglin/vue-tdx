@@ -9,7 +9,7 @@
 
 <style>
 	@import 'assets/css/common.css';
-	
+	@import 'assets/css/iconfont/icon-font.css';
 	#app {
 		background: #f4f4f4;
 		height: 100%;
