@@ -265,6 +265,11 @@
 				    		color: inherit;
 				    	}
 			    	}
+			    	/deep/ .van-dropdown-menu__item{
+			    		.van-dropdown-menu__title{
+			    			color: inherit;
+			    		}
+			    	}
 			    }
 			}
 		}
