@@ -126,6 +126,26 @@ export const routes = [{
 		]
 	},
 	{
+		path: '/pictureTest1',
+		name: "pictureTest1",
+		component: () =>
+			import('../views/question/pictureTest1.vue'),
+		meta: {
+			title: '图片测试',
+			//keepAlive: true
+		},
+	},
+	{
+		path: '/pictureTest2',
+		name: "pictureTest2",
+		component: () =>
+			import('../views/question/pictureTest2.vue'),
+		meta: {
+			title: '图片测试',
+			//keepAlive: true
+		},
+	},
+	{
 		path: '/recommendFriend',
 		name: "recommendFriend",
 		component: () =>

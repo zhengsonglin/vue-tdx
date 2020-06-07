@@ -216,5 +216,10 @@ export default {
     getSkillTaskDetail: (params, config) => $http.post("MobileSkill/GetSkillTaskDetail", params, config).then((rsp) => {
 		return rsp.data
     }),
+    //提交测试图片反馈
+    uploadTestPicture: (params, config) => $http.postUpload("/web/AddRecode", params, config).then((rsp) => {
+		return rsp.data
+    }),
+    
     
 }    
