@@ -1,7 +1,7 @@
 <template>
 	<div class="page-index bg-fff h100 over-auto touSu">
 		<div class="header-wrap">
-			<van-nav-bar title="新手攻略" left-text="" right-text="" left-arrow fixed z-index="10" class="header" @click-left="onClickLeft" />
+			<van-nav-bar title="投诉建议" left-text="" right-text="" left-arrow fixed z-index="10" class="header" @click-left="onClickLeft" />
 		</div>
 		<div class="content">
 			<van-cell-group>
