@@ -15,27 +15,27 @@
 						<div class="order-item-top c-fff">
 							<div class="task-top-left-box fl ">
 								<div class="task-top-tb text-c inline-block">{{item.FHttp || "淘宝"}}</div>
-								<div class="task-top-seller">{{item.FShopName || "无※※※※点"}}</div>
+								<div class="task-top-seller">{{item.shop_ww || "无※※※※点"}}</div>
 							</div>
-							<div class="task-top-right-box fr">任务状态：{{getTaskStatus(item.FStatus)}}</div>
+							<div class="task-top-right-box fr">任务状态：{{getTaskStatus(item.status)}}</div>
 						</div>
 						<div class="order-item-mid w100 over-hidden border-box">
 							<div class="task-mid-left-box fl">
 								<div class="left-box-img w100">
-									<img :src="(item.FIMGUrl == '' ? item.goodimg : item.FIMGUrl)" width="100%" height="100%" v-lazy="(item.FIMGUrl == '' ? item.goodimg : item.FIMGUrl)">
+									<img :src="(item.sipping_url == '' ? item.goodimg : item.sipping_url)" width="100%" height="100%" v-lazy="(item.sipping_url == '' ? item.goodimg : item.sipping_url)">
 								</div>
 								<div class="left-box-user text-c">
-									<span class="red">账号：{{item.FWang || "zold845517008"}}</span>
+									<span class="red">账号：{{item.user_ww || "zold845517008"}}</span>
 								</div>
 							</div>
 							<div class="task-mid-right-box fr border-box">
-								<div class="task-right-info"> {{item.TaskTitle != "" ? item.TaskTitle : item.FGoodsName}} </div>
-								<div class="task-right-ordernum" @click="doCopy(item)">订单编号：{{item.FOrderNumber != "" ? item.FOrderNumber : "(未填写)"}}</div>
+								<div class="task-right-info"> {{item.title != "" ? item.title : item.shop_ww}} </div>
+								<div class="task-right-ordernum" @click="doCopy(item)">订单编号：{{item.order_sn != "" ? item.order_sn : "(未填写)"}}</div>
 								<div class="task-right-price">
-									<span>总价：</span><span class="red">￥ {{item.FUnitPrice + "（" + item.FGoodsNum + "件*" + toDecimal2(item.price2) + "）"}}</span>
+									<span>总价：</span><span class="red">￥ {{item.reality_price }}</span>
 								</div>
 								<div class="task-right-trueprice">
-									<span> 实拍：</span><span class="red">￥{{toDecimal2(item.FUnitPrice - item.FdiffPrice)}}</span>
+									<span> 实拍：</span><span class="red">￥{{toDecimal2(item.price)}}</span>
 								</div>
 								<div class="" v-if="item.IsPoint == 1">
 									赠送积分：<span style="color:#fd3c3c"> {{item.PointNum}}</span>
@@ -58,9 +58,9 @@
 							<div class="over-hidden">
 								
 							
-							<div class="fl">申请时间：<span>{{moment(item.FTime).format("YYYY-MM-DD HH:mm")}}</span></div>
+							<div class="fl">申请时间：<span>{{moment(item.create_time).format("YYYY-MM-DD HH:mm")}}</span></div>
 							<div class="fr">完成时间：
-								<span>{{item.FStatus == 4?moment(item.FCompletionTime).format("YYYY-MM-DD HH:mm"):"(未完成)"}}</span>
+								<span>{{item.status == 4?moment(item.audit_time).format("YYYY-MM-DD HH:mm"):"(未完成)"}}</span>
 							</div>
 							</div>
 							<div class="AB-assets" v-if="item.FPingJiastatus != 0 && item.FPingJiastatus != 3 && item.FNewStar != '作废'">
@@ -120,7 +120,7 @@
 		},
 		computed:{
 			queryForm(){
-				return  Object.assign({}, {pageindex: this.pageNo,pagesize: this.pageSize}, this.baseParam)
+				return  Object.assign({}, {page: this.pageNo,page_num: this.pageSize}, this.baseParam)
 			}
 		},
 		methods:{
@@ -131,9 +131,9 @@
 					this.refreshing = false;
 				}
 				
-				this.API.getTaskOrderList(this.queryForm, {showLoading: false}).then((data) => {
-					this.list.push(...data);
-					if(data.length < this.pageSize) {
+				this.API.getTaskOrderList(this.queryForm, {showLoading: false}).then(({orderList, error}) => {
+					this.list.push(...orderList);
+					if(orderList.length < this.pageSize) {
 						this.finished = true;
 					} else {
 						this.loading = false;

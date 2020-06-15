@@ -36,19 +36,19 @@
 							<van-row class="bg-fff product-item-row" @click.stop="toProductDetail(item)">
 								<van-col span="8">
 									<div class="imgShow">
-										<img :src="item.FIMGUrl" class="product-pic w100 h100" v-lazy="item.FIMGUrl" />
+										<img :src="item.img" class="product-pic w100 h100" v-lazy="item.img" />
 									</div>
 								</van-col>
 								<van-col span="16">
 									<div class="product-info">
-										<div class="p-title">{{item.FGoodsName}}</div>
-										<div class="p-tag"><span class="inline-block">需晒图</span></div>
-										<div class="p-price over-auto"><span>垫付:</span><span class="price">￥{{item.PayMentAmount}}</span>
+										<div class="p-title">{{item.title}}</div>
+										<div class="p-tag"><span class="inline-block" v-show="item.is_img==1">需晒图</span></div>
+										<div class="p-price over-auto"><span>垫付:</span><span class="price">￥{{item.price}}</span>
 											<van-button type="danger" size="small" class="buy-btn fr c-fff" @click.stop="toProductDetail(item)">马上抢</van-button>
 										</div>
 										<div class="progress">
-											<div class="bar_box inline-block h100" :style="{width:dyHeight}"></div>
-											<div class="bar_txt w100 h100 c-fff">剩余2件/共5件40% </div>
+											<div class="bar_box inline-block h100" :style="{width:percent(item.order_count/item.task_count, 0)}"></div>
+											<div class="bar_txt w100 h100 c-fff">剩余{{item.task_count - item.order_count}}件/共{{item.task_count}}件{{percent(item.order_count/item.task_count, 0)}} </div>
 										</div>
 									</div>
 								</van-col>
@@ -68,7 +68,7 @@
 								<van-col span="16">
 									<div class="product-info flex">
 										<div class="ski-name">
-											<p class="ski-title">{{item.FGoodsName}}</p>
+											<p class="ski-title">{{item.title}}</p>
 											<div class="desc inline-block" v-if="(item.FUnitPrice - item.SkillPrice) > 0">拍下后平台返还{{(item.FUnitPrice - item.SkillPrice).toFixed(2)}}元</div>
 										</div>
 										<div class="ski-num flex">
@@ -130,18 +130,17 @@
 					this.refreshing = false;
 				}
 				let base = {
-					page: this.pageNo,
-					size: this.pageSize,
-					key: this.searchKey,
+					page_no: this.pageNo,
+					page_size: this.pageSize,
+					keywords: this.searchKey,
+					type: 2,
+					is_family: null
 				}
 				if(this.pageType == 1) {
-					let params = Object.assign({}, base, {
-						category: 13,
-						status: 1
-					})
+					let params = Object.assign({}, base, {module_type: 1})
 					this.API.getProductList(params, {
 						showLoading: false
-					}).then((data) => {
+					}).then(({data, error}) => {
 						//console.log(data)
 						this.list.push(...data);
 						if(data.length < this.pageSize) {
@@ -153,8 +152,9 @@
 
 					})
 				}
-				if(this.pageType == 2) {
-					this.API.getSkillTaskList(base).then((data) => {
+				if(this.pageType == 2) {//熊抢购
+					let params = Object.assign({}, base, {module_type: 2})
+					this.API.getSkillTaskList(params).then(({data, error}) => {
 						this.skillTaskList.push(...data);
 						if(data.length < this.pageSize) {
 							this.finished = true;
