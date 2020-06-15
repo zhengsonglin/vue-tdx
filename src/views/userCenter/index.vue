@@ -8,15 +8,15 @@
 					<p><span class="total-num-desc">免单30天总单量</span></p>
 				</div><!--userInfo.FAccountBalance ? userInfo.FAccountBalance:999.98-->
 				<div class="btn-grop c-fff text-c">
-					<div class="btn-plain inline-block">账户余额：<span>{{userInfo.FAccountBalance | parseExcludeZero(999.98)}}</span></div>
+					<div class="btn-plain inline-block">账户余额：<span>{{userInfo.balance | parseExcludeZero(999.98)}}</span></div>
 					<div class="btn-plain inline-block">积分：<span>0</span></div>
 					<p class="tips">100积分=1元</p>
 				</div>
 				<div class="per-bill-img"></div>
 			</div>
 			<div class="invit-info">
-				<div class="con-per-username">用户名：<label id="lbl_UserName">{{userInfo.FUserName | parseExcludeZero(18899996666) }}</label></div>
-				<div class="con-per-invide">邀请码：<label id="lbl_InviteCode">{{userInfo.FInvitationCode | parseExcludeZero(888888) }}</label></div>
+				<div class="con-per-username">用户名：<label id="lbl_UserName">{{userInfo.account | parseExcludeZero(18899996666) }}</label></div>
+				<div class="con-per-invide">邀请码：<label id="lbl_InviteCode">{{userLoginInfo.invite_code | parseExcludeZero(888888) }}</label></div>
 			</div>
 			
 			<div class="card-info bg-fff">
@@ -30,28 +30,28 @@
 					  	<div class="order-state text-c">
 					  		<p><span class="li-icon iconfont icon-moban c_red f22" style="color:#d17575"/></span></p>
 					  		<router-link :to="{name:'taskCenter', params:{activeIndex:1, orderType}}" tag="p">已申请</router-link>
-					  		<p>{{orderType==0?userInfo.ABylq:userInfo.msylq}}</p>
+					  		<p>{{orderType==0?userInfo.order_num.free.received_num:userInfo.order_num.xqg.received_num}}</p>
 					  	</div>
 					  </van-col>
 					  <van-col span="6" v-if="orderType==0">
 					  	<div class="order-state text-c">
 					  		<p><span class="li-icon iconfont icon-tijiao c_blue f22" style="color:#509de8"></span></p>
 					  		<router-link :to="{name:'taskCenter', params:{activeIndex:1, orderType}}" tag="p">已提交</router-link>
-					  		<p>{{orderType==0?userInfo.ABytj:userInfo.msdsh}}</p>
+					  		<p>{{orderType==0?userInfo.order_num.free.submitted_num:userInfo.order_num.xqg.submitted_num}}</p>
 					  	</div>
 					  </van-col>
 					  <van-col span="6">
 					  	<div class="order-state text-c">
 					  		<p><span class="li-icon iconfont icon-shenhe2 c_orange f22" style="color:#ecb071"></span></p>
 					  		<router-link :to="{name:'taskCenter', params:{activeIndex:2, orderType}}" tag="p">待审核</router-link>
-					  		<p>{{orderType==0?userInfo.ABdsh:userInfo.msdsh}}</p>
+					  		<p>{{orderType==0?userInfo.order_num.free.pending_review_num:userInfo.order_num.xqg.pending_review_num}}</p>
 					  	</div>
 					  </van-col>
 					  <van-col span="6">
 					  	<div class="order-state text-c">
 					  		<p><span class="li-icon iconfont icon-wancheng c_black f22" style="color:#e9769f"></span></p>
 					  		<router-link :to="{name:'taskCenter', params:{activeIndex:3, orderType}}" tag="p">已完成</router-link>
-					  		<p>{{orderType==0?userInfo.ABywc:userInfo.msywc}}</p>
+					  		<p>{{orderType==0?userInfo.order_num.free.completed_num:userInfo.order_num.xqg.completed_num}}</p>
 					  	</div>
 					  </van-col>
 					</van-row>
@@ -132,6 +132,7 @@
 </template>
 
 <script>
+	import { mapState } from'vuex'
 	export default {
 		name:"userCenter",
 		data() {
@@ -140,9 +141,12 @@
 				orderType:0,	//0淘抢购订单，1熊抢购订单
 			}
 		},
+		computed:{
+			...mapState(["userLoginInfo"])
+		},
 		methods:{
 			getIndexInfo(){
-				this.API.getIndexInfo().then((data)=>{
+				this.API.getIndexInfo().then(({data, error})=>{
 					//console.log(data)
 					this.userInfo = data
 				})

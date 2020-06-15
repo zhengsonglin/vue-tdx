@@ -74,13 +74,14 @@
 			        { text: '返利任务中心', value: 1 },	//熊抢购订单
 			    ],
 			    tabs:[
-			    	{state:"", name:"售后", num:0, 
+			    	{state:"5", name:"售后", num:0, 
 			    		children:[{state:"B", name:"商家发起", num:11, isActive:false},{state:"C", name:"用户发起", num:12, isActive:false}]
 			    	},
-			    	{state:"have", name:"已提交", num:1},
-			    	{state:"will", name:"待审核", num:2},
-			    	{state:"done", name:"已完成", num:3},
-			    	{state:"all", name:"全部", num:4},
+			    	{state:"2", name:"已提交", num:1},
+			    	{state:"3", name:"待审核", num:2},
+			    	{state:"4", name:"已完成", num:3},
+			    	{state:"0", name:"全部", num:4},
+			    	{state:"1", name:"已领取", num:5},
 			    ],
 			    activeIndex: 1,	//当前nav, 从0开始
 			    visible: false,
@@ -102,7 +103,11 @@
 				return {
 					DatgeType: this.DatgeType,
 					ABOrTraffic: this.ABOrTraffic,
-					Status: this.getActiveStatus || 'have',
+					//Status: this.getActiveStatus || 'have',
+					status: this.getActiveStatus || 0,	//0全部
+					order_type: 1,	//1限量免单，2熊抢购
+					task_end: "",	//2020-06-27
+					task_start: ""	//2020-06-01
 				}
 			}
 			

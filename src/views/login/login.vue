@@ -9,10 +9,10 @@
 			</div>
 			<div class="login-form">
 				<div class="login-input text-input">
-					<input type="text" id="txt_UserName" v-model="form.txt_UserName" placeholder="请输入账号">
+					<input type="text" id="user" v-model="form.user" placeholder="请输入账号">
 				</div>
 				<div class="login-input pass-input">
-					<input type="password" id="txt_PassWord" v-model="form.txt_PassWord" placeholder="请输入密码">
+					<input type="password" id="pwd" v-model="form.pwd" placeholder="请输入密码">
 				</div>
 				<div class="other">
 					<span class="register fl" @click="toRegister">注册</span>
@@ -27,14 +27,16 @@
 </template>
 
 <script>
-	import { checkMobilePhone } from 'assets/js/util.js'
+	import { checkMobilePhone } from 'assets/js/util.js';
+	import storage from 'good-storage';
 	export default {
 		name: 'login',
 		data() {
 			return {
 				form: {
-					txt_UserName: "18598271043",
-					txt_PassWord: "zsl123456"
+					user: "18598271043",
+					pwd: "zsl123456",
+					platform: "2c"
 				},
 				hasCommit: false,
 			}
@@ -42,21 +44,25 @@
 		methods: {
 			handleLogin() {
 				let {
-					txt_UserName,
-					txt_PassWord
+					user,
+					pwd
 				} = this.form
-				if(!checkMobilePhone(txt_UserName)) {
+				if(!checkMobilePhone(user)) {
 					this.$toast('请输入正确手机号');
-				} else if(txt_PassWord == "") {
+				} else if(pwd == "") {
 					this.$toast('请输入密码');
 				} else {
 					this.hasCommit = true
-					this.API.login(this.form).then((data) => {
-						if(data.ErrorCode == 100) {
-							this.loginSuccess(data)
+					this.API.login(this.form).then(({data, error}) => {
+						console.log(data)
+						if(error.errno == 200) {
+							//this.loginSuccess(data)
+							storage.set("tdx-Token", "faketoken");
+							this.$store.commit("setUserLoginInfo", data)
+							this.$router.push("home")
 						} else {
 							this.hasCommit = false
-							this.$toast.fail(data.Content)
+							this.$toast.fail(error.errmsg)
 						}
 					})
 				}
@@ -69,21 +75,20 @@
 					}).then((data) => {
 						if(data.ErrorCode == 100) {
 							//location.href = "http://www.taodaxiong.cn/Mobile/ProductDetail?ShopId=0"
-							//this.$router.push("home")
+							this.$router.push("home")
 						} else {
 							this.$router.push("home")
 						}
 					})
 
 				} else {
-					this.$router.push("home")
+					//this.$router.push("home")
 					this.API.getLoginUserInfo().then((data)=>{
 						this.$store.commit("setUserLoginInfo", data)
 						this.$router.push("home")
 					})
 				}
 
-				console.log(data)
 			},
 			toRegister() {
 				this.$router.push("register")

@@ -10,7 +10,7 @@ export default {
 		return rsp.data
     }),
     //用户登录
-    login: (params, config) => $http.postByQS("/sys/login", params, config).then((rsp) => {
+    login: (params, config) => $http.postByQS("/Mobile/LoginCheck", params, config).then((rsp) => {
 		return rsp.data
     }),
     //获取CheckKDJ
@@ -26,16 +26,16 @@ export default {
 		return rsp.data
     }),
     //获取首页淘抢购商品列表
-    getProductList: (params, config) => $http.post("/pa/index", params, config).then((rsp) => {
+    getProductList: (params, config) => $http.post("/Mobile/GetMobileData", params, config).then((rsp) => {
 		return rsp.data
     }),
     //获取首页熊抢购商品列表
-    getSkillTaskList: (params, config) => $http.post("/pa/index", params, config).then((rsp) => {
+    getSkillTaskList: (params, config) => $http.post("MobileSkill/GetSkillTaskList", params, config).then((rsp) => {
 		return rsp.data
     }),
     
     //获取用户信息
-    getIndexInfo: (params, config) => $http.post("/u/index", params, config).then((rsp) => {
+    getIndexInfo: (params, config) => $http.post("/MobileUserCenter/GetIndexInfo", params, config).then((rsp) => {
 		return rsp.data
     }),
     //获取用户定制金返款记录
@@ -119,7 +119,7 @@ export default {
 		return rsp.data
     }),
     //获取淘抢购订单列表（任务列表）
-    getTaskOrderList: (params, config) => $http.post("/o/orderlist", params, config).then((rsp) => {
+    getTaskOrderList: (params, config) => $http.post("/MobileTaskCenter/GetTask", params, config).then((rsp) => {
 		return rsp.data
     }),
     //获取熊抢购订单列表（任务列表）

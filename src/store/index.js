@@ -36,6 +36,7 @@ export default new Vuex.Store({
 	mutations: {
 		setUserLoginInfo(state, userLoginInfo) {
 			storage.set("userLoginInfo", userLoginInfo)
+			//storage.set("tdx-Login", userLoginInfo);
 			state.userLoginInfo = userLoginInfo
 		}
 	},
