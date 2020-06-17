@@ -79,14 +79,14 @@
 		</div>
 		<van-dialog v-model="showProductDialog" show-cancel-button width="90%" :showConfirmButton="false">
 			<template #title>
-			    <div class="custom-title c-fff van-ellipsis">【{{productItem.FShopName}}】</div>
+			    <div class="custom-title c-fff van-ellipsis">【{{productItem.shop_ww}}】</div>
 		  	</template>
 			<div class="product-info">
-				<div class="info-item red">店铺名: {{productItem.FShopName}}</div>
-				<div class="info-item red">下单价: ￥{{toDecimal2(productItem.FGoodsNum * productItem.FUnitPrice)}}</div>
-				<div class="info-item red">礼品: {{productItem.FGoodsName}}</div>
+				<div class="info-item red">店铺名: {{productItem.FShopName || productItem.shop_ww}}</div>
+				<div class="info-item red">下单价: ￥{{toDecimal2(productItem.reality_price)}}</div>
+				<div class="info-item red">礼品: {{productItem.FGoodsName || productItem.title}}</div>
 				<div class="shop-img">
-					<img :src="productItem.FShopImg" width="100%" height="100%"/>
+					<img :src="productItem.img" width="100%" height="100%"/>
 				</div>
 			</div>
 		</van-dialog>
@@ -179,6 +179,9 @@
 			},
 			//查看商品信息
 			showGoodsInfo(item){
+				this.productItem = item
+				this.showProductDialog = true
+				return;
 				this.API.getTaskInfo({ TaskId: item.FID }).then((data)=>{
 					this.productItem = data
 					this.showProductDialog = true
@@ -186,7 +189,7 @@
 			},
 			//上传或查看好评图片
 			uploadImg(item){
-				this.$router.push({path:"/uploadScreenShot", query: {TaskId: item.FID, Status:"have"}})
+				this.$router.push({path:"/uploadScreenShot", query: {TaskId: item.id, Status:"have"}})
 			},
 			parseStateName(item){
 				let statname = "";
@@ -228,10 +231,10 @@
 			},
 			//查看商家备注
 			checkRemark(item){//item.FID
-				this.API.getBussinessTaskInfo({ UserTaskId: item.FID }).then((data)=>{
+				this.API.getBussinessTaskInfo({ id: item.id, type:5 }).then((data)=>{
 					let message = ""
-					if (data.BusinessRemark != "") {
-                        message = data.BusinessRemark;
+					if (data.mc_comment != "") {
+                        message = data.mc_comment;
                     } else {
                         message = data.Fbz == "" ? "暂无相关备注信息" : data.Fbz
                     }

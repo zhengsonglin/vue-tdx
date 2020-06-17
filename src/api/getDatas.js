@@ -148,11 +148,11 @@ export default {
 		return rsp.data
     }),
      //查看订单商家备注信息
-    getBussinessTaskInfo: (params, config) => $http.post("/MobileTaskCenter/GetBussinessTaskInfo", params, config).then((rsp) => {
+    getBussinessTaskInfo: (params, config) => $http.post("/o/orderaction", params, config).then((rsp) => {
 		return rsp.data
     }),
     //查询好评截图信息
-    getUploadInfo: (params, config) => $http.post("/MobileTaskCenter/GetUploadInfo", params, config).then((rsp) => {
+    getUploadInfo: (params, config) => $http.post("/o/orderaction", params, config).then((rsp) => {
 		return rsp.data
     }),
     //保存好评截图信息

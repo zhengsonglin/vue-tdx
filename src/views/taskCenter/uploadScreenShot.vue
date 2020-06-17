@@ -33,6 +33,7 @@
 				</div>
 				<div class="cell-row">
 					<img :src="singleFile.content" width="100%"/>
+					<!--<img :src="uploadInfo.img[0]" width="100%"/>-->
 				</div>	
 			</div>
 		</div>
@@ -134,10 +135,13 @@
 				}
 			},
 			getUploadInfo(){
-				this.API.getUploadInfo({TaskId: this.taskId}).then((data)=>{
+				this.API.getUploadInfo({id: this.taskId, type:3}).then((data)=>{
 					this.uploadInfo = data
-					this.form = Object.assign({}, this.form, {txt_wangwang:data.FWang, txt_ordernum:data.FOrderNumber })
+					this.form = Object.assign({}, this.form, {txt_wangwang:data.user_ww, txt_ordernum:data.order_sn })
 					
+					this.$set(this.singleFile, "content",  data.img[0])
+					
+					return
 					if (data.FStatus != 2) {
 
 						if (data.FPingJiastatus == 0) {
