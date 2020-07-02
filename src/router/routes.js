@@ -300,6 +300,15 @@ export const routes = [{
 		},
 	},
 	{
+		path: '/singleProductList',	//淘抢购商品详情
+		name: "singleProductList",
+		component: () =>
+			import('../views/home/singleProductList.vue'),
+		meta: {
+			title: '马上抢'
+		},
+	},
+	{
 		path: '/productDetail',	//淘抢购商品详情
 		name: "productDetail",
 		component: () =>

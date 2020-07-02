@@ -1,6 +1,6 @@
 <template>
 	<!--productDetail-->
-	<div class="page-index productDetail bg-fff h100 over-auto" v-if="productInfo.FID">
+	<div class="page-index productDetail bg-fff h100 over-auto" v-if="productInfo.t_id">
 		<my-swiper class="mySwiper" height="300" :datas="imgList" :autoplayTime="3500" v-if="imgList.length"></my-swiper>
 		
 		<div class="nav-btn btn-left absolute text-c c-fff" @click="$router.back()"><i class="iconfont icon-zuojiantou"></i></div>
@@ -19,7 +19,7 @@
 					<span class="platType fl c-fff text-c">淘宝</span><span class="productName fr">{{productInfo.FGoodsName}}</span>
 				</div>
 				<div class="cell-row row-2"><span class="price fl">￥{{productInfo.price}}</span>
-					<div class="title-price-sur fr">剩余商品 <span class="span_Num red">{{productInfo.Num}}</span>份</div>
+					<div class="title-price-sur fr">剩余商品 <span class="span_Num red">{{productInfo.remain_count}}</span>份</div>
                 </div>
 			</div>
 			<div class="com-detail" v-if="parseInt(productInfo.RemoteRegionIsDeliver) == 0">
@@ -28,7 +28,7 @@
 	        <!-- 活动时间介绍 -->
 	        <div class="com-detail detail-time">
 	            <span class="iconfont icon-clock"></span>活动时间结束
-	            <span class="time-over bold red">{{productInfo.fentime}}</span>
+	            <span class="time-over bold red">{{productInfo.task_end}}</span>
 	        </div>
 	        
 	        <!-- 活动金额介绍 -->
@@ -103,7 +103,7 @@
 		    	<div class="dialog-header c-fff text-c" >商品信息</div>
 		    	<div class="dialog-content">
 		    		<div class="row-item row-1 flex">
-		    			<span class="title">商品名称:</span><span class="info flex-1">{{productInfo.FGoodsName}}</span>
+		    			<span class="title">商品名称:</span><span class="info flex-1">{{productInfo.title}}</span>
 		    		</div>
 		    		<div class="row-item row-2 flex">
 		    			<span class="title">商品价格:</span><span class="info price flex-1 text-c">￥{{productInfo.price}}</span>
@@ -147,9 +147,9 @@
 		},
 		computed:{
 			imgList(){
-				let {zpimg, FShopImg} = this.productInfo;
-				let img = zpimg == "" ? FShopImg.replace("../", "/") : zpimg;
-				return [img, img]
+				let {img, sipping_url} = this.productInfo;
+				
+				return [img, sipping_url]
 			},
 			
 		},
@@ -176,7 +176,7 @@
 			},
 			getProductDetail(){
 				
-				this.API.getProductDetail({ShopId:this.shopId}).then((data)=>{
+				this.API.getProductDetail({t_id:this.tId}).then(({data, error})=>{
 					this.productInfo = data
 					var d2 = new Date();//取今天的日期
                     var d1 = new Date(Date.parse(data.fsttime));
@@ -251,8 +251,8 @@
 			//领取任务
 			handleBuy(){
 				this.showOverlay = false
-				this.API.getTheTask({ShopId: this.shopId, Mark:"M"}).then((data)=>{
-					if (data.ErrorCode == 100) {
+				this.API.getTheTask({t_id: this.tId}).then(({data, error, order_id})=>{
+					if (error.errno == 200) {
                         this.$dialog.alert({
                         	title: '恭喜你',
 					      	message: '商品抢购成功，请按时完成任务！',
@@ -263,8 +263,9 @@
 								text:"开始任务",
 								disabled: false
 							}
+						   this.$router.push({path:"/startTask", query:{TaskId: order_id}})
 						})
-                    } else if (data.ErrorCode == 101) {
+                    } else if (error.errno == 101) {
                         if (data.Content == "请先进行实名认证!") {
                             this.$dialog.alert({
 						      	message: data.Content,
@@ -278,7 +279,13 @@
 							  	message: data.Content
 							});
                         }
-                    } else if (data.ErrorCode == 200) {
+                    } else if (error.errno != 200) {
+                    	this.$toast({
+							  	//forbidClick: true,
+							  	type: "fail",
+							  	message: error.usermsg
+							});
+                    	return
                         if (ShopId != "0") {
                             this.$router.push({path:"/login", query:{type:ShopId}})
                         } else {
@@ -322,7 +329,7 @@
 			}
 		},
 		created(){
-			this.shopId = this.$route.query.shopId
+			this.tId = this.$route.query.tId
 			this.getProductDetail();
 		}
 	}	

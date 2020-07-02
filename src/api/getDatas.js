@@ -33,7 +33,10 @@ export default {
     getSkillTaskList: (params, config) => $http.post("/pa/index", params, config).then((rsp) => {
 		return rsp.data
     }),
-    
+    //获取同类型单个商品列表(同一个商品数量有多个)
+    getSingleProductList: (params, config) => $http.post("/pa/detail", params, config).then((rsp) => {
+		return rsp.data
+    }),
     //获取用户信息
     getIndexInfo: (params, config) => $http.post("/u/index", params, config).then((rsp) => {
 		return rsp.data
@@ -55,7 +58,7 @@ export default {
 		return rsp.data
     }),
     //获取用户实名认证信息
-    getLoginUserInfo: (params, config) => $http.post("/MobileUserCenter/GetLoginUserInfo", params, config).then((rsp) => {
+    getLoginUserInfo: (params, config) => $http.get("/u/prove", params, config).then((rsp) => {
 		return rsp.data
     }),
     //强制修改用户认证信息(违规操作，请勿尝试)
@@ -63,7 +66,7 @@ export default {
 		return rsp.data
     }),
     //获取用户信息(银行卡)
-    getUserInfo: (params, config) => $http.post("/MobileUserCenter/UserInfo", params, config).then((rsp) => {
+    getUserInfo: (params, config) => $http.get("/u/bank", params, config).then((rsp) => {
 		return rsp.data
     }),
     //获取地区支行信息
@@ -79,27 +82,27 @@ export default {
 		return rsp.data
     }),
     //财务中心交易明细
-    getPutForwardRecord: (params, config) => $http.post("/MobileUserCenter/GetPutForwardRecord", params, config).then((rsp) => {
+    getPutForwardRecord: (params, config) => $http.post("/u/transactiondetail", params, config).then((rsp) => {
 		return rsp.data
     }),
     //查询账户提现信息
-    getWithDrawCashInfo: (params, config) => $http.post("/MobileUserCenter/GetWithDrawCashInfo", params, config).then((rsp) => {
+    getWithDrawCashInfo: (params, config) => $http.get("/u/withdraw", params, config).then((rsp) => {
 		return rsp.data
     }),
     //申请账户提现
-    handleWithDrawCash: (params, config) => $http.post("/MobileUserCenter/WithDrawCashInfo", params, config).then((rsp) => {
+    handleWithDrawCash: (params, config) => $http.post("/u/withdraw", params, config).then((rsp) => {
 		return rsp.data
     }),
     //获取用户个人基本信息
-    getBaseUserInfo: (params, config) => $http.post("/MobileUserCenter/GetBaseUserInfo", params, config).then((rsp) => {
+    getBaseUserInfo: (params, config) => $http.get("/u/info", params, config).then((rsp) => {
 		return rsp.data
     }),
     //设置用户个人基本信息
-    setBaseUserInfo: (params, config) => $http.post("/MobileUserCenter/SetBaseUserInfo", params, config).then((rsp) => {
+    setBaseUserInfo: (params, config) => $http.post("/u/info", params, config).then((rsp) => {
 		return rsp.data
     }),
     //修改登录密码
-    updatePwd: (params, config) => $http.post("/MobileUserCenter/UpdatePwd", params, config).then((rsp) => {
+    updatePwd: (params, config) => $http.post("/sys/modifypwd", params, config).then((rsp) => {
 		return rsp.data
     }),
     //获取反馈内容列表
@@ -132,7 +135,7 @@ export default {
 		return rsp.data
     }),
     //查看淘抢购商品信息
-    getTaskInfo: (params, config) => $http.post("/MobileTaskCenter/GetTaskInfo", params, config).then((rsp) => {
+    getTaskInfo: (params, config) => $http.post("/o/detail", params, config).then((rsp) => {
 		return rsp.data
     }),
     //查看熊抢购商品信息
@@ -172,11 +175,11 @@ export default {
 		return rsp.data
     }),
     //查询商品详情
-    getProductDetail: (params, config) => $http.post("/Mobile/GetProductDetail", params, config).then((rsp) => {
+    getProductDetail: (params, config) => $http.post("/t/detail", params, config).then((rsp) => {
 		return rsp.data
     }),
     //提交淘抢购领取任务
-    getTheTask: (params, config) => $http.post("/Mobile/GetTheTask", params, config).then((rsp) => {
+    getTheTask: (params, config) => $http.post("/t/receive", params, config).then((rsp) => {
 		return rsp.data
     }),
     //提交熊抢购领取任务
@@ -192,7 +195,7 @@ export default {
 		return rsp.data
     }),
     //验证淘抢购商品链接或者淘口令是否正确
-    checkGoodsUrl: (params, config) => $http.post("/MobileTaskCenter/CheckGoodsUrl", params, config).then((rsp) => {
+    checkGoodsUrl: (params, config) => $http.post("/o/Urlcheck", params, config).then((rsp) => {
 		return rsp.data
     }),
     //验证熊抢购商品链接或者淘口令是否正确

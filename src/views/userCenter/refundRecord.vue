@@ -33,8 +33,8 @@
 					</van-cell>
 				  	<van-cell v-for="(item, index) in list" :key="index">
 				  		<div class="cell-table f12 tb-data">
-				  			<span>{{format2(item.FTime)}}</span><span>{{item.FOrderNumber }}</span>
-				  			<span>{{(item.IsDZOrHb == 1 ? '红包返款' : '定制金返款')}}</span><span>{{toDecimal2(item.FAmount)}}</span>
+				  			<span>{{format2(item.time)}}</span><span>{{item.order_sn }}</span>
+				  			<span>{{(item.IsDZOrHb == 1 ? '红包返款' : '定制金返款')}}</span><span>{{toDecimal2(item.money)}}</span>
 				  			<span>{{parseRefundState(item)}}</span>
 				  		</div>
 				  	</van-cell>
@@ -81,7 +81,15 @@
 	        },
 			onLoad() {
 		      	// 异步更新数据
-		      	this.API.getUserRefound().then((data) => {
+		      	let params = {
+					status: 0,
+					type: 1,
+					start_time: "",
+					end_time: "",
+					page_no: 1,
+					page_size: 100,
+				}
+		      	this.API.getPutForwardRecord().then(({data, error}) => {
 					//console.log(data)
 					this.list.push(...data);
 					this.finished = true;

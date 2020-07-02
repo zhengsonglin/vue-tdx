@@ -32,7 +32,7 @@
 			}
 		},
 		created(){
-			this.getSysInfo()
+			//this.getSysInfo()
 		}
 	}
 </script>

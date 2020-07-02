@@ -8,7 +8,7 @@
 				</template>
 			</van-nav-bar>	
 		</div>
-		<div class="content" v-show="userRealInfo.FID">
+		<div class="content" v-show="userRealInfo.real_name">
 
 			<van-cell-group class="cell-group">
 				<van-field v-model="form.reallyName" label="真实姓名" placeholder="真实姓名" :readonly="isDisabled"/>
@@ -63,7 +63,7 @@
 				this.$router.back();
 			},
 			getLoginUserInfo() {
-				this.API.getLoginUserInfo().then((data) => {
+				this.API.getLoginUserInfo().then(({data, error}) => {
 					this.userRealInfo = data
 					let picture = ""
 					//data.FISRealName = 2
@@ -82,11 +82,11 @@
 					}
 					this.form = {
 						fid:data.FID,
-						reallyName: data.FReallyName,
-						sex: data.FUserSex,
-						txt_age: data.FAge,
-						wangwang: data.FWang,
-						picture: picture
+						reallyName: data.real_name,
+						sex: data.gender=="男"?0:1,
+						txt_age: data.age,
+						wangwang: data.ww_name,
+						picture: data.prove_img
 					}
 				})
 			},

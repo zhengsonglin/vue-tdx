@@ -161,26 +161,26 @@
 			},
 			//查询用户基本个人信息
 			getBaseUserInfo(){
-				this.API.getBaseUserInfo().then((data)=>{
+				this.API.getBaseUserInfo().then(({data, error})=>{
 					this.userBaseInfo = data
-					let {FTime, FUserName, FUserSex, FAge, FUserQQ, FEmailAddress, FMarryStaus, FEduStautsName, FBelongManName, FProvince, FCity} = data
+					let {create_time, account, gender, age, qq, email, FMarryStaus, marriage, education, crowd, province, city} = data
 					let params = {
-						registerTime:FTime,
-						userName: FUserName,
-						sexId: FUserSex,
-						sexName: this.getFilterNameById(this.sexColumns, FUserSex),
-						age: FAge,
-						qq: FUserQQ,
-						email: FEmailAddress,
-						marryId: FMarryStaus,
-						marryName: this.getFilterNameById(this.marryColumns, FMarryStaus),
-						eduStateId: this.getFilterValueByName(this.eduColumns, FEduStautsName),
-						eduStateName: FEduStautsName, 
-						perTypeId : this.getFilterValueByName(this.perTypeColumns, FBelongManName),
-						perTypeName: FBelongManName,
-						area: this.parseProvince(FProvince)+"、"+FCity+"市",
-						province: FProvince,
-						city: FCity
+						registerTime:create_time,
+						userName: account,
+						sexId: this.getFilterValueByName(this.sexColumns, gender),	//FUserSex,
+						sexName: gender,	//this.getFilterNameById(this.sexColumns, FUserSex),
+						age: age,
+						qq: qq,
+						email: email,
+						marryId: this.getFilterValueByName(this.marryColumns, marriage),	//FMarryStaus,
+						marryName: marriage,	//this.getFilterNameById(this.marryColumns, FMarryStaus),
+						eduStateId: this.getFilterValueByName(this.eduColumns, education),
+						eduStateName: education, 
+						perTypeId : this.getFilterValueByName(this.perTypeColumns, crowd),
+						perTypeName: crowd,
+						area: this.parseProvince(province)+"、"+city+"市",
+						province: province,
+						city: city
 					}
 					this.form = Object.assign({}, this.form, params)
 				})
@@ -281,23 +281,23 @@
 	        submit(){
 	        	//{ sex: sex, age: age, qq: qq, email: email, hf: hf, edu: edu, belon: belon, province: province, city: city },
 
-	        	let { sexId, age, qq, email, marryId, eduStateId, perTypeId, province, city } = this.form
+	        	let { sexId, sexName, age, qq, email, marryName, eduStateName, perTypeName, province, city } = this.form
 				
 	        	if(this.selectedArea.length){
 	        		province = this.selectedArea[0].name.slice(0, -1),	//如湖北省不能带上“省”
 	        		city = this.selectedArea[1].name.slice(0, -1);	//如武汉市不能带上“市”
 	        	}
 	        	let params = {
-	        		sex:sexId, age, qq, email,
-	        		hf: marryId,
-	        		edu: eduStateId,
-	        		belon: perTypeId,
+	        		gender:sexName, age, qq, email,
+	        		marriage: marryName,
+	        		education: eduStateName,
+	        		crowd: perTypeName,
 	        		province,
 	        		city
 	        	}
 	        	//console.log(params)
-	        	this.API.setBaseUserInfo(params).then((data)=>{
-	        		if (data.ErrorCode = 100) {
+	        	this.API.setBaseUserInfo(params).then(({data, error})=>{
+	        		if (error.errno == 200) {
                         this.$toast({
                         	duration: 600, // 持续展示 toast
 						  	forbidClick: true,
@@ -306,16 +306,21 @@
 						  	onClose:()=>{this.$router.back()}
 						});
                       
-                    } else if (data.ErrorCode = 101) {
+                    } else if (error.errno == 101) {
                         this.$toast({
 						  	//forbidClick: true,
 						  	type: "fail",
-						  	message: data.Content
+						  	message: error.usermsg
 						});
                     } else {
                         //var url = "/MobileUserCenter/BaseUserInfo";
                         //location.href = "/MobileUserCenter/UserCenter?rturl=" + url;
-                        this.$router.push({path:"/login", query:{rturl:"/baseUserInfo"}})
+                        //this.$router.push({path:"/login", query:{rturl:"/baseUserInfo"}})
+                        this.$toast({
+						  	//forbidClick: true,
+						  	type: "fail",
+						  	message: error.usermsg
+						});
                     }
 
 	        	})

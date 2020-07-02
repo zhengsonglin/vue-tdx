@@ -20,7 +20,7 @@
 			<van-cell-group>
 			  	<van-field label="可提现金额 :" readonly input-align="right" label-align="right" label-width="94">
 					<template #input>
-					    <p class="green">￥{{toDecimal2(withDrawCashInfo.FAccountBalance)}}</p>
+					    <p class="green">￥{{toDecimal2(withDrawCashInfo.balance)}}</p>
 					</template>
 					<template #right-icon>
 					    <van-icon name="success" color="#3cb926" size="20"/>
@@ -35,10 +35,10 @@
 					    </van-radio-group>
 					  </template>
 				</van-field>
-			  	<van-field label="姓名 :" :value="withDrawCashInfo.FReallyName" readonly input-align="right" label-align="right" />
-			  	<van-field label="银行名称 :" :value="withDrawCashInfo.FName" readonly input-align="right" label-align="right" />
-			  	<van-field label="银行卡号 :" :value="withDrawCashInfo.FBankNum" readonly input-align="right" label-align="right" />
-			  	<van-field label="提现金额 :" :value="toDecimal2(withDrawCashInfo.FAccountBalance)" readonly input-align="right" label-align="right" />
+			  	<van-field label="姓名 :" :value="withDrawCashInfo.real_name" readonly input-align="right" label-align="right" />
+			  	<van-field label="银行名称 :" :value="withDrawCashInfo.bank" readonly input-align="right" label-align="right" />
+			  	<van-field label="银行卡号 :" :value="withDrawCashInfo.bank_card" readonly input-align="right" label-align="right" />
+			  	<van-field label="提现金额 :" :value="toDecimal2(withDrawCashInfo.balance)" readonly input-align="right" label-align="right" />
 			  	
 			  	
 			</van-cell-group>
@@ -85,13 +85,13 @@
 				this.$router.back();
 			},
 			getWithDrawCashInfo(){
-		    	this.API.getWithDrawCashInfo().then((data)=>{
+		    	this.API.getWithDrawCashInfo().then(({data, error})=>{
 		    		this.withDrawCashInfo = data
 		    	})
 		    },
 		    submit(){
-		   		this.API.handleWithDrawCash({type:this.withdrawalWay}).then((data)=>{
-		   			if (data.ErrorCode == 100) {
+		   		this.API.handleWithDrawCash(this.withDrawCashInfo).then(({data, error})=>{
+		   			if (error.errno == 200) {
                         this.$toast({
                         	duration: 600, // 持续展示 toast
 						  	forbidClick: true,
@@ -100,20 +100,25 @@
 						  	onClose:()=>{this.$router.back()}
 						});
                         
-                    } else if (data.ErrorCode == 101) {
+                    } else if (error.errno == 101) {
                         if (data.Content == "无支行信息") {
                             this.$router.push("/cardBind")
                         } else {
                             this.$toast({
 							  	//forbidClick: true,
 							  	type: "fail",
-							  	message: data.Content
+							  	message: error.usermsg
 							});
                         }
-                    } else if (data.ErrorCode == 200) {
+                    } else if (error.errno != 200) {
                         //var url = "/MobileUserCenter/WithDrawCash"
                         //location.href = "/Mobile/MobileLogin?rturl=" + url;
-                        this.$router.push({path:"/login", query:{rturl:"/withDrawCash"}})
+                        //this.$router.push({path:"/login", query:{rturl:"/withDrawCash"}})
+                        this.$toast({
+						  	//forbidClick: true,
+						  	type: "fail",
+						  	message: error.usermsg
+						});
                     }
 
 		   		})

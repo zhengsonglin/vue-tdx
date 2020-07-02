@@ -6,9 +6,9 @@
 		<div class="content">
 			<div class="container_title text-c">修改登录密码<i class="iconfont icon-icon-dsj"></i></div>
 			<van-cell-group class="form-group">
-				<van-field v-model="form.oldpwd" placeholder="请输入原始密码" label="原始密码" />
-				<van-field v-model="form.newpwd" placeholder="请输入新登录密码" label="新登录密码"/>
-				<van-field v-model="form.confirmpwd" placeholder="请再次确认密码" label="确认密码"/>
+				<van-field v-model="form.old_pwd" placeholder="请输入原始密码" label="原始密码" />
+				<van-field v-model="form.new_pwd" placeholder="请输入新登录密码" label="新登录密码"/>
+				<van-field v-model="form.re_pwd" placeholder="请再次确认密码" label="确认密码"/>
 			</van-cell-group>
 			<div class="btn-group">	
 				<van-button block round color="linear-gradient(to right, #4bb0ff, #6149f6)" @click="submit" >提交</van-button>
@@ -23,7 +23,9 @@
 		name: 'changePwd',
 		data() {
 			return {
-				form:{}
+				form:{
+					platform: "2c"
+				}
 			}
 		},
 		methods: {
@@ -31,20 +33,20 @@
 				this.$router.back();
 			},
 			submit(){
-				let {oldpwd, newpwd, confirmpwd} = this.form;
-				if(utils.isEmpty(oldpwd)){
+				let {old_pwd, new_pwd, re_pwd} = this.form;
+				if(utils.isEmpty(old_pwd)){
 					this.$toast('请输入原始密码');
-				}else if(utils.isEmpty(newpwd)){
+				}else if(utils.isEmpty(new_pwd)){
 					this.$toast('请输入新登录密码');
-				}else if(utils.isEmpty(confirmpwd)){
+				}else if(utils.isEmpty(re_pwd)){
 					this.$toast('请确认新登录密码');
-				}else if(newpwd != confirmpwd){
+				}else if(new_pwd != re_pwd){
 					this.$toast('两次密码输入不一致');
 				}else{
 					//console.log(this.form)
 					
-					this.API.updatePwd().then((data)=>{
-						if (data.ErrorCode == 100) {
+					this.API.updatePwd(this.form).then(({data, error})=>{
+						if (error.errno == 200) {
 							this.$toast({
 	                        	duration: 600, // 持续展示 toast
 							  	forbidClick: true,
@@ -53,14 +55,19 @@
 							  	onClose:()=>{this.$router.push("login")}
 							});
 							
-	                    } else if (data.ErrorCode == 101) {
+	                    } else if (error.errno == 101) {
 	                    	this.$toast({
 							  	//forbidClick: true,
 							  	type: "fail",
-							  	message: data.Content
+							  	message: error.usermsg
 							});
 	                    } else {
-	                        this.$router.push("login")
+	                        //this.$router.push("login")
+	                        this.$toast({
+							  	//forbidClick: true,
+							  	type: "fail",
+							  	message: error.usermsg
+							});
 	                    }
 	
 					})

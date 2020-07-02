@@ -37,14 +37,14 @@
 				  	<van-cell v-for="(item, index) in list" :key="index">
 				  		<van-row class="cell-table f12 tb-data text-c">
 							  <van-col span="8">
-							  	<p class="dayTime">{{moment(item.FTime).format("YYYY-MM-DD")}}</p>
-							  	<p class="day">{{moment(item.FTime).format('HH:mm:ss dddd')}}</p>
+							  	<p class="dayTime">{{moment(item.time).format("YYYY-MM-DD")}}</p>
+							  	<p class="day">{{moment(item.time).format('HH:mm:ss dddd')}}</p>
 							  </van-col>
 							  <van-col span="8">
-							  	<p class="price">{{item.FPrice}} 元(人民币)</p>
-							  	<p class="remark">{{item.FRemark}}</p>
+							  	<p class="price">{{item.money}} 元(人民币)</p>
+							  	<p class="remark">{{item.comment}}</p>
 							  </van-col>
-							  <van-col span="8"><p :class="['state f16', item.FStatusID == 10?'green':'red']">{{parseRefundState(item)}}</p></van-col>
+							  <van-col span="8"><p :class="['state f16', item.FStatusID == 10?'green':'red']">{{ item.status|| parseRefundState(item)}}</p></van-col>
 						</van-row>
 				  	</van-cell>
 				</van-list>
@@ -77,8 +77,16 @@
 	        
 	        },
 			onLoad() {
+				let params = {
+					status: 0,
+					type: 4,
+					start_time: "",
+					end_time: "",
+					page_no: 1,
+					page_size: 100,
+				}
 		      	// 异步更新数据
-		      	this.API.getPutForwardRecord().then((data) => {
+		      	this.API.getPutForwardRecord(params).then(({data, error}) => {
 					//console.log(data)
 					this.list.push(...data);
 					this.finished = true;

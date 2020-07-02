@@ -8,7 +8,7 @@
 				</template>
 			</van-nav-bar>	
 		</div>
-		<div class="content" v-show="userInfo.FID">
+		<div class="content" v-show="userInfo.account">
 			<van-cell-group :class="['cell-group', {'finished':isDisabled}]">
 				<van-field v-model="form.phone" type="tel" label="手机号码" placeholder="手机号码" :readonly="isDisabled"/>
 				<van-field v-model="form.yzm" type="digit" center clearable label="手机验证码" placeholder="请输入短信验证码" maxlength="6" v-if="!isDisabled">
@@ -40,7 +40,7 @@
 				   		<option :value="item.SubBranchID" v-for="(item, i) in subBranchList">{{item.SubBranchLName}}</option>
 				   </select>
 				</div>
-				<van-field v-model="form.bankName" label="开户支行" placeholder="开户支行" :readonly="isDisabled" v-if="isDisabled"/>
+				<van-field v-model="form.subBankName" label="开户支行" placeholder="开户支行" :readonly="isDisabled" v-if="isDisabled"/>
 				
 				<van-field v-model.trim="form.bankNum" type="digit" label="银行卡号" placeholder="银行卡号" :readonly="isDisabled"/>
 				
@@ -203,27 +203,28 @@
 	             this.$refs.myArea.reset()// 重置城市列表
 	        },
 	        getUserInfo(){
-	        	this.API.getUserInfo().then((data)=>{
+	        	this.API.getUserInfo().then(({data, error})=>{
 	        		this.userInfo = data
-	        		let {FReallyName, FMobilePhone, FName, FBankId, FBankNum, FBankProvince, FBankCity, SubBranchID, SubBranchName} = data
+	        		let {real_name, mobile, bank, sub_branch_name, FBankId, bank_card, regist_province, regist_city, SubBranchID, SubBranchName} = data
 	        		this.form = {
-	        			reallyName: FReallyName,
-	        			phone: FMobilePhone,
-	        			bankName: FName,
+	        			reallyName: real_name,
+	        			phone: mobile,
+	        			bankName: bank,
+	        			subBankName: sub_branch_name,
 	        			bankId: FBankId,
-	        			bankNum: FBankNum,
+	        			bankNum: bank_card,
 	        			subBranchID: SubBranchID,
 	        			subBranchName: SubBranchName,
-	        			area: FBankProvince + "、"+FBankCity
+	        			area: regist_province + "、"+regist_city
 	        		}
-	        		if( utils.isNotEmptyAll(FReallyName, FBankId, FBankNum)){	//已认证过
+	        		if( utils.isNotEmptyAll(real_name, bank, bank_card)){	//已认证过
 	        			this.showEdit = true
 	        			this.isDisabled = true
 	        		}else{
 	        			this.showEdit = false
 	        			this.isDisabled = false
 	        		}
-	        		this.getSubBranch()
+	        		//this.getSubBranch()
 	        		
 	        	})
 	        },

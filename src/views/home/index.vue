@@ -62,19 +62,19 @@
 							<van-row class="bg-fff product-item-row">
 								<van-col span="8">
 									<div class="imgShow">
-										<img :src="item.FIMGUrl" class="product-pic w100 h100" />
+										<img :src="item.img" class="product-pic w100 h100" />
 									</div>
 								</van-col>
 								<van-col span="16">
 									<div class="product-info flex">
 										<div class="ski-name">
 											<p class="ski-title">{{item.title}}</p>
-											<div class="desc inline-block" v-if="(item.FUnitPrice - item.SkillPrice) > 0">拍下后平台返还{{(item.FUnitPrice - item.SkillPrice).toFixed(2)}}元</div>
+											<div class="desc inline-block" v-if="(item.price - item.current_price) > 0">拍下后平台返还{{(item.price - item.current_price).toFixed(2)}}元</div>
 										</div>
 										<div class="ski-num flex">
 											<div class="ski-num-left">
-												<p class="preferentialPrice">优惠价：<span class="bold">￥{{item.SkillPrice}}</span></p>
-												<p class="originalPrice">原价：<span class="line-through">￥{{item.FUnitPrice }}</span></p>
+												<p class="preferentialPrice">优惠价：<span class="bold">￥{{item.current_price}}</span></p>
+												<p class="originalPrice">原价：<span class="line-through">￥{{item.price }}</span></p>
 											</div>
 											<div class="ski-num-right">
 												<van-button type="danger" size="small" @click.stop="toProductDetail(item)">立即抢购</van-button>
@@ -195,6 +195,14 @@
 				this.onLoad();
 			},
 			toProductDetail(item) {
+				
+				this.$router.push({
+					path: "/singleProductList",
+					query: {
+						paId: item.pa_id
+					}
+				});
+				/*
 				if(this.pageType == 1) {
 					this.$router.push({
 						path: "/productDetail",
@@ -210,7 +218,7 @@
 						}
 					});
 				}
-
+				*/
 			},
 			changeSkillTaskList() {
 				this.pageType = 2;

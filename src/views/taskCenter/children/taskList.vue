@@ -66,7 +66,7 @@
 							<div class="AB-assets" v-if="item.FPingJiastatus != 0 && item.FPingJiastatus != 3 && item.FNewStar != '作废'">
 								<router-link class="red" :to="{path:'/customEvaluation', query:{TaskId:item.FID}}" tag="span">点击查看评价内容 （请按商家要求评价，奖励{{item.FBuyUserPrice}}元哦）</router-link>
 							</div>
-							<div class="if_do flex" v-if="item.FStatus == 1">
+							<div class="if_do flex" v-if="item.status == 1">
 								<div class="if_no inline-block text-c flex-1" @click="chargeBack(item)">我要退单</div>
 								<div class="if_is inline-block text-c flex-1" @click="startTask(item)">开始任务</div>
 							</div>
@@ -276,7 +276,7 @@
 			},
 			//开始任务
 			startTask(item){
-				this.$router.push({path: "/startTask", query:{TaskId: item.FID}})
+				this.$router.push({path: "/startTask", query:{TaskId: item.id}})
 			},
 			//查询售后订单列表(包括用户发起和商家发起)
 			getTaskSaleList(){

@@ -16,15 +16,15 @@
 				<div class="left-num">1</div>
 				<div class="right-text flex-1">
 					<p>请打开淘宝APP使用账号
-						<span class="blue">{{userLoginInfo.FWang}}</span>登陆。如果已登陆请点击“我的淘宝”-“头像”，确认会员名是否与
-						<!--<span class="blue">{{userLoginInfo.FWang}}</span>-->一致
+						<span class="blue">{{taskInfo.user_ww}}</span>登陆。如果已登陆请点击“我的淘宝”-“头像”，确认会员名是否与
+						<!--<span class="blue">{{taskInfo.user_ww}}</span>-->一致
 					</p>
 					<div class="select_Key" v-if="taskInfo.FSelectKey !=2 ">
 	                    <p color="red">★复制关键词切换到淘宝APP搜索</p>
 	                    <p>☆关键词:</p>
 	                    <div class="keyword-inp">
-	                        <input type="text" class="keyWords border-box" :value="taskInfo.FSelect" readonly>
-	                        <van-button type="danger" v-clipboard:copy="taskInfo.FSelect" v-clipboard:success="onCopy" v-clipboard:error="onError">复制</van-button>
+	                        <input type="text" class="keyWords border-box" :value="taskInfo.keyword" readonly>
+	                        <van-button type="danger" v-clipboard:copy="taskInfo.keyword" v-clipboard:success="onCopy" v-clipboard:error="onError">复制</van-button>
 	                    </div>
 	                    <p class="no-product">
 	                    	<span>找不到商品？</span><span class="juBao" @click="showOverlay=true">举报</span>
@@ -54,24 +54,24 @@
 				<div class="right-text flex-1">
 					<p class="part-3">根据下面的商品信息找到需要购买的宝贝</p>
 					<p class="part-green">★店铺名称</p>
-					<p class="shop-name">☆ <span>{{taskInfo.FShopName}}<!--暖※※※※品--></span></p>
+					<p class="shop-name">☆ <span>{{taskInfo.shop_name}}<!--暖※※※※品--></span></p>
 					<p class="part-green">★商品价格</p>
 					<p class="total-price"> ☆合计：
-						<span class="total">{{taskInfo.FGoodsUnitPrice}}</span>元
-						<span class="single-price">{{taskInfo.FUnitPrice}}</span>元/件*
-						<span class="num">{{taskInfo.FGoodsNum}}</span>件
+						<span class="total">{{taskInfo.price}}</span>元
+						<span class="single-price">{{taskInfo.price}}</span>元/1件
+						<!--<span class="num">{{taskInfo.FGoodsNum}}</span>件-->
 					</p>
 					<p class="part-green">★发货地</p>
 					<p class="place">☆ <span>{{taskInfo.Ffhd}}</span></p>
 					<p class="part-green"> ★价格区间</p>
 					<p>☆<span class="lbl_jgqj">
-						{{taskInfo.Fjgqj != "" && taskInfo.Fjgqj_end != "" ? (taskInfo.Fjgqj + " - " + taskInfo.Fjgqj_end) : ""}}</span>
+						{{(taskInfo.price_start + " - " + taskInfo.price_end)}}</span>
 					</p>
 					<p class="part-green">★注意事项</p>
-					<p class="lbl_bz">☆<span>{{taskInfo.Fbz}}</span></p>
+					<p class="lbl_bz">☆<span>{{taskInfo.mc_comment}}</span></p>
 					<p class="part-green">★商品主图</p>
 					<p class="img text-c">
-						<img id="lbl_Img" height="100%" :src="taskInfo.FShopImg && taskInfo.FShopImg.replace('../', '/')">
+						<img id="lbl_Img" height="100%" :src="taskInfo.img && taskInfo.img.replace('../', '/')">
 					</p>
 					<p class="part-red" v-if="parseInt(taskInfo.RemoteRegionIsDeliver) != 0">★提示</p>
 					<p v-if="parseInt(taskInfo.RemoteRegionIsDeliver) != 0">偏远地区不发货</p>
@@ -100,7 +100,7 @@
 					<p class="part-green">★活动信息</p>
 					<div class="task-co-user-info">
                     	<p>接手旺旺</p>
-	                    <input type="text" readonly v-model="userLoginInfo.FWang">
+	                    <input type="text" readonly v-model="taskInfo.user_ww">
 	                </div>
 	                <div class="task-co-user-info">
 	                    <p>任务金额</p>
@@ -172,7 +172,7 @@
 		created(){
 			this.taskId = this.$route.query.TaskId;
 			console.log(this.userLoginInfo)
-			//this.taskInfo.FWang = this.userLoginInfo.FWang
+			//this.taskInfo.user_ww = this.userLoginInfo.user_ww
 			this.getTaskInfo()
 		},
 		methods:{
@@ -180,7 +180,7 @@
 				this.$router.back();
 			},
 			getTaskInfo(){
-				this.API.getTaskInfo({TaskId: this.taskId}).then((data)=>{
+				this.API.getTaskInfo({order_id: this.taskId}).then(({data, error})=>{
 					this.taskInfo = data
 				})
 			},
@@ -280,7 +280,7 @@
 				if(this.productLink == ""){
 					this.$toast("请先填写宝贝链接地址!")
 				}else{
-					this.API.checkGoodsUrl({ "TaskId": this.taskId, "GoodsUrl": encodeURI(this.productLink) }).then((data)=>{
+					this.API.checkGoodsUrl({ "order_id": this.taskId, "product_url": encodeURI(this.productLink) }).then((data)=>{
 						if (data.ErrorCode == 100) {
                             this.isValidSuccess = true
                             this.$toast("验证成功");

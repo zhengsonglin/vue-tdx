@@ -62,7 +62,7 @@
 							this.$router.push("home")
 						} else {
 							this.hasCommit = false
-							this.$toast.fail(error.errmsg)
+							this.$toast.fail(error.usermsg)
 						}
 					})
 				}

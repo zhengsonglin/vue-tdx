@@ -62,7 +62,7 @@
 			}
 		},
 		created(){
-			this.getFeedBackList()
+			//this.getFeedBackList()
 		}
 	}
 </script>
