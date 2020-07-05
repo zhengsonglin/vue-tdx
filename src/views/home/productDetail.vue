@@ -27,8 +27,14 @@
 	        </div>
 	        <!-- 活动时间介绍 -->
 	        <div class="com-detail detail-time">
-	            <span class="iconfont icon-clock"></span>活动时间结束
-	            <span class="time-over bold red">{{productInfo.task_end}}</span>
+	        	<p>
+		            <span class="iconfont icon-clock"></span>活动时间开始
+		            <span class="time-over bold red">{{productInfo.task_start}}</span>
+	            </p>
+	            <p>
+		            <span class="iconfont icon-clock"></span>活动时间结束
+		            <span class="time-over bold red">{{productInfo.task_end}}</span>
+	            </p>
 	        </div>
 	        
 	        <!-- 活动金额介绍 -->
@@ -331,6 +337,12 @@
 		created(){
 			this.tId = this.$route.query.tId
 			this.getProductDetail();
+			
+		/*	setInterval(()=>{
+				this.API.getTheTask({t_id: this.tId}).then(({data, error, order_id})=>{
+					console.log("setTimeout", data)
+				})
+			},100)*/
 		}
 	}	
 </script>
@@ -408,6 +420,9 @@
 				}
 				&.detail-time{
 					font-size: 13px;
+					>p{
+						line-height: 24px;
+					}
 					.icon-clock{
 						font-size: 18px;
 						vertical-align: middle;
