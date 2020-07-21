@@ -179,12 +179,12 @@
 					margin: 0 auto;
 					border-radius: 6px;
 					.header{
-						height: 30px;
-						line-height: 29px;
+						height: 40px;
+						line-height: 39px;
 	    				background-color: red;
 					}
 					.tips{
-						padding: 10px 20px 20px;
+						padding: 20px 20px 30px;
 						background-color: #fff4f3;
 						>p{
 							line-height: 26px;

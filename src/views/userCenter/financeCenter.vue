@@ -106,6 +106,7 @@
 		    }
 		},
 		created(){
+			//console.log(this.moment("2020-07-16 09:36:18").format("YYYY-MM-DD HH:mm:ss"))
 			//console.log(this.moment(new Date()).format("YYYY-MM-DD HH:mm:ss"))
 			//console.log(this.moment().format('dddd'));
 		}
