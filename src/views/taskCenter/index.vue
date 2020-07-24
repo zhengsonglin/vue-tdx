@@ -96,7 +96,8 @@
 				if(this.activeIndex){
 					return this.tabs[this.activeIndex].state
 				}else{
-					return this.tabs[this.activeIndex].children.filter((item)=>item.isActive)[0].state
+					return this.tabs[this.activeIndex].state
+					//return this.tabs[this.activeIndex].children.filter((item)=>item.isActive)[0].state
 				}
 			},
 			queryBaseParam(){

@@ -5,8 +5,8 @@
 		</div>
 		<div class="content flex">
 			<div class="left-item h100 over-auto">
-				<div :class="['nav-item', {active: category== item.FID}]" v-for="(item,index) in categoryList" :key="index" @click.stop="changeCategory(item)">
-					{{item.FName}}
+				<div :class="['nav-item', {active: category== item.id}]" v-for="(item,index) in categoryList" :key="index" @click.stop="changeCategory(item)">
+					{{item.short_name}}
 				</div>
 			</div>
 			<div class="right-item flex-1 h100 over-auto">
@@ -21,26 +21,27 @@
 								<van-cell v-for="(item, index) in productList" :key="index" class="product-item">
 									<div class="flex bg-fff">
 										<div class="left-img">
-											<img :src="(item.FIMGUrl == '' ? item.ShopImg.replace('../', '/') : item.FIMGUrl)" width="100%" height="100%"
-												v-lazy="(item.FIMGUrl == '' ? item.ShopImg.replace('../', '/') : item.FIMGUrl)"/>
+											<img :src="item.img" width="100%" height="100%"
+												v-lazy="item.img"/>
 										</div>
 										<div class="right-content flex-1">
-											<div class="row-1 van-ellipsis">{{item.FGoodsName}}</div>
+											<div class="row-1 van-ellipsis">{{item.title}}</div>
 											<div class="row-2">
 												<span class="storeTag" v-show="item.FGoodsObjectID == 25 && item.SlideShow == 1">需晒图</span>
 											</div>
 											<div class="row-3 over-hidden">
 												<div class="left fl">
-													<span class="title">垫付:</span> <p class="red inline-block">￥<span class="price bold">{{item.PayMentAmount}}</span></p></span>
+													<span class="title">垫付:</span> <p class="red inline-block">￥<span class="price bold">{{item.price}}</span></p></span>
 												</div>
-												<div class="right fr" v-if="status !=2">
-													<span class="btn inline-block c-fff  text-c" @click="toProductDetail(item)">{{status==1?'马上抢&gt;':status==3?'预定 &gt;':''}}</span>
+												<div class="right fr" v-if="status ==null">
+													<span class="btn inline-block c-fff  text-c" @click="toProductDetail(item)">马上抢</span>
 												</div>
 											</div>
 											<div class="row-4 relative">
-												<div class="bar_box h100" :style="{color:'#666',width:percent(item.NumberRemain/item.FTaskNum, 3)}"></div>
-												<div class="bar_word w100 h100 c-fff absolute border-box">剩余{{item.NumberRemain}}件/共{{item.FTaskNum}}件 
-													{{percent( parseInt(item.NumberRemain)/item.FTaskNum, 0) }}</div>
+												<!--mpvue不支持在template中调用methods方法-->
+												<div class="bar_box h100" :style="{color:'#666',width:item.widthPercent}"></div>
+												<div class="bar_word w100 h100 c-fff absolute border-box">剩余{{item.task_count - item.order_count}}件/共{{item.task_count}}件 
+													{{item.textPercent }}</div>
 												
 											</div>
 										</div>
@@ -62,16 +63,16 @@
 			return {
 				categoryList:[],
 				productStatus:[
-					{name:"进行中", status:"1"},
-					{name:"即将开始", status:"2"},
-					{name:"可预约", status:"3"},
+					{name:"进行中", status:null},
+					{name:"即将开始", status:"1"},
+					{name:"可预约", status:"2"},
 				],
 				productList:[],
 				pageNo: 1,
 				pageSize: 30,
 				searchKey: "",
-				category: 13,
-				status: 1,
+				category: 0,
+				status: null,	//null进行中，1即将开始，2可预约
 				loading: false,
 				finished: false,
 				refreshing: false,
@@ -80,11 +81,14 @@
 		computed:{
 			getParams(){
 				return {
-					page: this.pageNo,
-					size: this.pageSize,
-					key: this.searchKey,
-					category: this.category,
-					status: this.status
+					page_no: this.pageNo,
+					page_size: this.pageSize,
+					keywords: this.searchKey,
+					module_type: 1,
+					status: this.status,
+					type: 2,
+					is_family: null,
+					cid: this.category || 19
 				}
 			}
 		},
@@ -94,7 +98,7 @@
 			},
 			//改变查询商品类别
 			changeCategory(item){
-				this.category = item.FID;
+				this.category = item.id;
 				this.onRefresh()
 			},
 			//改变查询商品状态
@@ -104,7 +108,7 @@
 			},
 			//查询所有商品类别
 			getCategory(){
-				return this.API.getCategory().then((data)=>{
+				return this.API.getCategory().then(({data, error})=>{
 					this.categoryList = data
 				})
 			},
@@ -129,8 +133,13 @@
 			},
 			//查询单个类别下商品列表
 			getProductList(){
-				this.API.getProductList(this.getParams, {showLoading: false}).then((data)=>{
+				this.API.getProductList(this.getParams, {showLoading: false}).then(({data, error})=>{
 					//this.productList = data
+					data.forEach(({task_count, order_count}, index)=>{
+						//item.task_count - item.order_count}
+						data[index].widthPercent = this.percent((task_count - order_count)/task_count, 3)
+						data[index].textPercent = this.percent( order_count/task_count, 0)
+					})
 					this.productList.push(...data);
 					if(data.length < this.pageSize) {
 						this.finished = true;

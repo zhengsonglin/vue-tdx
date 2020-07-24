@@ -152,7 +152,8 @@
 				// 将 loading 设置为 true，表示处于加载状态
 				this.loading = true;
 				if(this.activeIndex == 0){
-					this.getTaskSaleList()
+					//this.getTaskSaleList()
+					this.onLoad();
 				}else{
 					this.onLoad();
 				}
@@ -310,7 +311,7 @@
 		    },
 		},
 		watch:{
-			queryForm:{
+			baseParam:{
 				handler(newValue, oldValue){
 					console.log(newValue)
 					this.onRefresh()

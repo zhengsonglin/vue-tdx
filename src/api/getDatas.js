@@ -171,7 +171,7 @@ export default {
 		return rsp.data
     }),
     //查询商品所属分类类别
-    getCategory: (params, config) => $http.post("/Mobile/GetCategory", params, config).then((rsp) => {
+    getCategory: (params, config) => $http.get("/pa/cate", params, config).then((rsp) => {
 		return rsp.data
     }),
     //查询商品详情
