@@ -137,7 +137,12 @@
 		name:"userCenter",
 		data() {
 			return {
-				userInfo:{},
+				userInfo:{
+					order_num: {
+						free:{},
+						xqg:{}
+					}
+				},
 				orderType:0,	//0淘抢购订单，1熊抢购订单
 			}
 		},
