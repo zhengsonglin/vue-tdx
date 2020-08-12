@@ -1,5 +1,7 @@
 const path = require('path');
 const axios = require('axios')
+const qs = require('qs')
+
 function resolve(dir) {
 	return path.join(__dirname, dir)
 }
@@ -18,16 +20,39 @@ module.exports = {
 		// See https://github.com/vuejs/vue-cli/blob/dev/docs/cli-service.md#configuring-proxy
 		proxy: {
 			'/api': {
-				target: 'http://www.taodaxiong.cn/', //对应自己的接口 如：http://127.0.0.1:8100/
-				changeOrigin: true,
-				ws: true,        //如果要代理 websockets，配置这个参数
-            	secure: false,  // 如果是https接口，需要配置这个参数
-				pathRewrite: {
+				"target": 'https://www.taodaxiong.cn/', //对应自己的接口 如：http://127.0.0.1:8100/
+				"changeOrigin": true,
+				"ws": true,        //如果要代理 websockets，配置这个参数
+            	"secure": false,  // 如果是https接口，需要配置这个参数
+				"pathRewrite": {
 					'^/api': ''
 				}
 			}
 		}, // string | Object
 		before: app => {
+			/*app.post('/api/sys/login', function (req, res) {
+			  var url = 'https://www.taodaxiong.cn/sys/login'
+			
+			  console.log(123, req)
+			
+			  axios.post(url, {	//qs.stringify(data), 
+			    headers: {
+			      //referer: 'https://www.taodaxiong.cn/uh5/index.html?',
+			      //host: 'www.taodaxiong.cn'
+			    },
+			    params: {
+			    	user: "19972512216",
+					pwd: "zl123456",
+					platform: "2c"
+			    }
+			    
+			  }).then((response) => {
+			  	console.log(err, response)
+			    res.json(response.data)
+			  }).catch((e) => {
+			    console.log(e)
+			  })
+			})*/
 			/*app.post('/api/Mobile/LoginCheck', function (req, res) {
 			  var url = 'http://www.taodaxiong.cn/Mobile/LoginCheck'
 			  http://www.taodaxiong.cn/Mobile/LoginCheck

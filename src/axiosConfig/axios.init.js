@@ -17,6 +17,7 @@ const $ = axios.create({
 	headers: {
 		'Content-Type': 'application/json',
 		//"token": 'XXXX'		//如果不需要token， headers一定不能多传参数
+		//'referer' : "https://www.taodaxiong.cn/uh5/index.html?" 
 	}
 
 })
@@ -30,7 +31,6 @@ $.interceptors.request.use((config) => { //config 无法注入axios内置config�
 	if (token) {
 		config.headers['X-Token'] = token //getToken() // 让每个请求携带自定义token 请根据实际情况自行修改
 	}
-	
 	if(projectCode){
 		if(config.method == "post" && !config.data.projectCode){
 	      config.data.projectCode = projectCode;
