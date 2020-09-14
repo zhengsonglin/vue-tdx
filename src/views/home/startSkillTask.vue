@@ -164,147 +164,145 @@
 </template>
 
 <script lang="ts">
-	import {Component, Vue} from 'vue-property-decorator'
-	import { State, Getter, Mutation, Action } from 'vuex-class'
-	import utils from '@/utils/utils';
-	@Component({
-		name: "startSkillTask",
-		created(){
-			this.taskId = this.$route.query.TaskId;
-			this.getSkillTaskInfo()
-		},
-	})
-	export default class StartSkillTask extends Vue {
-		private taskId: string = ""
-		private skillTaskInfo: any = {}
-		private form: any = {}
-		private productLink: string = ""	//商品链接或者淘口令
-		private isValidSuccess: boolean = false	//商品验证通过
-		private showOverlay: boolean = false	//是否显示举报弹窗
-		private reportContent: string = "任务价格不一致" //举报原因
-		
-		@State('userLoginInfo') userLoginInfo!: any
-		
-		//methods方法
-		onClickLeft(): void {
-			this.$router.back();
-		}
-		getSkillTaskInfo(): void {
-			this.API.getSkillTaskInfo({TaskId: this.taskId}).then((data: any)=>{
-				this.skillTaskInfo = data
-			})
-		}
-		//验证商品价格
-		validPrice(): void {
-			if(this.form.orderPrice != this.skillTaskInfo.FGoodsUnitPrice){
-				this.$toast("您的实付金额与任务金额不一致，请及时联系客服处理，以免影响亲的返款。")
-		    	return;
-			}
-		}
-		//完成任务
-		submit(): void{
-			let {orderNum, orderPrice, remark, radio, point} = this.form
-			let FUnitPrice:number = parseFloat((this.skillTaskInfo.FUnitPrice * 100).toString()) / 100
-			if(radio==0){
-		        var re: RegExp = /^[1-9]+[0-9]*]*$/;
-		        if (!re.test(point)) {
-		            this.$toast("积分必须为整数");
-		            return;
-		        }
-		        if (parseInt(point) == 0) {
-		            this.$toast("积分抵换数量必须大于0");
-		            return;
-		        }
-			}
-		
-			if(orderPrice != FUnitPrice){
-				this.$toast("您的实付金额与任务金额不一致，请及时联系客服处理，以免影响亲的返款。")
-		    	return;
-			}
-			
-			if (orderNum.length != 18 && orderNum.length != 19) {
-		        this.$toast("订单号必须是18-19位");
-		        return;
-		    }
-		    var re: RegExp = /^[1-9]+[0-9]*]*$/;
-			
-		    if (!re.test(orderNum)) {
-		        this.$toast("订单号必须是纯数字组成");
-		        return;
-		    }
-		
-			point = point==""?0:point;
-			this.API.complateSkillTask({ TaskId: this.taskId, OrderNum: orderNum, remark, price:orderPrice, point }).then((data:any)=>{
-				if (data.ErrorCode == 100) {
-		            this.$toast({
-		            	duration: 600, // 持续展示 toast
-					  	forbidClick: true,
-					  	type: "success",
-					  	message: '提交成功',
-					  	onClose:()=>{
-							this.$router.push({name:"taskCenter", params:{orderType:'1'}})
-						}
-					});
-		        } else {
-		            this.$toast({
-					  	//forbidClick: true,
-					  	type: "fail",
-					  	message: data.Content
-					});
-		        }
-		
-			})
-		}
-		//确定举报
-		handleReport(): void {
-			let {FID} = this.skillTaskInfo
-			this.API.addOrderReport( { orderId: this.taskId, fid: FID, reson: this.reportContent }).then((data: any)=>{
-				if (data.ErrorCode == 100) {
-					this.$toast({
-		            	duration: 600, // 持续展示 toast
-					  	forbidClick: true,
-					  	type: "success",
-					  	message: '举报成功，请等待平台处理！',
-					  	onClose:()=>{this.$router.push("home")}
-					});
-		        } else {
-		        	this.$toast({
-					  	//forbidClick: true,
-					  	type: "fail",
-					  	message: data.Content
-					});
-		        }
-		
-			})
-		}
-		onCopy(): void {
-			this.$toast("复制成功")
-			//skillTaskInfo.FSelect
-		}
-		onError(): void {
-			this.$toast("复制失败")
-		}
-		//验证商品链接或者淘口令
-		validProductLink(): void {
-			if(this.productLink == ""){
-				this.$toast("请先填写宝贝链接地址!")
-			}else{
-				this.API.checkSkillGoodsUrl({ "taskId": this.taskId, "goodsUrl": encodeURI(this.productLink) }).then((data: any)=>{
-					if (data.ErrorCode == 100) {
-		                this.isValidSuccess = true
-		                this.$toast("验证成功");
-		            }
-		            else {
-		            	this.$toast({
-						  	//forbidClick: true,
-						  	type: "fail",
-						  	message: "验证失败"
-						});
-		            }
-				})
-			}
-		}
-	}
+import {Component, Vue} from 'vue-property-decorator'
+import { State, Getter, Mutation, Action } from 'vuex-class'
+import utils from '@/utils/utils';
+@Component({
+  name: 'startSkillTask',
+  created() {
+    this.taskId = this.$route.query.TaskId;
+    this.getSkillTaskInfo()
+  },
+})
+export default class StartSkillTask extends Vue {
+  
+  @State('userLoginInfo') public userLoginInfo!: any
+  private taskId: string = ''
+  private skillTaskInfo: any = {}
+  private form: any = {}
+  private productLink: string = ''	// 商品链接或者淘口令
+  private isValidSuccess: boolean = false	// 商品验证通过
+  private showOverlay: boolean = false	// 是否显示举报弹窗
+  private reportContent: string = '任务价格不一致' // 举报原因
+  
+  // methods方法
+  public onClickLeft(): void {
+    this.$router.back();
+  }
+  public getSkillTaskInfo(): void {
+    this.API.getSkillTaskInfo({TaskId: this.taskId}).then((data: any) => {
+      this.skillTaskInfo = data
+    })
+  }
+  // 验证商品价格
+  public validPrice(): void {
+    if (this.form.orderPrice != this.skillTaskInfo.FGoodsUnitPrice) {
+      this.$toast('您的实付金额与任务金额不一致，请及时联系客服处理，以免影响亲的返款。')
+      return;
+    }
+  }
+  // 完成任务
+  public submit(): void {
+    let {orderNum, orderPrice, remark, radio, point} = this.form
+    let FUnitPrice: number = parseFloat((this.skillTaskInfo.FUnitPrice * 100).toString()) / 100
+    let reg: RegExp = /^[1-9]+[0-9]*]*$/;
+    if (radio == 0) {
+          if (!reg.test(point)) {
+              this.$toast('积分必须为整数');
+              return;
+          }
+          if (parseInt(point, 10) == 0) {
+              this.$toast('积分抵换数量必须大于0');
+              return;
+          }
+    }
+  
+    if (orderPrice != FUnitPrice) {
+      this.$toast('您的实付金额与任务金额不一致，请及时联系客服处理，以免影响亲的返款。')
+      return;
+    }
+    
+    if (orderNum.length != 18 && orderNum.length != 19) {
+          this.$toast('订单号必须是18-19位');
+          return;
+      }
+    
+    if (!reg.test(orderNum)) {
+          this.$toast('订单号必须是纯数字组成');
+          return;
+      }
+  
+    point = point == '' ? 0 : point;
+    this.API.complateSkillTask({ TaskId: this.taskId, OrderNum: orderNum, remark, price: orderPrice, point }).then((data: any) => {
+      if (data.ErrorCode == 100) {
+              this.$toast({
+                duration: 600, // 持续展示 toast
+            forbidClick: true,
+            type: 'success',
+            message: '提交成功',
+            onClose: () => {
+            this.$router.push({name: 'taskCenter', params: {orderType: '1'}})
+          }
+        });
+          } else {
+              this.$toast({
+            // forbidClick: true,
+            type: 'fail',
+            message: data.Content
+        });
+          }
+  
+    })
+  }
+  // 确定举报
+  public handleReport(): void {
+    let {FID} = this.skillTaskInfo
+    this.API.addOrderReport( { orderId: this.taskId, fid: FID, reson: this.reportContent }).then((data: any) => {
+      if (data.ErrorCode == 100) {
+        this.$toast({
+                duration: 600, // 持续展示 toast
+            forbidClick: true,
+            type: 'success',
+            message: '举报成功，请等待平台处理！',
+            onClose: () => {this.$router.push('home')}
+        });
+          } else {
+            this.$toast({
+            // forbidClick: true,
+            type: 'fail',
+            message: data.Content
+        });
+          }
+  
+    })
+  }
+  public onCopy(): void {
+    this.$toast('复制成功')
+    // skillTaskInfo.FSelect
+  }
+  public onError(): void {
+    this.$toast('复制失败')
+  }
+  // 验证商品链接或者淘口令
+  public validProductLink(): void {
+    if (this.productLink == '') {
+      this.$toast('请先填写宝贝链接地址!')
+    } else {
+      this.API.checkSkillGoodsUrl({ taskId: this.taskId, goodsUrl: encodeURI(this.productLink) }).then((data: any) => {
+        if (data.ErrorCode == 100) {
+                  this.isValidSuccess = true
+                  this.$toast('验证成功');
+              } else {
+                this.$toast({
+              // forbidClick: true,
+              type: 'fail',
+              message: '验证失败'
+          });
+              }
+      })
+    }
+  }
+}
 </script>
 
 

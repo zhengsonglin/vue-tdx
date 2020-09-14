@@ -38,50 +38,50 @@
 </template>
 
 <script lang="ts">
-	import { Vue, Component } from 'vue-property-decorator'
-	@Component({
-		name:'singleProductList',
-		created(){
-			this.paId = this.$route.query.paId;
-			this.getSingleProductList();
-		}
-	})
-	export default class SingleProductList extends Vue {
-		private result: any = {
-			task_list:[]
-		}
-		
-		//methods
-		onClickLeft():void {
-			this.$router.back();
-		}
-		
-		getSingleProductList(): void{
-			this.API.getSingleProductList({pa_id: this.paId}).then((result: any)=>{
-				let {data,error} = result
-				this.result = data
-			})
-		}
-		
-		toProductDetail(item: any): void{
-			console.log(item)
-			if(this.result.activity_type == 1) {
-				this.$router.push({
-					path: "/productDetail",
-					query: {
-						tId: item.t_id
-					}
-				});
-			} else if(this.result.activity_type == 2) {
-				this.$router.push({
-					path: "/skillTaskDetail",
-					query: {
-						tId: item.t_id
-					}
-				});
-			}
-		}
-	}
+import { Vue, Component } from 'vue-property-decorator'
+@Component({
+  name: 'singleProductList',
+  created() {
+    this.paId = this.$route.query.paId;
+    this.getSingleProductList();
+  }
+})
+export default class SingleProductList extends Vue {
+  private result: any = {
+    task_list: []
+  }
+  
+  // methods
+  public onClickLeft(): void {
+    this.$router.back();
+  }
+  
+  public getSingleProductList(): void {
+    this.API.getSingleProductList({pa_id: this.paId}).then((result: any) => {
+      let {data, error} = result
+      this.result = data
+    })
+  }
+  
+  public toProductDetail(item: any): void {
+    console.log(item)
+    if (this.result.activity_type == 1) {
+      this.$router.push({
+        path: '/productDetail',
+        query: {
+          tId: item.t_id
+        }
+      });
+    } else if (this.result.activity_type == 2) {
+      this.$router.push({
+        path: '/skillTaskDetail',
+        query: {
+          tId: item.t_id
+        }
+      });
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

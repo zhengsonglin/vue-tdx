@@ -34,44 +34,44 @@ import { Component, Vue } from 'vue-property-decorator';
 import {State, Getter, Action, Mutation, namespace } from 'vuex-class'
 import { Button, Icon } from 'vant';
 
-//namespace用来区分vuex中的module
-//const someModule = namespace('path/to/module')
+// namespace用来区分vuex中的module
+// const someModule = namespace('path/to/module')
 
 @Component({
-	name: 'About',
-	components: {
-		[Button.name]: Button,
-		[Icon.name]: Icon
-	},
-	created() {
-		
-	}
+  name: 'About',
+  components: {
+    [Button.name]: Button,
+    [Icon.name]: Icon
+  },
+  created() {
+    
+  }
 })
 export default class About extends Vue {
-	@State('foo') stateFoo: any;
-	@State(state => state.bar) stateBar: any;
-	@Getter('gfoo') getterFoo: any;
-	@Action('setAcFoo') actionFoo: any;
-	@Mutation('setMuFoo') mutationFoo : any;
-	//@someModule.Getter('foo') moduleGetterFoo;
+  @State('foo') public stateFoo: any;
+  @State((state) => state.bar) public stateBar: any;
+  @Getter('gfoo') public getterFoo: any;
+  @Action('setAcFoo') public actionFoo: any;
+  @Mutation('setMuFoo') public mutationFoo: any;
+  // @someModule.Getter('foo') moduleGetterFoo;
 
-	// If the argument is omitted, use the property name
-	// for each state/getter/action/mutation type
-	@State foo: any;
-	@Getter bar: any;
-	@Action setAcBaz: any;
-	@Mutation setQux: any;
-	
-	mounted() {
-		this.stateFoo; // -> store.state.foo
-		this.stateBar; // -> store.state.bar
-		this.getterFoo; // -> store.getters.foo
-		this.actionFoo({ value: true }); // -> store.dispatch('foo', { value: true })
-		this.mutationFoo({ value: true }); // -> store.commit('foo', { value: true })
-		//this.moduleGetterFoo; // -> store.getters['path/to/module/foo']
+  // If the argument is omitted, use the property name
+  // for each state/getter/action/mutation type
+  @State public foo: any;
+  @Getter public bar: any;
+  @Action public setAcBaz: any;
+  @Mutation public setQux: any;
+  
+  public mounted() {
+    console.log(this.stateFoo); // -> store.state.foo
+    console.log(this.stateBar); // -> store.state.bar
+    console.log(this.getterFoo); // -> store.getters.foo
+    this.actionFoo({ value: true }); // -> store.dispatch('foo', { value: true })
+    this.mutationFoo({ value: true }); // -> store.commit('foo', { value: true })
+    // this.moduleGetterFoo; // -> store.getters['path/to/module/foo']
 
-		this.setQux({value: true})
-		this.setAcBaz({value: true})
-	}
+    this.setQux({value: true})
+    this.setAcBaz({value: true})
+  }
 }
 </script>

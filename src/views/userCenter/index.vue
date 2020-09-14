@@ -132,42 +132,42 @@
 </template>
 
 <script lang="ts">
-	import {Component, Provide, Vue, Watch, Emit } from "vue-property-decorator"
-	import { State, Getter, Mutation, Action } from 'vuex-class'
-	@Component({
-		name: 'userCenter',
-		components: {},
-		// 生命周期, 也可以写在下面的组件方法中，组件中的生命周期方法会覆盖当前的生命周期方法
-		created(){
-			this.getIndexInfo();
-		}
-	})
-	export default class UserCenter extends Vue {
-		//data属性
-		private userInfo: any = {
-			order_num: {
-				free:{},
-				xqg:{}
-			}
-		}
-		private orderType: number = 0	//0淘抢购订单，1熊抢购订单
-		
-		@State('userLoginInfo') userLoginInfo!: object
-		
-		//methods方法
-		getIndexInfo(): void {
-			this.API.getIndexInfo().then((result: any)=>{
-				let {data, error} = result
-				this.userInfo = data
-			})
-		}
-		logout(): void {
-			//this.$cookies.set("user_session","25j_7Sl6xDq2Kc3ym0fmrSSk2xV2XkUkX")   
-			//console.log(this.$cookies.get("UserInfo"))
-			//console.log(document.cookie)
-			this.$router.push("login")
-		}
-	}
+import {Component, Provide, Vue, Watch, Emit } from 'vue-property-decorator'
+import { State, Getter, Mutation, Action } from 'vuex-class'
+@Component({
+  name: 'userCenter',
+  components: {},
+  // 生命周期, 也可以写在下面的组件方法中，组件中的生命周期方法会覆盖当前的生命周期方法
+  created() {
+    this.getIndexInfo();
+  }
+})
+export default class UserCenter extends Vue {
+  
+  @State('userLoginInfo') public userLoginInfo!: object
+  // data属性
+  private userInfo: any = {
+    order_num: {
+      free: {},
+      xqg: {}
+    }
+  }
+  private orderType: number = 0	// 0淘抢购订单，1熊抢购订单
+  
+  // methods方法
+  public getIndexInfo(): void {
+    this.API.getIndexInfo().then((result: any) => {
+      let {data, error} = result
+      this.userInfo = data
+    })
+  }
+  public logout(): void {
+    // this.$cookies.set("user_session","25j_7Sl6xDq2Kc3ym0fmrSSk2xV2XkUkX")   
+    // console.log(this.$cookies.get("UserInfo"))
+    // console.log(document.cookie)
+    this.$router.push('login')
+  }
+}
 </script>	
 
 

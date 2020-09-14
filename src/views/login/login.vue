@@ -27,72 +27,72 @@
 </template>
 
 <script lang="ts">
-	import { Component, Vue } from 'vue-property-decorator';
-	import { State, Getter, Mutation, Action } from 'vuex-class'
-	import { checkMobilePhone } from '@/assets/js/util';
-	import storage from 'good-storage';
-	//import { Button, Icon  } from 'vant';
-	
-	@Component({
-		name: 'login',
-		beforeRouteLeave(to: any, from: any, next: any) {
-	      console.log('beforeRouteLeave');
-	      next();
-	    },
-	    beforeRouteEnter(to: any, from: any, next: any) {
-	      console.log('beforeRouteLeave');
-	      next();
-	    },
-		// 生命周期, 也可以写在下面的组件方法中，组件中的生命周期方法会覆盖当前的生命周期方法
-		mounted() {
-			console.log("mounted login2")
-		}
-	})
-	export default class Login extends Vue {
-		@Mutation('setUserLoginInfo') setUserLoginInfo: any
-		
-		private form: any = {
-			user: "18598271043",
-			pwd: "zsl123456",
-			platform: "2c"
-		}
-		
-		private toRegister() : void{
-			console.log("register")
-			this.$router.push("register")
-		}
-		private forgetPass() : void{
-			this.$router.push("forgetPwd")
-		}
-		private handleLogin() : void{
-			//console.log('handleLogin', checkMobilePhone, "---")
-			let {
-				user,
-				pwd
-			} = this.form
-			if(!checkMobilePhone(user)) {
-				this.$toast('请输入正确手机号');
-			} else if(pwd == "") {
-				this.$toast('请输入密码');
-			} else {
-				this.hasCommit = true
-				this.API.login(this.form).then((result: any) => {
-					let {data, error} = result
-					console.log(data)
-					if(error.errno == 200) {
-						//this.loginSuccess(data)
-						storage.set("tdx-Token", "faketoken");
-						this.setUserLoginInfo(data)
-						this.$router.push("home")
-					} else {
-						this.hasCommit = false
-						this.$toast.fail(error.usermsg)
-					}
-				})
-			}
-		}
+import { Component, Vue } from 'vue-property-decorator';
+import { State, Getter, Mutation, Action } from 'vuex-class'
+import { checkMobilePhone } from '@/assets/js/util';
+import storage from 'good-storage';
+// import { Button, Icon  } from 'vant';
 
-	}
+@Component({
+  name: 'login',
+  beforeRouteLeave(to: any, from: any, next: any) {
+      console.log('beforeRouteLeave');
+      next();
+    },
+    beforeRouteEnter(to: any, from: any, next: any) {
+      console.log('beforeRouteLeave');
+      next();
+    },
+  // 生命周期, 也可以写在下面的组件方法中，组件中的生命周期方法会覆盖当前的生命周期方法
+  mounted() {
+    console.log('mounted login2')
+  }
+})
+export default class Login extends Vue {
+  @Mutation('setUserLoginInfo') public setUserLoginInfo: any
+  
+  private form: any = {
+    user: '18598271043',
+    pwd: 'zsl123456',
+    platform: '2c'
+  }
+  
+  private toRegister(): void {
+    console.log('register')
+    this.$router.push('register')
+  }
+  private forgetPass(): void {
+    this.$router.push('forgetPwd')
+  }
+  private handleLogin(): void {
+    // console.log('handleLogin', checkMobilePhone, "---")
+    let {
+      user,
+      pwd
+    } = this.form
+    if (!checkMobilePhone(user)) {
+      this.$toast('请输入正确手机号');
+    } else if (pwd == '') {
+      this.$toast('请输入密码');
+    } else {
+      this.hasCommit = true
+      this.API.login(this.form).then((result: any) => {
+        let {data, error} = result
+        console.log(data)
+        if (error.errno == 200) {
+          // this.loginSuccess(data)
+          storage.set('tdx-Token', 'faketoken');
+          this.setUserLoginInfo(data)
+          this.$router.push('home')
+        } else {
+          this.hasCommit = false
+          this.$toast.fail(error.usermsg)
+        }
+      })
+    }
+  }
+
+}
 </script>
 
 <style scoped lang="scss">

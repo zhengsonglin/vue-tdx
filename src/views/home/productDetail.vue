@@ -146,224 +146,224 @@
 </template>
 
 <script lang="ts">
-	import { Vue, Component } from 'vue-property-decorator'
-	import MySwiper from '@/components/swiper/swiper.vue'
-	@Component({
-		name:'productDetail',
-		components:{MySwiper},
-		created(){
-			this.tId = this.$route.query.tId
-			this.getProductDetail();
-		}
-	})
-	export default class ProductDetail extends Vue {
-		private showMenuNav: boolean = false
-		private productInfo: any = {}
-		private showOverlay: boolean = false
-		private showSomeProductInfo: boolean = true
-		private activeStatus: number = 1 //1活动进行中, 2活动未开始，3活动已结束 , 4开始任务(取决于活动时间)
-		private inventoryStatus: number = 1 //库存充足， 0库存不足
-		private btnInfo: any = {
-			color: "",
-			text: "",
-			disabled: false,
-		}
-		private showReservation: boolean = false //立即预定
-		private reservationDay: string = '' //预定天数(1-7)
-						
-		//计算属性				
-		get imgList() {
-			let {
-				img,
-				sipping_url
-			} = this.productInfo;
+import { Vue, Component } from 'vue-property-decorator'
+import MySwiper from '@/components/swiper/swiper.vue'
+@Component({
+  name: 'productDetail',
+  components: {MySwiper},
+  created() {
+    this.tId = this.$route.query.tId
+    this.getProductDetail();
+  }
+})
+export default class ProductDetail extends Vue {
+  private showMenuNav: boolean = false
+  private productInfo: any = {}
+  private showOverlay: boolean = false
+  private showSomeProductInfo: boolean = true
+  private activeStatus: number = 1 // 1活动进行中, 2活动未开始，3活动已结束 , 4开始任务(取决于活动时间)
+  private inventoryStatus: number = 1 // 库存充足， 0库存不足
+  private btnInfo: any = {
+    color: '',
+    text: '',
+    disabled: false,
+  }
+  private showReservation: boolean = false // 立即预定
+  private reservationDay: string = '' // 预定天数(1-7)
+          
+  // 计算属性				
+  get imgList() {
+    let {
+      img,
+      sipping_url
+    } = this.productInfo;
 
-			return [img, sipping_url]
-		}
-		
-		//methods方法
-		handleHelp(): void {
-			this.$toast('如有疑问，请及时联系淘大熊客服（晴天或者熊大）！');
-		}
-		
-		getProductDetail(): void {
+    return [img, sipping_url]
+  }
+  
+  // methods方法
+  public handleHelp(): void {
+    this.$toast('如有疑问，请及时联系淘大熊客服（晴天或者熊大）！');
+  }
+  
+  public getProductDetail(): void {
 
-			this.API.getProductDetail({
-				t_id: this.tId
-			}).then((result: any) => {
-				let { data, error } = result
-				this.productInfo = data
-				var d2 = new Date(); //取今天的日期
-				var d1 = new Date(Date.parse(data.fsttime));
-				var d3 = new Date(Date.parse(data.fentime));
+    this.API.getProductDetail({
+      t_id: this.tId
+    }).then((result: any) => {
+      let { data, error } = result
+      this.productInfo = data
+      let d2 = new Date(); // 取今天的日期
+      let d1 = new Date(Date.parse(data.fsttime));
+      let d3 = new Date(Date.parse(data.fentime));
 
-				if(d1 > d2) {
-					this.activeStatus = 2
-					this.btnInfo = {
-						color: "#b1b5b4",
-						text: "活动未开始",
-						disabled: true
-					}
-					this.showSomeProductInfo = false
-				} else if(d3 <= d2) {
-					this.activeStatus = 3
-					this.btnInfo = {
-						color: "#b1b5b4",
-						text: "活动已结束",
-						disabled: true
-					}
-					this.showSomeProductInfo = false
-				} else {
-					if(data.Num <= 0) {
-						this.activeStatus = 1
-						this.inventoryStatus = 0
-						this.btnInfo = {
-							color: "#ea7d5a",
-							text: "立即预定",
-							disabled: false
-						}
-						this.showSomeProductInfo = false
-					} else {
-						this.btnInfo = {
-							color: "#fd3c3c",
-							text: "立即领取",
-							disabled: false,
-						}
-					}
-				}
+      if (d1 > d2) {
+        this.activeStatus = 2
+        this.btnInfo = {
+          color: '#b1b5b4',
+          text: '活动未开始',
+          disabled: true
+        }
+        this.showSomeProductInfo = false
+      } else if (d3 <= d2) {
+        this.activeStatus = 3
+        this.btnInfo = {
+          color: '#b1b5b4',
+          text: '活动已结束',
+          disabled: true
+        }
+        this.showSomeProductInfo = false
+      } else {
+        if (data.Num <= 0) {
+          this.activeStatus = 1
+          this.inventoryStatus = 0
+          this.btnInfo = {
+            color: '#ea7d5a',
+            text: '立即预定',
+            disabled: false
+          }
+          this.showSomeProductInfo = false
+        } else {
+          this.btnInfo = {
+            color: '#fd3c3c',
+            text: '立即领取',
+            disabled: false,
+          }
+        }
+      }
 
-			})
-		}
-		
-		submit(): void {
-			let { activeStatus, inventoryStatus } = this
-			if(activeStatus == 1 && inventoryStatus == 1) { //领取任务
-				this.showOverlay = true
-				return
-			}
-			if(activeStatus == 4) { //开始任务
-				this.$dialog.confirm({
-					title: '温馨提示',
-					message: '如果有任何疑问，请联系淘大熊微信客服哦！',
-				}).then(() => {
-					this.startTask();
-				});
-			} else if(activeStatus == 1 && inventoryStatus == 0) { //立即预定
-				this.showReservation = true
-			}
-		}
-		
-		//开始任务
-		startTask(): void {
-			this.API.startTask({ShopId: this.shopId }).then((data: any) => {
-				if(data.ErrorCode == 100) {
-					this.$router.push({
-						path: "/startTask",
-						query: {
-							TaskId: data.Content
-						}
-					})
-				} else {
-					this.$router.push("login")
-				}
-			})
-		}
-		
-		//领取任务
-		handleBuy(): void {
-			this.showOverlay = false
-			this.API.getTheTask({ t_id: this.tId }).then((result: any) => {
-				let {data, error, order_id } = result
-				if(error.errno == 200) {
-					this.$dialog.alert({
-						title: '恭喜你',
-						message: '商品抢购成功，请按时完成任务！',
-					}).then(() => {
-						this.activeStatus = 4;
-						this.btnInfo = {
-							color: "#ff9800",
-							text: "开始任务",
-							disabled: false
-						}
-						this.$router.push({
-							path: "/startTask",
-							query: {
-								TaskId: order_id
-							}
-						})
-					})
-				} else if(error.errno == 101) {
-					if(data.Content == "请先进行实名认证!") {
-						this.$dialog.alert({
-							message: data.Content,
-						}).then(() => {
-							this.$router.push("realNameAuthentica")
-						})
-					} else {
-						this.$toast({
-							//forbidClick: true,
-							type: "fail",
-							message: data.Content
-						});
-					}
-				} else if(error.errno != 200) {
-					this.$toast({
-						//forbidClick: true,
-						type: "fail",
-						message: error.usermsg
-					});
-					return
-					if(this.shopId != "0") {
-						this.$router.push({
-							path: "/login",
-							query: {
-								type: this.shopId
-							}
-						})
-					} else {
-						this.$router.push("login")
-					}
+    })
+  }
+  
+  public submit(): void {
+    let { activeStatus, inventoryStatus } = this
+    if (activeStatus == 1 && inventoryStatus == 1) { // 领取任务
+      this.showOverlay = true
+      return
+    }
+    if (activeStatus == 4) { // 开始任务
+      this.$dialog.confirm({
+        title: '温馨提示',
+        message: '如果有任何疑问，请联系淘大熊微信客服哦！',
+      }).then(() => {
+        this.startTask();
+      });
+    } else if (activeStatus == 1 && inventoryStatus == 0) { // 立即预定
+      this.showReservation = true
+    }
+  }
+  
+  // 开始任务
+  public startTask(): void {
+    this.API.startTask({ShopId: this.shopId }).then((data: any) => {
+      if (data.ErrorCode == 100) {
+        this.$router.push({
+          path: '/startTask',
+          query: {
+            TaskId: data.Content
+          }
+        })
+      } else {
+        this.$router.push('login')
+      }
+    })
+  }
+  
+  // 领取任务
+  public handleBuy(): void {
+    this.showOverlay = false
+    this.API.getTheTask({ t_id: this.tId }).then((result: any) => {
+      let {data, error, order_id } = result
+      if (error.errno == 200) {
+        this.$dialog.alert({
+          title: '恭喜你',
+          message: '商品抢购成功，请按时完成任务！',
+        }).then(() => {
+          this.activeStatus = 4;
+          this.btnInfo = {
+            color: '#ff9800',
+            text: '开始任务',
+            disabled: false
+          }
+          this.$router.push({
+            path: '/startTask',
+            query: {
+              TaskId: order_id
+            }
+          })
+        })
+      } else if (error.errno == 101) {
+        if (data.Content == '请先进行实名认证!') {
+          this.$dialog.alert({
+            message: data.Content,
+          }).then(() => {
+            this.$router.push('realNameAuthentica')
+          })
+        } else {
+          this.$toast({
+            // forbidClick: true,
+            type: 'fail',
+            message: data.Content
+          });
+        }
+      } else if (error.errno != 200) {
+        this.$toast({
+          // forbidClick: true,
+          type: 'fail',
+          message: error.usermsg
+        });
+        return
+        if (this.shopId != '0') {
+          this.$router.push({
+            path: '/login',
+            query: {
+              type: this.shopId
+            }
+          })
+        } else {
+          this.$router.push('login')
+        }
 
-				}
+      }
 
-			})
-		}
-		
-		//立即预定
-		AddYd() {
-			var tt: RegExp = /^\d+$/g, days: string = this.reservationDay;
-			if(!tt.test(days)) {
-				this.$notify('天数输入错误！');
-				return;
-			}
-			this.showReservation = false
-			this.API.reservations({
-				ShopId: this.shopId,
-				days
-			}).then((data: any) => {
-				if(data.ErrorCode == 100) {
-					this.$toast({
-						duration: 600, // 持续展示 toast
-						forbidClick: true,
-						type: "success",
-						message: '预订成功！',
-						onClose: () => {
-							this.$router.push("sortProduct")
-						}
-					});
-				} else if(data.ErrorCode == 101) {
-					this.$toast({
-						//forbidClick: true,
-						type: "fail",
-						message: data.Content
-					});
-				} else {
-					this.$router.push("login")
-				}
-			})
+    })
+  }
+  
+  // 立即预定
+  public AddYd() {
+    let tt: RegExp = /^\d+$/g, days: string = this.reservationDay;
+    if (!tt.test(days)) {
+      this.$notify('天数输入错误！');
+      return;
+    }
+    this.showReservation = false
+    this.API.reservations({
+      ShopId: this.shopId,
+      days
+    }).then((data: any) => {
+      if (data.ErrorCode == 100) {
+        this.$toast({
+          duration: 600, // 持续展示 toast
+          forbidClick: true,
+          type: 'success',
+          message: '预订成功！',
+          onClose: () => {
+            this.$router.push('sortProduct')
+          }
+        });
+      } else if (data.ErrorCode == 101) {
+        this.$toast({
+          // forbidClick: true,
+          type: 'fail',
+          message: data.Content
+        });
+      } else {
+        this.$router.push('login')
+      }
+    })
 
-		}
-	}
+  }
+}
 </script>
 
 <style lang="scss" scoped>

@@ -47,132 +47,132 @@
 </template>
 
 <script lang="ts">
-	import { Component, Vue, Prop } from 'vue-property-decorator';
-	import utils from "@/utils/utils"
+import { Component, Vue, Prop } from 'vue-property-decorator';
+import utils from '@/utils/utils'
 
-	@Component({
-		name: 'realNameAuthentica',
-		components: { },
-		created() {
-			this.getLoginUserInfo()
-		},
-		mounted() {}
-	})
-	export default class RealNameAuthentica extends Vue {
-		private userRealInfo: any = {}
-		private form: any = {}
-		private fileList: any[] = []	//要上传的图片列表,(还未提交到后台)
-		private isDisabled: boolean = true
-		private showEdit: boolean = false
-		
-		//methods方法
-		onClickLeft(): void {
-			this.$router.back();
-		}
-		getLoginUserInfo(): void {
-			this.API.getLoginUserInfo().then((result: any) => {
-				let {data, error} = result
-				this.userRealInfo = data
-				let picture: string = ""
-				//data.FISRealName = 2
-				//data.CheckCode = "B"
-				if(data.FISRealName == '1'){
-					this.showEdit = true
-					picture = data.FCaptureAddress
-				}else if(data.FISRealName == '2'){
-					this.isDisabled = false
-					//设置审核客服微信二维码， 也可以使用本地对应的tt和qt二维码
-					if (data.CheckCode == "A") {
-						picture = "http://www.taodaxiong.cn/Content/Mobile/img/tt.jpg"		
-					}else if(data.CheckCode == "B"){
-						picture = "http://www.taodaxiong.cn/Content/Mobile/img/qt.jpg"
-					}
-				}
-				this.form = {
-					fid:data.FID,
-					reallyName: data.real_name,
-					sex: data.gender=="男"?0:1,
-					txt_age: data.age,
-					wangwang: data.ww_name,
-					picture: data.prove_img
-				}
-			})
-		}
-		CheckAge(num: string): boolean {
-		    var myreg: RegExp = /^[1-9]+[0-9]*]*$/;
-		    console.log(typeof num)
-		    if (!myreg.test(num)) {
-		        return false;
-		    } else {
-		        return true;
-		    }
-		}
-		forceEdit(): void {
-			if(this.isDisabled){
-				this.$dialog.confirm({
-				  title: '编辑',
-				  message: '你确定要强制编辑吗?',
-				}).then(() => {
-				    this.isDisabled = false
-				}).catch(() => {});
-			}else{
-				this.isDisabled = true
-			}
-		}
-		submit(): void {
-			let {reallyName, sex, txt_age, wangwang, picture} = this.form
-			if(reallyName ==""){
-				this.$toast("真实姓名不能为空")
-			}else if(txt_age == ""){
-				this.$toast("请输入年龄")
-			}else if(!this.CheckAge(txt_age) ){
-				this.$toast("请输入正确的年龄")
-			}else if(wangwang == ""){
-				this.$toast("请输入淘宝账号")
-			}else if(this.fileList.length ==0){
-				this.$toast("请上传支付宝截图")
-			}else{
-				let newFileList: any = this.fileList.slice(0,1)
-				this.form.File1 = newFileList.file
-				
-				this.API.updateUserAuthentica(this.form).then((data: any)=>{
-					console.log(data)
-					if (data.ErrorCode == 100) {
-						/*
-						this.API.getLoginUserInfo().then((data) => {
-							//格式如下 http://www.taodaxiong.cn/Content/Mobile/img/QRcode3.jpg
-							if (data.CheckCode == "A") {
-		                        //$("#r").attr("src", "/Content/Mobile/img/tt.jpg");
-		                        //$("#r").attr("src", "/Content/Mobile/img/QRcode2.jpg");
-		                        //$("#r").attr("src", "/Content/Mobile/img/QRcode.jpg");
-		                    } else if (data.CheckCode == "B") {
-		                        //$("#r").attr("src", "/Content/Mobile/img/qt.jpg");
-		                        //$("#r").attr("src", "/Content/Mobile/img/QRcode3.jpg");
-		                        //$("#r").attr("src", "/Content/Mobile/img/QRcode.jpg");
-		                    }
-							//设置审核客服微信二维码， 也可以使用本地对应的tt和qt二维码
-							if (data.CheckCode == "A") {
-								picture = "http://www.taodaxiong.cn/Content/Mobile/img/tt.jpg"		
-							}else if(data.CheckCode == "B"){
-								picture = "http://www.taodaxiong.cn/Content/Mobile/img/qt.jpg"
-							}
-						})
-						*/
-						this.getLoginUserInfo()
-					}else if (data.ErrorCode == 101) {
-		                this.$toast({
-						  	//forbidClick: true,
-						  	type: "fail",
-						  	message: data.Content
-						});
-		            } else {
-		                //location.href = "/Mobile/MobileLogin";
-		                this.$router.push("login")
-		            }
-				})
-			}
-		}
-	}
+@Component({
+  name: 'realNameAuthentica',
+  components: { },
+  created() {
+    this.getLoginUserInfo()
+  },
+  mounted() {}
+})
+export default class RealNameAuthentica extends Vue {
+  private userRealInfo: any = {}
+  private form: any = {}
+  private fileList: any[] = []	// 要上传的图片列表,(还未提交到后台)
+  private isDisabled: boolean = true
+  private showEdit: boolean = false
+  
+  // methods方法
+  public onClickLeft(): void {
+    this.$router.back();
+  }
+  public getLoginUserInfo(): void {
+    this.API.getLoginUserInfo().then((result: any) => {
+      let {data, error} = result
+      this.userRealInfo = data
+      let picture: string = ''
+      // data.FISRealName = 2
+      // data.CheckCode = "B"
+      if (data.FISRealName == '1') {
+        this.showEdit = true
+        picture = data.FCaptureAddress
+      } else if (data.FISRealName == '2') {
+        this.isDisabled = false
+        // 设置审核客服微信二维码， 也可以使用本地对应的tt和qt二维码
+        if (data.CheckCode == 'A') {
+          picture = 'http://www.taodaxiong.cn/Content/Mobile/img/tt.jpg'		
+        } else if (data.CheckCode == 'B') {
+          picture = 'http://www.taodaxiong.cn/Content/Mobile/img/qt.jpg'
+        }
+      }
+      this.form = {
+        fid: data.FID,
+        reallyName: data.real_name,
+        sex: data.gender == '男' ? 0 : 1,
+        txt_age: data.age,
+        wangwang: data.ww_name,
+        picture: data.prove_img
+      }
+    })
+  }
+  public CheckAge(num: string): boolean {
+      let myreg: RegExp = /^[1-9]+[0-9]*]*$/;
+      console.log(typeof num)
+      if (!myreg.test(num)) {
+          return false;
+      } else {
+          return true;
+      }
+  }
+  public forceEdit(): void {
+    if (this.isDisabled) {
+      this.$dialog.confirm({
+        title: '编辑',
+        message: '你确定要强制编辑吗?',
+      }).then(() => {
+          this.isDisabled = false
+      }).catch(() => {});
+    } else {
+      this.isDisabled = true
+    }
+  }
+  public submit(): void {
+    let {reallyName, sex, txt_age, wangwang, picture} = this.form
+    if (reallyName == '') {
+      this.$toast('真实姓名不能为空')
+    } else if (txt_age == '') {
+      this.$toast('请输入年龄')
+    } else if (!this.CheckAge(txt_age) ) {
+      this.$toast('请输入正确的年龄')
+    } else if (wangwang == '') {
+      this.$toast('请输入淘宝账号')
+    } else if (this.fileList.length == 0) {
+      this.$toast('请上传支付宝截图')
+    } else {
+      let newFileList: any = this.fileList.slice(0, 1)
+      this.form.File1 = newFileList.file
+      
+      this.API.updateUserAuthentica(this.form).then((data: any) => {
+        console.log(data)
+        if (data.ErrorCode == 100) {
+          /*
+					this.API.getLoginUserInfo().then((data) => {
+						//格式如下 http://www.taodaxiong.cn/Content/Mobile/img/QRcode3.jpg
+						if (data.CheckCode == "A") {
+	                        //$("#r").attr("src", "/Content/Mobile/img/tt.jpg");
+	                        //$("#r").attr("src", "/Content/Mobile/img/QRcode2.jpg");
+	                        //$("#r").attr("src", "/Content/Mobile/img/QRcode.jpg");
+	                    } else if (data.CheckCode == "B") {
+	                        //$("#r").attr("src", "/Content/Mobile/img/qt.jpg");
+	                        //$("#r").attr("src", "/Content/Mobile/img/QRcode3.jpg");
+	                        //$("#r").attr("src", "/Content/Mobile/img/QRcode.jpg");
+	                    }
+						//设置审核客服微信二维码， 也可以使用本地对应的tt和qt二维码
+						if (data.CheckCode == "A") {
+							picture = "http://www.taodaxiong.cn/Content/Mobile/img/tt.jpg"		
+						}else if(data.CheckCode == "B"){
+							picture = "http://www.taodaxiong.cn/Content/Mobile/img/qt.jpg"
+						}
+					})
+					*/
+          this.getLoginUserInfo()
+        } else if (data.ErrorCode == 101) {
+                  this.$toast({
+              // forbidClick: true,
+              type: 'fail',
+              message: data.Content
+          });
+              } else {
+                  // location.href = "/Mobile/MobileLogin";
+                  this.$router.push('login')
+              }
+      })
+    }
+  }
+}
 </script>
 
 

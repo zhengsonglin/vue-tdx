@@ -94,228 +94,228 @@
 </template>
 
 <script lang="ts">
-	import {Component, Vue, Prop, Watch, Emit } from "vue-property-decorator"
-	@Component({
-		name: 'taskList',
-		components: {},
-		// 生命周期, 也可以写在下面的组件方法中，组件中的生命周期方法会覆盖当前的生命周期方法
-		created(){
-			console.log(123321)
-		}
-	})
-	export default class TaskList extends Vue {
-		@Prop({
-			 type: [String, Number],
-			 required: true
-		}) readonly activeIndex?: number
-		
-		@Prop({
-			type: Object,
-			default: ()=>{}
-		}) readonly baseParam?: object
-		
-		//data属性
-		private list: any[] = []
-		private loading: boolean = false
-		private finished: boolean = false
-		private refreshing: boolean = false
-		private pageNo: number = 1
-		private pageSize: number = 30
-		private showProductDialog: boolean = false
-		private productItem: any = {}	//商品信息
-		
-		//computed计算属性
-		get queryForm(): any{
-			return  Object.assign({}, {page: this.pageNo,page_num: this.pageSize}, this.baseParam)
-		}
-		//methods方法
-		onLoad(): void {
-			if(this.refreshing) {
-				this.pageNo = 1;
-				this.list = [];
-				this.refreshing = false;
-			}
-			
-			this.API.getTaskOrderList(this.queryForm, {showLoading: false}).then((result: any) => {
-				let {orderList, error} = result
-				this.list.push(...orderList);
-				if(orderList.length < this.pageSize) {
-					this.finished = true;
-				} else {
-					this.loading = false;
-					this.pageNo++
-				}
-			})
-		
-		},
-		onRefresh(): void {
-			//下拉刷新调用onRefresh方法时内部已经处理refreshing = true, 但其他方法调用onRefresh时，并没有设置refreshing为true,所以下面再设置一次(兼容默认刷新)
-			this.refreshing = true;
-			// 清空列表数据
-			this.finished = false;
-			// 重新加载数据
-			// 将 loading 设置为 true，表示处于加载状态
-			this.loading = true;
-			if(this.activeIndex == 0){
-				//this.getTaskSaleList()
-				this.onLoad();
-			}else{
-				this.onLoad();
-			}
-		}
-		getTaskStatus(FStatus: number): string{
-			let text = ""
-			switch(FStatus) {
-			     case 1:
-			        text = "已领取"
-			        break;
-			     case 2:
-			        text = "已提交"	
-			        break;
-			     case 4:
-			        text = "已完成"
-			        break;
-			    case 27:
-			        text = "待审核"
-			        break;
-			     default:
-			}
-			return text;
-		}
-		//查看商品信息
-		showGoodsInfo(item: any): void {
-			this.productItem = item
-			this.showProductDialog = true
-			return;
-			this.API.getTaskInfo({ TaskId: item.FID }).then((data: any)=>{
-				this.productItem = data
-				this.showProductDialog = true
-			})
-		}
-		//上传或查看好评图片
-		uploadImg(item: any): void {
-			this.$router.push({path:"/uploadScreenShot", query: {TaskId: item.id, Status:"have"}})
-		}
-		parseStateName(item: any): string {
-			let statname:string = "";
-			let {FStatus, FPingJiastatus, FNewStar} = item
-		    if (FStatus != 1) {
-		        if (FPingJiastatus == 0) {
-		            if (FStatus == 2) {
-		                statname = "上传好评截图";
-		            }else {
-		                statname = "查看好评截图";
-		            }
-		        } else {
-		            if (FPingJiastatus == 1) {
-		                statname = "上传定制评价截图";
-		            }
-		            if (FPingJiastatus == 27 ||( FPingJiastatus == 4 && FNewStar != "作废")) {
-		                statname = "查看定制评价截图";
-		            }else{
-		                if (FStatus == 2){
-		                    statname = "上传好评截图";
-		                }else{
-		                    statname = "查看好评截图";
-		                }                                        
-		            }
-		            //else {
-		            //    statname = "查看定制评价截图";
-		            //}
-		        }
-		    }
-			return statname
-		}
-		//查看售后
-		toRefundAfter(item: any): void {//item.FID
-			this.$router.push({path:"/chooseSaledType", query:{taskId: item.FID, taskType:'1'}})
-		}
-		//申请售后
-		applyAftersale(item: any, saleID: any = -1): void {//item.FID
-			this.$router.push({path:"/refundDetial", query:{TaskID:item.FID, SalesID:saleID, taskType:'1'}})
-		}
-		//查看商家备注
-		checkRemark(item: any): void {//item.FID
-			this.API.getBussinessTaskInfo({ id: item.id, type:'5' }).then((data: any)=>{
-				let message = ""
-				if (data.mc_comment != "") {
-					message = data.mc_comment;
-				} else {
-					message = data.Fbz == "" ? "暂无相关备注信息" : data.Fbz
-				}
-				this.$dialog.alert({
-					title: '商家备注信息',
-					message: message,
-					confirmButtonText:"知道了"
-				}).then(() => {
-				  // on close
-				});
-			})
-		}
-		//开始退单
-		handleChargeBack(id: string): void {
-			this.API.handleChargeBack({ TaskId: id }).then((data: any)=>{
-				if (data.ErrorCode == 100) {
-		            this.$toast("退单成功！");
-		            this.onRefresh()
-		        } else {
-		            this.$toast("退单失败！");
-		        }
-			})
-		}
-		//我要退单
-		chargeBack(item: any): void {
-			let {FID, FStatus} = item
-			if (FStatus != 1) {
-		        this.$toast("该阶段不能退单");
-		        return;
-		    }
-			this.$dialog.confirm({
-				title: '提示',
-		      	message: '确定退单？',
-		    }).then(()=>{
-		    	this.handleChargeBack(FID);
-		    });
-		}
-		//开始任务
-		startTask(item: any): void {
-			this.$router.push({path: "/startTask", query:{TaskId: item.id}})
-		}
-		//查询售后订单列表(包括用户发起和商家发起)
-		getTaskSaleList(){
-			if(this.refreshing) {
-				this.pageNo = 1;
-				this.list = [];
-				this.refreshing = false;
-			}
-			this.API.getTaskSaleList(this.queryForm, {showLoading: false}).then((data: any)=>{
-				this.list.push(...data);
-				if(data.length < this.pageSize) {
-					this.finished = true;
-				} else {
-					this.loading = false;
-					this.pageNo++
-				}
-			})
-		}
-		//也可以使用这种方式复制 (@click="doCopy")
-		doCopy(item: any): void {
-			if(item.FOrderNumber != ""){
-		        this.$copyText(item.FOrderNumber).then( (e: any)=> {
-		          this.$toast('订单号复制成功')
-		          console.log(e)
-		        }, (e: any)=> {
-		          this.$toast('订单号复制失败')
-		          console.log(e)
-		        })
-		    }
-		}
-		// watch 监听
-		@Watch("baseParam",{immediate: false, deep: true})
-		onChangeValue(newVal: any, oldVal: any) {
-		    this.onRefresh()
-		}
-	}
+import {Component, Vue, Prop, Watch, Emit } from 'vue-property-decorator'
+@Component({
+  name: 'taskList',
+  components: {},
+  // 生命周期, 也可以写在下面的组件方法中，组件中的生命周期方法会覆盖当前的生命周期方法
+  created() {
+    console.log(123321)
+  }
+})
+export default class TaskList extends Vue {
+  @Prop({
+     type: [String, Number],
+     required: true
+  }) public readonly activeIndex?: number
+  
+  @Prop({
+    type: Object,
+    default: () => {}
+  }) public readonly baseParam?: object
+  
+  // data属性
+  private list: any[] = []
+  private loading: boolean = false
+  private finished: boolean = false
+  private refreshing: boolean = false
+  private pageNo: number = 1
+  private pageSize: number = 30
+  private showProductDialog: boolean = false
+  private productItem: any = {}	// 商品信息
+  
+  // computed计算属性
+  get queryForm(): any {
+    return  Object.assign({}, {page: this.pageNo, page_num: this.pageSize}, this.baseParam)
+  }
+  // methods方法
+  public onLoad(): void {
+    if (this.refreshing) {
+      this.pageNo = 1;
+      this.list = [];
+      this.refreshing = false;
+    }
+    
+    this.API.getTaskOrderList(this.queryForm, {showLoading: false}).then((result: any) => {
+      let {orderList, error} = result
+      this.list.push(...orderList);
+      if (orderList.length < this.pageSize) {
+        this.finished = true;
+      } else {
+        this.loading = false;
+        this.pageNo++
+      }
+    })
+  
+  },
+  public onRefresh(): void {
+    // 下拉刷新调用onRefresh方法时内部已经处理refreshing = true, 但其他方法调用onRefresh时，并没有设置refreshing为true,所以下面再设置一次(兼容默认刷新)
+    this.refreshing = true;
+    // 清空列表数据
+    this.finished = false;
+    // 重新加载数据
+    // 将 loading 设置为 true，表示处于加载状态
+    this.loading = true;
+    if (this.activeIndex == 0) {
+      // this.getTaskSaleList()
+      this.onLoad();
+    } else {
+      this.onLoad();
+    }
+  }
+  public getTaskStatus(FStatus: number): string {
+    let text = ''
+    switch (FStatus) {
+         case 1:
+            text = '已领取'
+            break;
+         case 2:
+            text = '已提交'	
+            break;
+         case 4:
+            text = '已完成'
+            break;
+        case 27:
+            text = '待审核'
+            break;
+         default:
+    }
+    return text;
+  }
+  // 查看商品信息
+  public showGoodsInfo(item: any): void {
+    this.productItem = item
+    this.showProductDialog = true
+    return;
+    this.API.getTaskInfo({ TaskId: item.FID }).then((data: any) => {
+      this.productItem = data
+      this.showProductDialog = true
+    })
+  }
+  // 上传或查看好评图片
+  public uploadImg(item: any): void {
+    this.$router.push({path: '/uploadScreenShot', query: {TaskId: item.id, Status: 'have'}})
+  }
+  public parseStateName(item: any): string {
+    let statname: string = '';
+    let {FStatus, FPingJiastatus, FNewStar} = item
+    if (FStatus != 1) {
+          if (FPingJiastatus == 0) {
+              if (FStatus == 2) {
+                  statname = '上传好评截图';
+              } else {
+                  statname = '查看好评截图';
+              }
+          } else {
+              if (FPingJiastatus == 1) {
+                  statname = '上传定制评价截图';
+              }
+              if (FPingJiastatus == 27 || ( FPingJiastatus == 4 && FNewStar != '作废')) {
+                  statname = '查看定制评价截图';
+              } else {
+                  if (FStatus == 2) {
+                      statname = '上传好评截图';
+                  } else {
+                      statname = '查看好评截图';
+                  }                                        
+              }
+              // else {
+              //    statname = "查看定制评价截图";
+              // }
+          }
+      }
+    return statname
+  }
+  // 查看售后
+  public toRefundAfter(item: any): void {// item.FID
+    this.$router.push({path: '/chooseSaledType', query: {taskId: item.FID, taskType: '1'}})
+  }
+  // 申请售后
+  public applyAftersale(item: any, saleID: any = -1): void {// item.FID
+    this.$router.push({path: '/refundDetial', query: {TaskID: item.FID, SalesID: saleID, taskType: '1'}})
+  }
+  // 查看商家备注
+  public checkRemark(item: any): void {// item.FID
+    this.API.getBussinessTaskInfo({ id: item.id, type: '5' }).then((data: any) => {
+      let message = ''
+      if (data.mc_comment != '') {
+        message = data.mc_comment;
+      } else {
+        message = data.Fbz == '' ? '暂无相关备注信息' : data.Fbz
+      }
+      this.$dialog.alert({
+        title: '商家备注信息',
+        message,
+        confirmButtonText: '知道了'
+      }).then(() => {
+        // on close
+      });
+    })
+  }
+  // 开始退单
+  public handleChargeBack(id: string): void {
+    this.API.handleChargeBack({ TaskId: id }).then((data: any) => {
+      if (data.ErrorCode == 100) {
+              this.$toast('退单成功！');
+              this.onRefresh()
+          } else {
+              this.$toast('退单失败！');
+          }
+    })
+  }
+  // 我要退单
+  public chargeBack(item: any): void {
+    let {FID, FStatus} = item
+    if (FStatus != 1) {
+          this.$toast('该阶段不能退单');
+          return;
+      }
+    this.$dialog.confirm({
+      title: '提示',
+          message: '确定退单？',
+      }).then(() => {
+        this.handleChargeBack(FID);
+      });
+  }
+  // 开始任务
+  public startTask(item: any): void {
+    this.$router.push({path: '/startTask', query: {TaskId: item.id}})
+  }
+  // 查询售后订单列表(包括用户发起和商家发起)
+  public getTaskSaleList() {
+    if (this.refreshing) {
+      this.pageNo = 1;
+      this.list = [];
+      this.refreshing = false;
+    }
+    this.API.getTaskSaleList(this.queryForm, {showLoading: false}).then((data: any) => {
+      this.list.push(...data);
+      if (data.length < this.pageSize) {
+        this.finished = true;
+      } else {
+        this.loading = false;
+        this.pageNo++
+      }
+    })
+  }
+  // 也可以使用这种方式复制 (@click="doCopy")
+  public doCopy(item: any): void {
+    if (item.FOrderNumber != '') {
+          this.$copyText(item.FOrderNumber).then( (e: any) => {
+            this.$toast('订单号复制成功')
+            console.log(e)
+          }, (e: any) => {
+            this.$toast('订单号复制失败')
+            console.log(e)
+          })
+      }
+  }
+  // watch 监听
+  @Watch('baseParam', {immediate: false, deep: true})
+  public onChangeValue(newVal: any, oldVal: any) {
+      this.onRefresh()
+  }
+}
 </script>
 	
 

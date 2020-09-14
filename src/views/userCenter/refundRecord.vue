@@ -46,56 +46,56 @@
 </template>
 
 <script lang="ts">
-	import { Component, Vue, Prop } from 'vue-property-decorator';
-	import utils from "@/utils/utils"
+import { Component, Vue, Prop } from 'vue-property-decorator';
+import utils from '@/utils/utils'
 
-	@Component({
-		name: 'refundRecord',
-		components: { },
-		created() {
-			
-		},
-		mounted() {}
-	})
-	export default class RefundRecord extends Vue {
-		private list: any = []
-		private loading: boolean = false
-		private finished: boolean = false
-		
-		//methods方法
-		onClickLeft(): void {
-			this.$router.back();
-		}
-		//解析返款状态
-		parseRefundState(item: any): string {
-			let {FPingJiastatus, FNewStar} = item
-			console.log(FPingJiastatus, FNewStar)
-			let stateText = "已返款"
-			return stateText
-		}
-		onLoad(): void {
-		  	// 异步更新数据
-		  	let params: any = {
-				status: 0,
-				type: 1,
-				start_time: "",
-				end_time: "",
-				page_no: 1,
-				page_size: 100,
-			}
-		  	this.API.getPutForwardRecord().then((result: any) => {
-				let {data, error} = result
-				//console.log(data)
-				this.list.push(...data);
-				this.finished = true;
-			})
-		}
-		refresh(): void {
-			this.list = []
-			this.finished = false
-			this.onLoad()
-		}
-	}
+@Component({
+  name: 'refundRecord',
+  components: { },
+  created() {
+    
+  },
+  mounted() {}
+})
+export default class RefundRecord extends Vue {
+  private list: any = []
+  private loading: boolean = false
+  private finished: boolean = false
+  
+  // methods方法
+  public onClickLeft(): void {
+    this.$router.back();
+  }
+  // 解析返款状态
+  public parseRefundState(item: any): string {
+    let {FPingJiastatus, FNewStar} = item
+    console.log(FPingJiastatus, FNewStar)
+    let stateText = '已返款'
+    return stateText
+  }
+  public onLoad(): void {
+      // 异步更新数据
+      let params: any = {
+      status: 0,
+      type: 1,
+      start_time: '',
+      end_time: '',
+      page_no: 1,
+      page_size: 100,
+    }
+      this.API.getPutForwardRecord().then((result: any) => {
+      let {data, error} = result
+      // console.log(data)
+      this.list.push(...data);
+      this.finished = true;
+    })
+  }
+  public refresh(): void {
+    this.list = []
+    this.finished = false
+    this.onLoad()
+  }
+}
 </script>
 
 

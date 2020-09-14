@@ -64,167 +64,167 @@
 </template>
 
 <script lang="ts">
-	import {Component, Vue, Prop, Watch, Emit } from "vue-property-decorator"
-	import { ImagePreview } from 'vant';
-	@Component({
-		name: 'refundDetial',
-		components: {
-			[ImagePreview.Component.name]: ImagePreview.Component //ImagePreview
-		},
-		// 生命周期, 也可以写在下面的组件方法中，组件中的生命周期方法会覆盖当前的生命周期方法
-		created(){
-			let {TaskID, SalesID, taskType} = this.$route.query;
-			this.query = {fid: TaskID, type: taskType}
-			this.getTaskByFID()
-		}
-	})
-	export default class RefundDetial extends Vue {
-		private refundBaseInfo: any = {}
-		private form: any = {}
-		private query: any = {}
-		private showPicker: boolean = false
-		private columns: string[] = ['差价售后', '资金问题', '物流问题', '礼品问题']
-		private fileList: any = [
-		    /*{
-		      url: 'https://img.yzcdn.cn/vant/leaf.jpg',
-		      status: 'uploading',
-		      message: '上传中...',
-		    },
-		    {
-		      url: 'https://img.yzcdn.cn/vant/tree.jpg',
-		      status: 'failed',
-		      message: '上传失败',
-		    },*/
-		    
-		]
-		private resultImgs: any = {}	//已经上传好的图片路径
-		private fileId: number = 0
-		
-		//methods方法
-		onClickLeft(): void {
-			this.$router.back();
-		}
-		getTaskByFID(): void {
-			this.API.getTaskByFID(this.query).then((data: any)=>{
-				this.refundBaseInfo = data
-				let {YPrice, DiffAmount} = data
-				this.form.money = DiffAmount?(parseFloat(YPrice) + parseFloat(DiffAmount)):parseFloat(YPrice)
-				
-				 if(data.UserType=="粉丝"){
-		            if(data.RefundReason=="资金问题"){
-		                this.form.tpsm = "（请提供淘宝付款截图：包含店铺名，付款金额及订单号）" ;
-		            }
-		            if(data.RefundReason=="物流问题"){
-		                this.form.tpsm = "（请提供物流状态截图）" ;
-		            }
-		            if(data.RefundReason=="礼品问题"){
-		                this.form.tpsm = "（请提供物流面单及实收产品图）" ;
-		            }
-		        }
-			})
-		}
-		validImgFile(file: any, index?: number): boolean {
-			if (file.type !== 'image/jpeg' && file.type !== 'image/jpg' && file.type !== 'image/png') {
-				if(index){
-					this.$toast('上传的第'+index+'图片格式不正确, 已经自动过滤');
-				}else{
-					this.$toast('上传的图片格式不正确');
-				}
-				file.validStatus = false
-		    	file.validSText = "图片格式不正确"
-		        return false;
-		    }else if(file.size > 8000){//3 * 1024 * 1024
-		    	if(index){
-		    		this.$toast("第"+index+'张图片文件过大, 已经自动过滤');
-		    	}else{
-		    		this.$toast('上传图片文件过大');
-		    	}
-		    	file.validStatus = false
-		    	file.validSText = "图片文件过大"
-		        return false;
-		    }
-		    file.validStatus = true
-		    return true;
-		}
-		//上传前校验
-		beforeRead(file: any): boolean {
-			if(Array.isArray(file)){
-				let flag = false	//只要有一张图片符合要求就要上传， 不符合要求全部过滤
-				file.forEach((cFile, index)=>{
-					cFile.fileId = ++this.fileId 
-					let b = this.validImgFile(cFile, index+1)
-					flag = flag || b
-				})
-				return flag
-			}else{
-				file.fileId = ++this.fileId 
-				return this.validImgFile(file)
-			}
-		}
-		//通过max-size属性可以限制上传文件的大小，超过大小的文件会被自动过滤，这些文件信息可以通过oversize事件获取
-		onOversize(file: any): void {
-		  	console.log(file);
-		}
-		//目前是一次上传一张，分多次上传， 如果已上传多张(multiple时)， 这里为数组需额外处理
-		afterRead(file: any): void {
-			console.log(this.fileList)
-			if(Array.isArray(file)){
-				let fileList = this.fileList.filter((item: any)=> item.file.validStatus);
-				this.fileList = fileList
-				
-				let hFile = file.filter((item)=> item.file.validStatus);
-				
-				hFile.forEach((item: any)=>{
-					this.uploadEachImg(item)
-				})
-			}else{
-				this.uploadEachImg(file)
-			}
-		}
-		uploadEachImg(file: any): void {
-			// 此时可以自行将文件上传至服务器
-			//console.log(file);
-			file.status = 'uploading';
-			file.message = '上传中...';
-		
-			this.API.uploadRefundImg(file, {showLoading:false}).then((data: any)=>{
-				if(data.ErrorCode==100){
-					file.status = 'done';
-					file.message = '上传成功';
-					//file.url = "http://119.27.182.166:83"+data.Content	//设置无效
-					//成功地址："http://119.27.182.166:83"+data.Content
-					let key = "key_"+file.file.fileId
-					this.resultImgs[key] = "http://119.27.182.166:83"+data.Content
-				}else {
-					file.status = 'fail';
-					file.message = '上传失败';
-				}
-			})
-		}
-		//预览图片
-		imagePreview(): void {
-			if(this.refundBaseInfo.FIMGUrl){
-		    	ImagePreview({
-				  	images: [this.refundBaseInfo.FIMGUrl],
-					closeable: true,
-					showIndex:false
-		    	});
-			}
-		}
-		//删除预览
-		deletePreview(file: any, item: any): void {
-			let {name, index} = item
-			let key = "key_" + file.file.fileId
-			delete this.resultImgs[key]
-		}
-		onConfirm(value: any): void {
-			this.form.reason = value;
-			this.showPicker = false
-		}
-		submit(): void {
-			this.$toast("逻辑太多，不确定参数复杂，写不动了")
-		}
-	}
+import {Component, Vue, Prop, Watch, Emit } from 'vue-property-decorator'
+import { ImagePreview } from 'vant';
+@Component({
+  name: 'refundDetial',
+  components: {
+    [ImagePreview.Component.name]: ImagePreview.Component // ImagePreview
+  },
+  // 生命周期, 也可以写在下面的组件方法中，组件中的生命周期方法会覆盖当前的生命周期方法
+  created() {
+    let {TaskID, SalesID, taskType} = this.$route.query;
+    this.query = {fid: TaskID, type: taskType}
+    this.getTaskByFID()
+  }
+})
+export default class RefundDetial extends Vue {
+  private refundBaseInfo: any = {}
+  private form: any = {}
+  private query: any = {}
+  private showPicker: boolean = false
+  private columns: string[] = ['差价售后', '资金问题', '物流问题', '礼品问题']
+  private fileList: any = [
+      /*{
+	      url: 'https://img.yzcdn.cn/vant/leaf.jpg',
+	      status: 'uploading',
+	      message: '上传中...',
+	    },
+	    {
+	      url: 'https://img.yzcdn.cn/vant/tree.jpg',
+	      status: 'failed',
+	      message: '上传失败',
+	    },*/
+      
+  ]
+  private resultImgs: any = {}	// 已经上传好的图片路径
+  private fileId: number = 0
+  
+  // methods方法
+  public onClickLeft(): void {
+    this.$router.back();
+  }
+  public getTaskByFID(): void {
+    this.API.getTaskByFID(this.query).then((data: any) => {
+      this.refundBaseInfo = data
+      let {YPrice, DiffAmount} = data
+      this.form.money = DiffAmount ? (parseFloat(YPrice) + parseFloat(DiffAmount)) : parseFloat(YPrice)
+      
+      if (data.UserType == '粉丝') {
+              if (data.RefundReason == '资金问题') {
+                  this.form.tpsm = '（请提供淘宝付款截图：包含店铺名，付款金额及订单号）' ;
+              }
+              if (data.RefundReason == '物流问题') {
+                  this.form.tpsm = '（请提供物流状态截图）' ;
+              }
+              if (data.RefundReason == '礼品问题') {
+                  this.form.tpsm = '（请提供物流面单及实收产品图）' ;
+              }
+          }
+    })
+  }
+  public validImgFile(file: any, index?: number): boolean {
+    if (file.type !== 'image/jpeg' && file.type !== 'image/jpg' && file.type !== 'image/png') {
+      if (index) {
+        this.$toast('上传的第' + index + '图片格式不正确, 已经自动过滤');
+      } else {
+        this.$toast('上传的图片格式不正确');
+      }
+      file.validStatus = false
+      file.validSText = '图片格式不正确'
+      return false;
+      } else if (file.size > 8000) {// 3 * 1024 * 1024
+        if (index) {
+          this.$toast('第' + index + '张图片文件过大, 已经自动过滤');
+        } else {
+          this.$toast('上传图片文件过大');
+        }
+        file.validStatus = false
+        file.validSText = '图片文件过大'
+        return false;
+      }
+    file.validStatus = true
+    return true;
+  }
+  // 上传前校验
+  public beforeRead(file: any): boolean {
+    if (Array.isArray(file)) {
+      let flag = false	// 只要有一张图片符合要求就要上传， 不符合要求全部过滤
+      file.forEach((cFile, index) => {
+        cFile.fileId = ++this.fileId 
+        let b = this.validImgFile(cFile, index + 1)
+        flag = flag || b
+      })
+      return flag
+    } else {
+      file.fileId = ++this.fileId 
+      return this.validImgFile(file)
+    }
+  }
+  // 通过max-size属性可以限制上传文件的大小，超过大小的文件会被自动过滤，这些文件信息可以通过oversize事件获取
+  public onOversize(file: any): void {
+      console.log(file);
+  }
+  // 目前是一次上传一张，分多次上传， 如果已上传多张(multiple时)， 这里为数组需额外处理
+  public afterRead(file: any): void {
+    console.log(this.fileList)
+    if (Array.isArray(file)) {
+      let fileList = this.fileList.filter((item: any) => item.file.validStatus);
+      this.fileList = fileList
+      
+      let hFile = file.filter((item) => item.file.validStatus);
+      
+      hFile.forEach((item: any) => {
+        this.uploadEachImg(item)
+      })
+    } else {
+      this.uploadEachImg(file)
+    }
+  }
+  public uploadEachImg(file: any): void {
+    // 此时可以自行将文件上传至服务器
+    // console.log(file);
+    file.status = 'uploading';
+    file.message = '上传中...';
+  
+    this.API.uploadRefundImg(file, {showLoading: false}).then((data: any) => {
+      if (data.ErrorCode == 100) {
+        file.status = 'done';
+        file.message = '上传成功';
+        // file.url = "http://119.27.182.166:83"+data.Content	//设置无效
+        // 成功地址："http://119.27.182.166:83"+data.Content
+        let key = 'key_' + file.file.fileId
+        this.resultImgs[key] = 'http://119.27.182.166:83' + data.Content
+      } else {
+        file.status = 'fail';
+        file.message = '上传失败';
+      }
+    })
+  }
+  // 预览图片
+  public imagePreview(): void {
+    if (this.refundBaseInfo.FIMGUrl) {
+        ImagePreview({
+          images: [this.refundBaseInfo.FIMGUrl],
+        closeable: true,
+        showIndex: false
+        });
+    }
+  }
+  // 删除预览
+  public deletePreview(file: any, item: any): void {
+    let {name, index} = item
+    let key = 'key_' + file.file.fileId
+    delete this.resultImgs[key]
+  }
+  public onConfirm(value: any): void {
+    this.form.reason = value;
+    this.showPicker = false
+  }
+  public submit(): void {
+    this.$toast('逻辑太多，不确定参数复杂，写不动了')
+  }
+}
 </script>	
 
 

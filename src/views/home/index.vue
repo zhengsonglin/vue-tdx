@@ -102,131 +102,131 @@
 
 
 <script lang="ts">
-	import { Component, Vue, Prop } from 'vue-property-decorator';
-	import MySwiper from '@/components/swiper/swiper.vue';
-	import advertisingVertical from '@/components/advertising/advertising-vertical.vue';
-	
-	@Component({
-		name: 'home',
-		components: { MySwiper, advertisingVertical},
-		created() {},
-		mounted() {
-			console.log(123);
-			let box: any = document.getElementById('page-index');
-			let dom1  = document.getElementsByClassName('mySwiper')[0] as HTMLElement
-			this.swiperHeight = dom1.offsetHeight;
-		
-			if (box) {
-				box.onscroll = this.setSearchBg;
-			}
-		}
-	})
-	export default class Home extends Vue {
-		private advertisingList: string[] =  this.$store.state.advertisingList
-		private list: object[] = [] //淘抢购礼品列表
-		private loading: boolean = false
-		private finished: boolean = false
-		private refreshing: boolean = false
-		private pageNo: number = 1
-		private pageSize: number = 30
-		private searchKey: string = ''
-		private dyHeight: string = '40%'
-		private searchBg: string = 'rgba(255, 0, 0, 0.2)' //rgba(79, 192, 141, 0.2)
-		private swiperHeight: string|number = ''
-		private pageType: string|number = 1 //1淘抢购， 2熊抢购
-		private skillTaskList: object[] = [] //熊抢购礼品列表
-		
-		onLoad(): void {
-			if (this.refreshing) {
-				this.pageNo = 1;
-				this.list = [];
-				this.refreshing = false;
-			}
-			let base: any = {
-				page_no: this.pageNo,
-				page_size: this.pageSize,
-				keywords: this.searchKey,
-				type: 2,
-				is_family: null
-			};
-			if (this.pageType == 1) {
-				let params: object = Object.assign({}, base, { module_type: 1 });
-				this.API.getProductList(params, {
-					showLoading: false
-				}).then((result: any) => {
-					let {data , error} = result
-					this.list.push(...data);
-					if (data.length < this.pageSize) {
-						this.finished = true;
-					} else {
-						this.loading = false;
-						this.pageNo++;
-					}
-				});
-			}
-			if (this.pageType == 2) {
-				//熊抢购
-				let params: object = Object.assign({}, base, { module_type: 2 });
-				this.API.getSkillTaskList(params).then((result: any) => {
-					let { data, error } = result
-					this.skillTaskList.push(...data);
-					if (data.length < this.pageSize) {
-						this.finished = true;
-					} else {
-						this.loading = false;
-						this.pageNo++;
-					}
-				});
-			}
-		}
-	
-		onRefresh(): void {
-			// 清空列表数据
-			this.finished = false;
-		
-			// 重新加载数据
-			// 将 loading 设置为 true，表示处于加载状态
-			this.loading = true;
-			this.onLoad();
-		}
-		
-		setSearchBg(): void {
-			if(!document)return
-			let dom1  = document.getElementById('page-index') as HTMLElement
-			var wScoll: any = dom1.scrollTop,
-				ratio: number = Number((wScoll / Number(this.swiperHeight)).toFixed(2));
-			if (ratio < 0.2) {
-				ratio = 0.2;
-			} else if (ratio > 1) {
-				ratio = 1;
-			}
-			this.searchBg = `rgba(255, 0, 0, ${ratio})`;
-		}
-		
-		onSearch(): void {
-			this.refreshing = true;
-			// 清空列表数据
-			this.finished = false;
-		
-			this.onLoad();
-		}
-		
-		toProductDetail(item: any): void {
-			this.$router.push({
-				path: '/singleProductList',
-				query: {
-					paId: item.pa_id
-				}
-			});
-			
-		}
-		
-		changeSkillTaskList() {
-			this.pageType = 2;
-			this.pageNo = 1;
-			this.onRefresh();
-		}
-	}
+import { Component, Vue, Prop } from 'vue-property-decorator';
+import MySwiper from '@/components/swiper/swiper.vue';
+import advertisingVertical from '@/components/advertising/advertising-vertical.vue';
+
+@Component({
+  name: 'home',
+  components: { MySwiper, advertisingVertical},
+  created() {},
+  mounted() {
+    console.log(123);
+    let box: any = document.getElementById('page-index');
+    let dom1  = document.getElementsByClassName('mySwiper')[0] as HTMLElement
+    this.swiperHeight = dom1.offsetHeight;
+  
+    if (box) {
+      box.onscroll = this.setSearchBg;
+    }
+  }
+})
+export default class Home extends Vue {
+  private advertisingList: string[] =  this.$store.state.advertisingList
+  private list: object[] = [] // 淘抢购礼品列表
+  private loading: boolean = false
+  private finished: boolean = false
+  private refreshing: boolean = false
+  private pageNo: number = 1
+  private pageSize: number = 30
+  private searchKey: string = ''
+  private dyHeight: string = '40%'
+  private searchBg: string = 'rgba(255, 0, 0, 0.2)' // rgba(79, 192, 141, 0.2)
+  private swiperHeight: string|number = ''
+  private pageType: string|number = 1 // 1淘抢购， 2熊抢购
+  private skillTaskList: object[] = [] // 熊抢购礼品列表
+  
+  public onLoad(): void {
+    if (this.refreshing) {
+      this.pageNo = 1;
+      this.list = [];
+      this.refreshing = false;
+    }
+    let base: any = {
+      page_no: this.pageNo,
+      page_size: this.pageSize,
+      keywords: this.searchKey,
+      type: 2,
+      is_family: null
+    };
+    if (this.pageType == 1) {
+      let params: object = Object.assign({}, base, { module_type: 1 });
+      this.API.getProductList(params, {
+        showLoading: false
+      }).then((result: any) => {
+        let {data , error} = result
+        this.list.push(...data);
+        if (data.length < this.pageSize) {
+          this.finished = true;
+        } else {
+          this.loading = false;
+          this.pageNo++;
+        }
+      });
+    }
+    if (this.pageType == 2) {
+      // 熊抢购
+      let params: object = Object.assign({}, base, { module_type: 2 });
+      this.API.getSkillTaskList(params).then((result: any) => {
+        let { data, error } = result
+        this.skillTaskList.push(...data);
+        if (data.length < this.pageSize) {
+          this.finished = true;
+        } else {
+          this.loading = false;
+          this.pageNo++;
+        }
+      });
+    }
+  }
+
+  public onRefresh(): void {
+    // 清空列表数据
+    this.finished = false;
+  
+    // 重新加载数据
+    // 将 loading 设置为 true，表示处于加载状态
+    this.loading = true;
+    this.onLoad();
+  }
+  
+  public setSearchBg(): void {
+    if (!document) {return }
+    let dom1  = document.getElementById('page-index') as HTMLElement
+    let wScoll: any = dom1.scrollTop,
+      ratio: number = Number((wScoll / Number(this.swiperHeight)).toFixed(2));
+    if (ratio < 0.2) {
+      ratio = 0.2;
+    } else if (ratio > 1) {
+      ratio = 1;
+    }
+    this.searchBg = `rgba(255, 0, 0, ${ratio})`;
+  }
+  
+  public onSearch(): void {
+    this.refreshing = true;
+    // 清空列表数据
+    this.finished = false;
+  
+    this.onLoad();
+  }
+  
+  public toProductDetail(item: any): void {
+    this.$router.push({
+      path: '/singleProductList',
+      query: {
+        paId: item.pa_id
+      }
+    });
+    
+  }
+  
+  public changeSkillTaskList() {
+    this.pageType = 2;
+    this.pageNo = 1;
+    this.onRefresh();
+  }
+}
 </script>
 
 <style scoped lang="scss">

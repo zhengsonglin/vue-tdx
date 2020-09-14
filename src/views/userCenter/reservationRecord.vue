@@ -43,47 +43,47 @@
 </template>
 
 <script lang="ts">
-	import { Component, Vue, Prop } from 'vue-property-decorator';
-	import utils from "@/utils/utils"
+import { Component, Vue, Prop } from 'vue-property-decorator';
+import utils from '@/utils/utils'
 
-	@Component({
-		name: 'reservation-record',
-		components: { },
-		created() {
-			
-		},
-		mounted() {}
-	})
-	export default class ReservationRecord extends Vue {
-		private active: number = 0
-		private list1: any[] = []
-		private list2: any[] = []
-		
-		//methods方法
-		onClickLeft(): void {
-			this.$router.back();
-		}
-		//获取用户已预定商品
-		getUserReserve(): void {
-			this.API.getUserReserve().then((data: any)=>{
-				this.list1 = data
-			})
-		}
-		//获取用户预定商品记录
-		getUserReserveRecord(): void {
-			this.API.getUserReserveRecord().then((data: any)=>{
-				this.list2 = data
-			})
-		}
-		onClick(index: number, title: string): void {
-		  console.log(name, title);
-		  if(index==0){
-		  	this.getUserReserve()
-		  }else{
-		  	this.getUserReserveRecord()
-		  }
-		}
-	}
+@Component({
+  name: 'reservation-record',
+  components: { },
+  created() {
+    
+  },
+  mounted() {}
+})
+export default class ReservationRecord extends Vue {
+  private active: number = 0
+  private list1: any[] = []
+  private list2: any[] = []
+  
+  // methods方法
+  public onClickLeft(): void {
+    this.$router.back();
+  }
+  // 获取用户已预定商品
+  public getUserReserve(): void {
+    this.API.getUserReserve().then((data: any) => {
+      this.list1 = data
+    })
+  }
+  // 获取用户预定商品记录
+  public getUserReserveRecord(): void {
+    this.API.getUserReserveRecord().then((data: any) => {
+      this.list2 = data
+    })
+  }
+  public onClick(index: number, title: string): void {
+    console.log(name, title);
+    if (index == 0) {
+      this.getUserReserve()
+    } else {
+      this.getUserReserveRecord()
+    }
+  }
+}
 </script>
 
 

@@ -10,17 +10,17 @@
 </template>
 
  <script lang="ts">
-	 import { Component, Vue, Prop } from 'vue-property-decorator';
-	 import MTab from '@/components/m-tab/m-tab.vue'
-	 @Component({
-	 	name: 'index',
-		components:{MTab},
-	 	created() {}
-	 })
-	 export default class Index extends Vue {
-		 
-	 }
- </script>
+import { Component, Vue, Prop } from 'vue-property-decorator';
+import MTab from '@/components/m-tab/m-tab.vue'
+@Component({
+   name: 'index',
+  components: {MTab},
+   created() {}
+ })
+ export default class Index extends Vue {
+   
+ }
+</script>
  
 <style scoped lang="scss">
 	.page-index{

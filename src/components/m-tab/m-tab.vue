@@ -16,19 +16,19 @@
 </template>
 
 <script lang="ts">
-	import { Component, Vue } from 'vue-property-decorator';
-	
-	@Component({
-		name: 'mTab',
-		created() {}
-	})
-	export default class Login extends Vue {
-		private active: number = 0
-		private icon: any = {
-			active: 'https://img.yzcdn.cn/vant/user-active.png',
-			inactive: 'https://img.yzcdn.cn/vant/user-inactive.png',
-		}
-	} 
+import { Component, Vue } from 'vue-property-decorator';
+
+@Component({
+  name: 'mTab',
+  created() {}
+})
+export default class Login extends Vue {
+  private active: number = 0
+  private icon: any = {
+    active: 'https://img.yzcdn.cn/vant/user-active.png',
+    inactive: 'https://img.yzcdn.cn/vant/user-inactive.png',
+  }
+}
 </script>
 <style>
 

@@ -20,52 +20,52 @@
 </template>
 
 <script lang="ts">
-	import {Component, Vue} from 'vue-property-decorator'
-	@Component({
-		name: "pictureTest1",
-		created(){}
-	})
-	export default class PictureTest1 extends Vue {
-		private form: any = {
-			message:"",
-			mark:"test"
-		}
-		private fileList: any[] = []	//要上传的图片列表,(还未提交到后台)
-		
-		//methods方法
-		onClickLeft(): void {
-			this.$router.back();
-		}
-		onSubmit(values: any): void {
-			//console.log('submit', values);
-			if(this.form.message ==""){
-				this.$toast("请输入反馈内容")
-			}else if(this.fileList.length ==0){
-				this.$toast("请上传好评截图")
-			}else{this.fileList.slice(0,1)
-				let fileList: any = this.fileList.slice(0,1)
-				this.form.file = fileList.file
-				this.API.uploadTestPicture().then((data: any)=>{
-					if (data.ErrorCode == 100) {
-						this.$toast({
-							duration: 800, // 持续展示 toast
-							forbidClick: true,
-							type: "success",
-							message: '提交成功，感谢您的反馈！',
-							onClose:()=>{this.$router.back()}
-						});
-					} else {
-						this.$toast({
-							type: "fail",
-							message: "提交失败，请重新提交！"
-						});
-					}
-	
-				})
-			}
-		}
-		
-	}
+import {Component, Vue} from 'vue-property-decorator'
+@Component({
+  name: 'pictureTest1',
+  created() {}
+})
+export default class PictureTest1 extends Vue {
+  private form: any = {
+    message: '',
+    mark: 'test'
+  }
+  private fileList: any[] = []	// 要上传的图片列表,(还未提交到后台)
+  
+  // methods方法
+  public onClickLeft(): void {
+    this.$router.back();
+  }
+  public onSubmit(values: any): void {
+    // console.log('submit', values);
+    if (this.form.message == '') {
+      this.$toast('请输入反馈内容')
+    } else if (this.fileList.length == 0) {
+      this.$toast('请上传好评截图')
+    } else {this.fileList.slice(0, 1)
+            let fileList: any = this.fileList.slice(0, 1)
+            this.form.file = fileList.file
+            this.API.uploadTestPicture().then((data: any) => {
+        if (data.ErrorCode == 100) {
+          this.$toast({
+            duration: 800, // 持续展示 toast
+            forbidClick: true,
+            type: 'success',
+            message: '提交成功，感谢您的反馈！',
+            onClose: () => {this.$router.back()}
+          });
+        } else {
+          this.$toast({
+            type: 'fail',
+            message: '提交失败，请重新提交！'
+          });
+        }
+
+      })
+    }
+  }
+  
+}
 </script>
 
 

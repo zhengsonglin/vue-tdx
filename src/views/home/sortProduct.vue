@@ -57,94 +57,94 @@
 </template>
 
 <script lang="ts">
-	import { Component, Vue, Prop } from 'vue-property-decorator';
-	
-	@Component({
-		name:'sortProduct',
-		created(){
-			this.getCategory().then(()=>{
-				this.getProductList()
-			});
-		}
-	})
-	export default class SortProduct extends Vue {
-		private categoryList: object[] = []
-		private productStatus: object[] = [
-			{name:"进行中", status:null},
-			{name:"即将开始", status:"1"},
-			{name:"可预约", status:"2"},
-		]
-		private productList: object[] = []
-		private pageNo: number = 1
-		private pageSize: number = 30
-		private searchKey: string = ""
-		private category: number = 0
-		private status: number|null = null	//null进行中，1即将开始，2可预约
-		private loading: boolean = false
-		private finished: boolean = false
-		private refreshing: boolean = false
-		
-		get getParams(): object{
-			return {
-				page_no: this.pageNo,
-				page_size: this.pageSize,
-				keywords: this.searchKey,
-				module_type: 1,
-				status: this.status,
-				type: 2,
-				is_family: null,
-				cid: this.category || 19
-			}
-		}
-		
-		onClickLeft(): void {
-			this.$router.back();
-		}
-		//改变查询商品类别
-		changeCategory(item: any): void{
-			this.category = item.id;
-			this.onRefresh()
-		}
-		//改变查询商品状态
-		changeQueryStatus(item: any): void {
-			this.status = item.status
-			this.onRefresh()
-		}
-		onRefresh(): void {
-			//下拉刷新调用onRefresh方法时内部已经处理refreshing = true, 但其他方法调用onRefresh时，并没有设置refreshing为true,所以下面再设置一次(兼容默认刷新)
-			this.refreshing = true;
-			// 清空列表数据
-			this.finished = false;
+import { Component, Vue, Prop } from 'vue-property-decorator';
 
-			// 重新加载数据
-			// 将 loading 设置为 true，表示处于加载状态
-			this.loading = true;
-			this.onLoad();
-		}
-		//查询单个类别下商品列表
-		getProductList(): void {
-			this.API.getProductList(this.getParams, {showLoading: false}).then((result: any)=>{
-				let {data, error} = result
-				//this.productList = data
-				data.forEach((item: any, index: number)=>{
-					let {task_count, order_count} = item
-					//item.task_count - item.order_count}
-					data[index].widthPercent = this.percent((task_count - order_count)/task_count, 3)
-					data[index].textPercent = this.percent( order_count/task_count, 0)
-				})
-				this.productList.push(...data);
-				if(data.length < this.pageSize) {
-					this.finished = true;
-				} else {
-					this.loading = false;
-					this.pageNo++
-				}
-			})
-		}
-		toProductDetail(item: any): void {
-			this.$router.push({path:"/productDetail", query:{shopId:item.FID, mark:"M"}})
-		}
-	}
+@Component({
+  name: 'sortProduct',
+  created() {
+    this.getCategory().then(() => {
+      this.getProductList()
+    });
+  }
+})
+export default class SortProduct extends Vue {
+  private categoryList: object[] = []
+  private productStatus: object[] = [
+    {name: '进行中', status: null},
+    {name: '即将开始', status: '1'},
+    {name: '可预约', status: '2'},
+  ]
+  private productList: object[] = []
+  private pageNo: number = 1
+  private pageSize: number = 30
+  private searchKey: string = ''
+  private category: number = 0
+  private status: number|null = null	// null进行中，1即将开始，2可预约
+  private loading: boolean = false
+  private finished: boolean = false
+  private refreshing: boolean = false
+  
+  get getParams(): object {
+    return {
+      page_no: this.pageNo,
+      page_size: this.pageSize,
+      keywords: this.searchKey,
+      module_type: 1,
+      status: this.status,
+      type: 2,
+      is_family: null,
+      cid: this.category || 19
+    }
+  }
+  
+  public onClickLeft(): void {
+    this.$router.back();
+  }
+  // 改变查询商品类别
+  public changeCategory(item: any): void {
+    this.category = item.id;
+    this.onRefresh()
+  }
+  // 改变查询商品状态
+  public changeQueryStatus(item: any): void {
+    this.status = item.status
+    this.onRefresh()
+  }
+  public onRefresh(): void {
+    // 下拉刷新调用onRefresh方法时内部已经处理refreshing = true, 但其他方法调用onRefresh时，并没有设置refreshing为true,所以下面再设置一次(兼容默认刷新)
+    this.refreshing = true;
+    // 清空列表数据
+    this.finished = false;
+
+    // 重新加载数据
+    // 将 loading 设置为 true，表示处于加载状态
+    this.loading = true;
+    this.onLoad();
+  }
+  // 查询单个类别下商品列表
+  public getProductList(): void {
+    this.API.getProductList(this.getParams, {showLoading: false}).then((result: any) => {
+      let {data, error} = result
+      // this.productList = data
+      data.forEach((item: any, index: number) => {
+        let {task_count, order_count} = item
+        // item.task_count - item.order_count}
+        data[index].widthPercent = this.percent((task_count - order_count) / task_count, 3)
+        data[index].textPercent = this.percent( order_count / task_count, 0)
+      })
+      this.productList.push(...data);
+      if (data.length < this.pageSize) {
+        this.finished = true;
+      } else {
+        this.loading = false;
+        this.pageNo++
+      }
+    })
+  }
+  public toProductDetail(item: any): void {
+    this.$router.push({path: '/productDetail', query: {shopId: item.FID, mark: 'M'}})
+  }
+}
 </script>
 
 

@@ -36,74 +36,74 @@
 </template>
 
 <script lang="ts">
-	import { Component, Vue, Prop } from 'vue-property-decorator';
-	import utils from "@/utils/utils"
-	
-	@Component({
-		name: 'addFeedBack',
-		components: { },
-		created() {
-			let {FID} = this.$route.query;
-			this.FID = FID;
-			this.isDetail = utils.isNotEmpty(FID);
-			if(utils.isNotEmpty(FID)){
-				this.title = ""
-				this.getFeedBackDetail()
-			}
-		},
-		mounted() {
-			
-		}
-	})
-	export default class AddFeedBack extends Vue {
-		private form: any = {}
-		private title: string = "添加意见"
-		private FID: string = ""
-		private isDetail: boolean = false
-		
-		//methods方法
-		onClickLeft(): void {
-			this.$router.back();
-		}
-		//查询单条反馈详情
-		getFeedBackDetail(): void {
-			this.API.getFeedBackDetail({FID: this.FID}).then((data: any)=>{
-				this.title = data.FName
-				this.form = {
-					title: data.FViewsTitle,
-					content: data.FViewsContent,
-					FTime: this.moment(data.FTime).format("YYYY-MM-DD hh:mm:ss")		//
-				}
-			})
-		}
-		submit(): void {
-			let {title, content} = this.form;
-			if(utils.isNotEmptyAll(title, content)){
-				this.API.addFeedBack({title, content}).then((data: any)=>{
-					if (data.ErrorCode == 100) {
-						this.$toast({
-		                	duration: 600, // 持续展示 toast
-						  	forbidClick: true,
-						  	type: "success",
-						  	message: '提交成功',
-						  	onClose:()=>{this.$router.back()}
-						});
-		            } else if (data.ErrorCode == 101) {
-		            	this.$toast({
-						  	//forbidClick: true,
-						  	type: "fail",
-						  	message: data.Content
-						});
-		            } else {
-		                this.$router.push("login")
-		            }
-		
-				})
-			}else{
-				this.$toast("标题与内容不能为空！")
-			}
-		}
-	}
+import { Component, Vue, Prop } from 'vue-property-decorator';
+import utils from '@/utils/utils'
+
+@Component({
+  name: 'addFeedBack',
+  components: { },
+  created() {
+    let {FID} = this.$route.query;
+    this.FID = FID;
+    this.isDetail = utils.isNotEmpty(FID);
+    if (utils.isNotEmpty(FID)) {
+      this.title = ''
+      this.getFeedBackDetail()
+    }
+  },
+  mounted() {
+    
+  }
+})
+export default class AddFeedBack extends Vue {
+  private form: any = {}
+  private title: string = '添加意见'
+  private FID: string = ''
+  private isDetail: boolean = false
+  
+  // methods方法
+  public onClickLeft(): void {
+    this.$router.back();
+  }
+  // 查询单条反馈详情
+  public getFeedBackDetail(): void {
+    this.API.getFeedBackDetail({FID: this.FID}).then((data: any) => {
+      this.title = data.FName
+      this.form = {
+        title: data.FViewsTitle,
+        content: data.FViewsContent,
+        FTime: this.moment(data.FTime).format('YYYY-MM-DD hh:mm:ss')		//
+      }
+    })
+  }
+  public submit(): void {
+    let {title, content} = this.form;
+    if (utils.isNotEmptyAll(title, content)) {
+      this.API.addFeedBack({title, content}).then((data: any) => {
+        if (data.ErrorCode == 100) {
+          this.$toast({
+                    duration: 600, // 持续展示 toast
+              forbidClick: true,
+              type: 'success',
+              message: '提交成功',
+              onClose: () => {this.$router.back()}
+          });
+              } else if (data.ErrorCode == 101) {
+                this.$toast({
+              // forbidClick: true,
+              type: 'fail',
+              message: data.Content
+          });
+              } else {
+                  this.$router.push('login')
+              }
+  
+      })
+    } else {
+      this.$toast('标题与内容不能为空！')
+    }
+  }
+}
 </script>	
 
 <style scoped lang="scss">

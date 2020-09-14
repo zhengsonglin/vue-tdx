@@ -71,61 +71,61 @@
 </template>
 
 <script lang="ts">
-	import { Component, Vue, Prop } from 'vue-property-decorator';
-	@Component({
-		name: 'withDrawCash',
-		components: { },
-		created() {
-			this.getWithDrawCashInfo()
-		},
-		mounted() {}
-	})
-	export default class WithDrawCash extends Vue {
-		private withDrawCashInfo: any = {}
-		private withdrawalWay: string = '0'
-		private showTips: boolean = true
-		//methods方法
-		onClickLeft(): void {
-			this.$router.back();
-		}
-		getWithDrawCashInfo(): void {
-			this.API.getWithDrawCashInfo().then((result: any)=>{
-				let {data, error} = result
-				this.withDrawCashInfo = data
-			})
-		}
-		submit(){
-			this.API.handleWithDrawCash(this.withDrawCashInfo).then((result: any)=>{
-				let {data, error} = result
-				if (error.errno == 200) {
-		            this.$toast({
-		            	duration: 600, // 持续展示 toast
-					  	forbidClick: true,
-					  	type: "success",
-					  	message: '提现成功,请等待系统审核！',
-					  	onClose:()=>{this.$router.back()}
-					});
-		            
-		        } else if (error.errno == 101) {
-		            if (data.Content == "无支行信息") {
-		                this.$router.push("/cardBind")
-		            } else {
-		                this.$toast({
-						  	//forbidClick: true,
-						  	type: "fail",
-						  	message: error.usermsg
-						});
-		            }
-		        } else if (error.errno != 200) {
-		            this.$toast({
-					  	//forbidClick: true,
-					  	type: "fail",
-					  	message: error.usermsg
-					});
-		        }
-			})
-		}
-	}
+import { Component, Vue, Prop } from 'vue-property-decorator';
+@Component({
+  name: 'withDrawCash',
+  components: { },
+  created() {
+    this.getWithDrawCashInfo()
+  },
+  mounted() {}
+})
+export default class WithDrawCash extends Vue {
+  private withDrawCashInfo: any = {}
+  private withdrawalWay: string = '0'
+  private showTips: boolean = true
+  // methods方法
+  public onClickLeft(): void {
+    this.$router.back();
+  }
+  public getWithDrawCashInfo(): void {
+    this.API.getWithDrawCashInfo().then((result: any) => {
+      let {data, error} = result
+      this.withDrawCashInfo = data
+    })
+  }
+  public submit() {
+    this.API.handleWithDrawCash(this.withDrawCashInfo).then((result: any) => {
+      let {data, error} = result
+      if (error.errno == 200) {
+              this.$toast({
+                duration: 600, // 持续展示 toast
+            forbidClick: true,
+            type: 'success',
+            message: '提现成功,请等待系统审核！',
+            onClose: () => {this.$router.back()}
+        });
+              
+          } else if (error.errno == 101) {
+              if (data.Content == '无支行信息') {
+                  this.$router.push('/cardBind')
+              } else {
+                  this.$toast({
+              // forbidClick: true,
+              type: 'fail',
+              message: error.usermsg
+          });
+              }
+          } else if (error.errno != 200) {
+              this.$toast({
+            // forbidClick: true,
+            type: 'fail',
+            message: error.usermsg
+        });
+          }
+    })
+  }
+}
 </script>
 
 <style scoped lang="scss">

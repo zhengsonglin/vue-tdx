@@ -344,14 +344,14 @@
 </template>
 
 <script lang="ts">
-	import {Component, Vue} from 'vue-property-decorator'
-	@Component({
-		name: "question",
-		created(){}
-	})
-	export default class Question extends Vue {
-		private isShowAll: boolean = false
-	}
+import {Component, Vue} from 'vue-property-decorator'
+@Component({
+  name: 'question',
+  created() {}
+})
+export default class Question extends Vue {
+  private isShowAll: boolean = false
+}
 </script>	
 <style lang="scss" scoped>
 	.page-question {

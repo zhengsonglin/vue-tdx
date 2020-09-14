@@ -5,8 +5,8 @@ import store from './store';
 import 'lib-flexible'
 import VueExpandFn from '@/assets/js/vueExpandFn'
 import { Button, NavBar, Toast, Tabbar, TabbarItem, Swipe, SwipeItem, Lazyload, Col, Row,  Icon, List, PullRefresh, CellGroup, Cell,
-				Grid, GridItem, Image, Search, Tab, Tabs, Dialog, Form, Field, RadioGroup, Radio, Uploader, Picker, Popup, Area, Overlay,
-				Notify, Empty, DropdownMenu, DropdownItem, TreeSelect  } from 'vant';
+        Grid, GridItem, Image, Search, Tab, Tabs, Dialog, Form, Field, RadioGroup, Radio, Uploader, Picker, Popup, Area, Overlay,
+        Notify, Empty, DropdownMenu, DropdownItem, TreeSelect  } from 'vant';
 
 Vue.use(Button).use(NavBar).use(Toast).use(Tabbar).use(TabbarItem).use(Swipe).use(SwipeItem);
 Vue.use(Lazyload).use(Col).use(Row).use(Icon).use(List).use(PullRefresh).use(CellGroup).use(Cell).use(Grid).use(GridItem);

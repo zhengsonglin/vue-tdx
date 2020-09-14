@@ -13,26 +13,26 @@
 </template>
 
 <script lang="ts">
-	import { Component, Vue, Prop } from 'vue-property-decorator';
-	@Component({
-		name: 'updateDescription',
-		components: { },
-		created() {
-		},
-		mounted() {}
-	})
-	export default class UpdateDescription extends Vue {
-		private data: any[] = []
-		//methods方法
-		onClickLeft(): void {
-			this.$router.back();
-		}
-		getSysInfo(): void {
-			this.API.getSysInfo().then((data: any)=>{
-				this.data = data
-			})
-		}
-	}
+import { Component, Vue, Prop } from 'vue-property-decorator';
+@Component({
+  name: 'updateDescription',
+  components: { },
+  created() {
+  },
+  mounted() {}
+})
+export default class UpdateDescription extends Vue {
+  private data: any[] = []
+  // methods方法
+  public onClickLeft(): void {
+    this.$router.back();
+  }
+  public getSysInfo(): void {
+    this.API.getSysInfo().then((data: any) => {
+      this.data = data
+    })
+  }
+}
 </script>	
 
 <style scoped lang="scss">

@@ -32,7 +32,7 @@
 <script lang="ts">
 import { Component, Vue, Provide } from 'vue-property-decorator';
 import { checkMobilePhone } from '@/assets/js/util';
-//import { Button } from 'vant';
+// import { Button } from 'vant';
 
 declare module 'vue/types/vue' {
     interface Vue {
@@ -42,99 +42,99 @@ declare module 'vue/types/vue' {
 
 @Component({
   name: 'register',
-  components: {	//这里通常是自己写的子组件, 当然也可以是如下vant中的组件
-  	//[Button.name]: Button
+  components: {	// 这里通常是自己写的子组件, 当然也可以是如下vant中的组件
+    // [Button.name]: Button
   }
 })
 export default class Register extends Vue {
-	private form: any = {
-		username:"18598271043",
-		pwd:"",
-		repwd:"",
-		yzm:"",
-		code:""
-	}
-	private hasCommit: boolean = false
+  private form: any = {
+    username: '18598271043',
+    pwd: '',
+    repwd: '',
+    yzm: '',
+    code: ''
+  }
+  private hasCommit: boolean = false
 
-	private validCode: any = {
-		btnText:"获取验证码",
-		isDisabled:false
-	}
+  private validCode: any = {
+    btnText: '获取验证码',
+    isDisabled: false
+  }
 
-	private loginBtn: any = {
-		isLoading: false,
-		loadingText: "注册中..."
-	}
-	
-	private handleRegister() : void{
-		if(!this.hasCommit){
-			let {username, pwd, repwd, yzm, code} = this.form
-			if(!checkMobilePhone(username)){
-				this.$toast('请输入正确手机号');
-			}else if(yzm==""){
-				this.$toast('验证码不能为空');
-			}else if(pwd.length<6){
-				this.$toast('密码长度必须是六位以上');
-			}else if(pwd != repwd){
-				this.$toast('两次密码输入不相同');
-			}else if(code==""){
-				this.$toast('邀请码不能为空');
-			}else{
-				let copyForm = Object.assign({}, this.form);
-				delete copyForm.repwd
-				this.hasCommit = true
-				this.loginBtn.isLoading = true
-				this.API.register(copyForm).then((data:any)=>{
-					if (data.ErrorCode == 100) {
-						this.loginBtn.isLoading = false
-						this.$toast("注册成功！");
-						this.$router.push("login")
-					} else {
-						this.$toast.fail(data.Content)
-					}
+  private loginBtn: any = {
+    isLoading: false,
+    loadingText: '注册中...'
+  }
+  
+  private handleRegister(): void {
+    if (!this.hasCommit) {
+      let {username, pwd, repwd, yzm, code} = this.form
+      if (!checkMobilePhone(username)) {
+        this.$toast('请输入正确手机号');
+      } else if (yzm == '') {
+        this.$toast('验证码不能为空');
+      } else if (pwd.length < 6) {
+        this.$toast('密码长度必须是六位以上');
+      } else if (pwd != repwd) {
+        this.$toast('两次密码输入不相同');
+      } else if (code == '') {
+        this.$toast('邀请码不能为空');
+      } else {
+        let copyForm = Object.assign({}, this.form);
+        delete copyForm.repwd
+        this.hasCommit = true
+        this.loginBtn.isLoading = true
+        this.API.register(copyForm).then((data: any) => {
+          if (data.ErrorCode == 100) {
+            this.loginBtn.isLoading = false
+            this.$toast('注册成功！');
+            this.$router.push('login')
+          } else {
+            this.$toast.fail(data.Content)
+          }
 
-				})
-			}
-		}
+        })
+      }
+    }
 
-	}
-	
-	private toLogin() : void{
-		this.$router.push("login")
-	}
-	
-	private sendCode() : void{
-		if(!checkMobilePhone(this.form.username)){
-			this.$toast('请输入正确手机号');
-		}else{
-			this.validCode.isDisabled = true
-			/*this.API.sendCode({ phone: this.form.username, txt: "用户注册", type: 1 }).then((data)=>{
+  }
+  
+  private toLogin(): void {
+    this.$router.push('login')
+  }
+  
+  private sendCode(): void {
+    if (!checkMobilePhone(this.form.username)) {
+      this.$toast('请输入正确手机号');
+    } else {
+      this.validCode.isDisabled = true
+      /*this.API.sendCode({ phone: this.form.username, txt: "用户注册", type: 1 }).then((data)=>{
 				if (data.ErrorCode == 100) {
 					this.resetBtn()
 				}
 			})*/
-			this.resetBtn()
-			this.$toast('马上发送验证码');
-		}
-	}
-	
-	private resetBtn() : void{
-		let nums : number = 60, timer : any;
+      this.resetBtn()
+      this.$toast('马上发送验证码');
+    }
+  }
+  
+  private resetBtn(): void {
+    let nums: number = 60, timer: any;
 
-		this.validCode.btnText = nums + "秒后重新获取";
-		timer = setInterval(()=>{
-			nums--;
-			if (nums > 0) {
-				this.validCode.btnText = nums + "秒后重新获取";
-			} else {
-				clearInterval(timer); //清除js定时器
-				this.validCode.isDisabled = false;
-				this.validCode.btnText = '获取验证码';
-			}
+    this.validCode.btnText = nums + '秒后重新获取';
+    timer = setInterval(() => {
+      nums--;
+      if (nums > 0) {
+        this.validCode.btnText = nums + '秒后重新获取';
+      } else {
+        clearInterval(timer); // 清除js定时器
+        this.validCode.isDisabled = false;
+        this.validCode.btnText = '获取验证码';
+      }
 
-		},1000)
-	}
-	
+    }, 1000)
+  }
+  
 }
 </script>
 <style scoped lang="scss">

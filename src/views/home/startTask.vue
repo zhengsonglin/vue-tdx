@@ -151,146 +151,145 @@
 </template>
 
 <script lang="ts">
-	import {Component, Vue} from 'vue-property-decorator'
-	import { State, Getter, Mutation, Action } from 'vuex-class'
-	import utils from '@/utils/utils';
-	@Component({
-		name: "startTask",
-		created(){
-			this.taskId = this.$route.query.TaskId;
-			this.getTaskInfo()
-		},
-	})
-	export default class StartTask extends Vue {
-		private taskId: string = ""
-		private taskInfo: any = {}
-		private form: any = {}
-		private productLink: string = ""	//商品链接或者淘口令
-		private isValidSuccess: boolean = false	//商品验证通过
-		private showOverlay: boolean = false	//是否显示举报弹窗
-		private reportContent: string = "任务价格不一致" //举报原因
-		
-		@State('userLoginInfo') userLoginInfo!: any
-		
-		//methods方法
-		onClickLeft(): void {
-			this.$router.back();
-		}
-		getTaskInfo(): void {
-			this.API.getTaskInfo({order_id: this.taskId}).then((result: any)=>{
-				let {data, error} = result
-				this.taskInfo = data
-			})
-		}
-		//验证商品价格
-		validPrice(): void {
-			if(this.form.orderPrice != this.taskInfo.FGoodsUnitPrice){
-				this.$toast("您的实付金额与任务金额不一致，请及时联系客服处理，以免影响亲的返款。")
-		    	return;
-			}
-		}
-		//完成任务
-		submit(): void {
-			let {orderNum, orderPrice, remark} = this.form
-			if(orderPrice != this.taskInfo.FGoodsUnitPrice){
-				this.$toast("您的实付金额与任务金额不一致，请及时联系客服处理，以免影响亲的返款。")
-		    	return;
-			}
-			if(this.taskInfo.FIsValidation !=1 && !this.isValidSuccess){//0未验证， 1已验证
-				if (this.productLink == "") {
-		            this.$toast("请验证宝贝链接");
-		            return;
-		        }
-			}
-			if (orderNum.length != 18 && orderNum.length != 19) {
-		        this.$toast("订单号必须是18-19位");
-		        return;
-		    }
-		    var re: RegExp = /^[1-9]+[0-9]*]*$/;
-			
-		    if (!re.test(orderNum)) {
-		        this.$toast("订单号必须是纯数字组成");
-		        return;
-		    }
-		
-		
-			this.API.complateTask({ TaskId: this.taskId, OrderNum: orderNum, remark }).then((data: any)=>{
-				if (data.ErrorCode == 100) {
-		            this.$toast({
-		            	duration: 600, // 持续展示 toast
-					  	forbidClick: true,
-					  	type: "success",
-					  	message: '提交成功',
-					  	onClose:()=>{this.$router.push("taskCenter")}
-					});
-		        } else {
-		            this.$toast({
-					  	//forbidClick: true,
-					  	type: "fail",
-					  	message: data.Content
-					});
-		        }
-			})
-		}
-		//确定举报
-		handleReport(): void {
-			let {FID} = this.taskInfo
-			this.API.addOrderReport( { orderId: this.taskId, fid: FID, reson: this.reportContent }).then((data: any)=>{
-				if (data.ErrorCode == 100) {
-					this.$toast({
-		            	duration: 600, // 持续展示 toast
-					  	forbidClick: true,
-					  	type: "success",
-					  	message: '举报成功，请等待平台处理！',
-					  	onClose:()=>{this.$router.push("home")}
-					});
-		        } else {
-		        	this.$toast({
-					  	//forbidClick: true,
-					  	type: "fail",
-					  	message: data.Content
-					});
-		        }
-			})
-		}
-		//也可以使用这种方式复制 (@click="doCopy")
-		doCopy(): void {
-		    this.$copyText(this.message).then(function (e: any) {
-		      alert('Copied')
-		      console.log(e)
-		    }, function (e: any) {
-		      alert('Can not copy')
-		      console.log(e)
-		    })
-		}
-		onCopy(e: any): void {//e.text
-			this.$toast("复制成功")
-			//taskInfo.FSelect
-		}
-		onError(e: any): void {
-			this.$toast("复制失败")
-		}
-		//验证商品链接或者淘口令
-		validProductLink(): void {
-			if(this.productLink == ""){
-				this.$toast("请先填写宝贝链接地址!")
-			}else{
-				this.API.checkGoodsUrl({ "order_id": this.taskId, "product_url": encodeURI(this.productLink) }).then((data: any)=>{
-					if (data.ErrorCode == 100) {
-		                this.isValidSuccess = true
-		                this.$toast("验证成功");
-		            }
-		            else {
-		            	this.$toast({
-						  	//forbidClick: true,
-						  	type: "fail",
-						  	message: "验证失败"
-						});
-		            }
-				})
-			}
-		}
-	}
+import {Component, Vue} from 'vue-property-decorator'
+import { State, Getter, Mutation, Action } from 'vuex-class'
+import utils from '@/utils/utils';
+@Component({
+  name: 'startTask',
+  created() {
+    this.taskId = this.$route.query.TaskId;
+    this.getTaskInfo()
+  },
+})
+export default class StartTask extends Vue {
+  
+  @State('userLoginInfo') public userLoginInfo!: any
+  private taskId: string = ''
+  private taskInfo: any = {}
+  private form: any = {}
+  private productLink: string = ''	// 商品链接或者淘口令
+  private isValidSuccess: boolean = false	// 商品验证通过
+  private showOverlay: boolean = false	// 是否显示举报弹窗
+  private reportContent: string = '任务价格不一致' // 举报原因
+  
+  // methods方法
+  public onClickLeft(): void {
+    this.$router.back();
+  }
+  public getTaskInfo(): void {
+    this.API.getTaskInfo({order_id: this.taskId}).then((result: any) => {
+      let {data, error} = result
+      this.taskInfo = data
+    })
+  }
+  // 验证商品价格
+  public validPrice(): void {
+    if (this.form.orderPrice != this.taskInfo.FGoodsUnitPrice) {
+      this.$toast('您的实付金额与任务金额不一致，请及时联系客服处理，以免影响亲的返款。')
+      return;
+    }
+  }
+  // 完成任务
+  public submit(): void {
+    let {orderNum, orderPrice, remark} = this.form
+    if (orderPrice != this.taskInfo.FGoodsUnitPrice) {
+      this.$toast('您的实付金额与任务金额不一致，请及时联系客服处理，以免影响亲的返款。')
+      return;
+    }
+    if (this.taskInfo.FIsValidation != 1 && !this.isValidSuccess) {// 0未验证， 1已验证
+      if (this.productLink == '') {
+              this.$toast('请验证宝贝链接');
+              return;
+          }
+    }
+    if (orderNum.length != 18 && orderNum.length != 19) {
+          this.$toast('订单号必须是18-19位');
+          return;
+      }
+    let re: RegExp = /^[1-9]+[0-9]*]*$/;
+    
+    if (!re.test(orderNum)) {
+          this.$toast('订单号必须是纯数字组成');
+          return;
+      }
+  
+  
+    this.API.complateTask({ TaskId: this.taskId, OrderNum: orderNum, remark }).then((data: any) => {
+      if (data.ErrorCode == 100) {
+              this.$toast({
+                duration: 600, // 持续展示 toast
+            forbidClick: true,
+            type: 'success',
+            message: '提交成功',
+            onClose: () => {this.$router.push('taskCenter')}
+        });
+          } else {
+              this.$toast({
+            // forbidClick: true,
+            type: 'fail',
+            message: data.Content
+        });
+          }
+    })
+  }
+  // 确定举报
+  public handleReport(): void {
+    let {FID} = this.taskInfo
+    this.API.addOrderReport( { orderId: this.taskId, fid: FID, reson: this.reportContent }).then((data: any) => {
+      if (data.ErrorCode == 100) {
+        this.$toast({
+                duration: 600, // 持续展示 toast
+            forbidClick: true,
+            type: 'success',
+            message: '举报成功，请等待平台处理！',
+            onClose: () => {this.$router.push('home')}
+        });
+          } else {
+            this.$toast({
+            // forbidClick: true,
+            type: 'fail',
+            message: data.Content
+        });
+          }
+    })
+  }
+  // 也可以使用这种方式复制 (@click="doCopy")
+  public doCopy(): void {
+      this.$copyText(this.message).then(function(e: any) {
+        alert('Copied')
+        console.log(e)
+      }, function(e: any) {
+        alert('Can not copy')
+        console.log(e)
+      })
+  }
+  public onCopy(e: any): void {// e.text
+    this.$toast('复制成功')
+    // taskInfo.FSelect
+  }
+  public onError(e: any): void {
+    this.$toast('复制失败')
+  }
+  // 验证商品链接或者淘口令
+  public validProductLink(): void {
+    if (this.productLink == '') {
+      this.$toast('请先填写宝贝链接地址!')
+    } else {
+      this.API.checkGoodsUrl({ order_id: this.taskId, product_url: encodeURI(this.productLink) }).then((data: any) => {
+        if (data.ErrorCode == 100) {
+                  this.isValidSuccess = true
+                  this.$toast('验证成功');
+              } else {
+                this.$toast({
+              // forbidClick: true,
+              type: 'fail',
+              message: '验证失败'
+          });
+              }
+      })
+    }
+  }
+}
 </script>	
 
 

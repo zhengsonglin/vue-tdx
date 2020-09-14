@@ -59,121 +59,121 @@
 </template>
 
 <script lang="ts">
-	import {Component, Provide, Vue, Watch, Emit } from "vue-property-decorator"
-	import taskList from "./children/taskList.vue";
-	import skillTaskList from './children/skillTaskList.vue'
-	@Component({
-		name: 'taskCenter',
-		components: {
-		  taskList, skillTaskList
-		},
-		// 生命周期, 也可以写在下面的组件方法中，组件中的生命周期方法会覆盖当前的生命周期方法
-		mounted(){
-			let {activeIndex=1, orderType=0} = this.$route.params
-			this.activeIndex = activeIndex
-			this.orderType = orderType
-		}
-	})
-	export default class TaskCenter extends Vue {
-		private orderType: number = 0
-		private option: any[] = [
-		    { text: '免单任务中心', value: 0 },	//淘抢购订单
-		    { text: '返利任务中心', value: 1 },	//熊抢购订单
-		]
-		private tabs: any = [
-			{state:"5", name:"售后", num:0, 
-				children:[{state:"B", name:"商家发起", num:11, isActive:false},{state:"C", name:"用户发起", num:12, isActive:false}]
-			},
-			{state:"2", name:"已提交", num:1},
-			{state:"3", name:"待审核", num:2},
-			{state:"4", name:"已完成", num:3},
-			{state:"0", name:"全部", num:4},
-			{state:"1", name:"已领取", num:5},
-		]
-		private activeIndex: number = 1	//当前nav, 从0开始
-		private visible: boolean = false
-		private rightMenuShow: boolean = false
-		private leftDateShow: boolean = false
-		private DatgeType: string = 'all'	//订单时间，all全部，today今天，week一周内，moth一月内
-		private ABOrTraffic: string = 'AB'
-		
-		//计算属性
-		get getActiveStatus(): string {
-			if(this.activeIndex){
-				return this.tabs[this.activeIndex].state
-			}else{
-				return this.tabs[this.activeIndex].state
-				//return this.tabs[this.activeIndex].children.filter((item)=>item.isActive)[0].state
-			}
-		}
-		get queryBaseParam(): any {
-			return {
-				DatgeType: this.DatgeType,
-				ABOrTraffic: this.ABOrTraffic,
-				//Status: this.getActiveStatus || 'have',
-				status: this.getActiveStatus || 0,	//0全部
-				order_type: 1,	//1限量免单，2熊抢购
-				task_end: "",	//2020-06-27
-				task_start: ""	//2020-06-01
-			}
-		}
-		
-		//methods方法
-		close(): void {
-			this.leftDateShow = false;
-			this.rightMenuShow = false;
-		}
-		//导航左侧日历
-		onRiLiClick(): void {
-			if(this.rightMenuShow) {
-				this.rightMenuShow = false;
-				return;
-			}
-			this.leftDateShow = !this.leftDateShow;
-		}
-		//导航右侧菜单
-		onMenuClick(): void {
-			if(this.leftDateShow){
-				this.leftDateShow = false;
-				return;
-			}
-			this.rightMenuShow = !this.rightMenuShow;
-		}
-		//按时间筛选订单
-		changeTime(type: string): void {
-			this.DatgeType = type;
-			this.leftDateShow = false
-		}
-		//切换订单类型(0淘抢购，1熊抢购)
-		onDropDownMenuChange(value: string): void {
-			//console.log(value)
-		}
-		//tab导航切换
-		onNavClick(item: any): void {
-			let {state, name, num} = item
-			if(num){
-				let children = this.tabs[this.activeIndex].children
-				if(children && children.length){
-					children.forEach((obj: any)=>{
-						obj.isActive = false
-					})
-				}
-				this.activeIndex = num
-				this.visible = false
-			}else{
-				this.visible = !this.visible
-			}
-		}
-		//tab子菜单切换
-		onChildNavClick(item: any, pItem: any): void {
-			let {state, name, num} = item
-			this.activeIndex = pItem.num;
-			pItem.children.forEach((obj: any)=>{
-				obj.isActive = (obj.num == num)
-			})
-			this.visible = !this.visible
-		}
-	}
+import {Component, Provide, Vue, Watch, Emit } from 'vue-property-decorator'
+import taskList from './children/taskList.vue';
+import skillTaskList from './children/skillTaskList.vue'
+@Component({
+  name: 'taskCenter',
+  components: {
+    taskList, skillTaskList
+  },
+  // 生命周期, 也可以写在下面的组件方法中，组件中的生命周期方法会覆盖当前的生命周期方法
+  mounted() {
+    let {activeIndex= 1, orderType= 0} = this.$route.params
+    this.activeIndex = activeIndex
+    this.orderType = orderType
+  }
+})
+export default class TaskCenter extends Vue {
+  private orderType: number = 0
+  private option: any[] = [
+      { text: '免单任务中心', value: 0 },	// 淘抢购订单
+      { text: '返利任务中心', value: 1 },	// 熊抢购订单
+  ]
+  private tabs: any = [
+    {state: '5', name: '售后', num: 0, 
+      children: [{state: 'B', name: '商家发起', num: 11, isActive: false}, {state: 'C', name: '用户发起', num: 12, isActive: false}]
+    },
+    {state: '2', name: '已提交', num: 1},
+    {state: '3', name: '待审核', num: 2},
+    {state: '4', name: '已完成', num: 3},
+    {state: '0', name: '全部', num: 4},
+    {state: '1', name: '已领取', num: 5},
+  ]
+  private activeIndex: number = 1	// 当前nav, 从0开始
+  private visible: boolean = false
+  private rightMenuShow: boolean = false
+  private leftDateShow: boolean = false
+  private DatgeType: string = 'all'	// 订单时间，all全部，today今天，week一周内，moth一月内
+  private ABOrTraffic: string = 'AB'
+  
+  // 计算属性
+  get getActiveStatus(): string {
+    if (this.activeIndex) {
+      return this.tabs[this.activeIndex].state
+    } else {
+      return this.tabs[this.activeIndex].state
+      // return this.tabs[this.activeIndex].children.filter((item)=>item.isActive)[0].state
+    }
+  }
+  get queryBaseParam(): any {
+    return {
+      DatgeType: this.DatgeType,
+      ABOrTraffic: this.ABOrTraffic,
+      // Status: this.getActiveStatus || 'have',
+      status: this.getActiveStatus || 0,	// 0全部
+      order_type: 1,	// 1限量免单，2熊抢购
+      task_end: '',	// 2020-06-27
+      task_start: ''	// 2020-06-01
+    }
+  }
+  
+  // methods方法
+  public close(): void {
+    this.leftDateShow = false;
+    this.rightMenuShow = false;
+  }
+  // 导航左侧日历
+  public onRiLiClick(): void {
+    if (this.rightMenuShow) {
+      this.rightMenuShow = false;
+      return;
+    }
+    this.leftDateShow = !this.leftDateShow;
+  }
+  // 导航右侧菜单
+  public onMenuClick(): void {
+    if (this.leftDateShow) {
+      this.leftDateShow = false;
+      return;
+    }
+    this.rightMenuShow = !this.rightMenuShow;
+  }
+  // 按时间筛选订单
+  public changeTime(type: string): void {
+    this.DatgeType = type;
+    this.leftDateShow = false
+  }
+  // 切换订单类型(0淘抢购，1熊抢购)
+  public onDropDownMenuChange(value: string): void {
+    // console.log(value)
+  }
+  // tab导航切换
+  public onNavClick(item: any): void {
+    let {state, name, num} = item
+    if (num) {
+      let children = this.tabs[this.activeIndex].children
+      if (children && children.length) {
+        children.forEach((obj: any) => {
+          obj.isActive = false
+        })
+      }
+      this.activeIndex = num
+      this.visible = false
+    } else {
+      this.visible = !this.visible
+    }
+  }
+  // tab子菜单切换
+  public onChildNavClick(item: any, pItem: any): void {
+    let {state, name, num} = item
+    this.activeIndex = pItem.num;
+    pItem.children.forEach((obj: any) => {
+      obj.isActive = (obj.num == num)
+    })
+    this.visible = !this.visible
+  }
+}
 </script>	
 
 

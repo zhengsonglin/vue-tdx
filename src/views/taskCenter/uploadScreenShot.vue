@@ -41,126 +41,126 @@
 </template>
 
 <script lang="ts">
-	import {Component, Provide, Vue, Watch, Emit } from "vue-property-decorator"
-	import utils from "@/utils/utils"
-	@Component({
-		name: 'uploadScreenShot',
-		components: {},
-		// 生命周期, 也可以写在下面的组件方法中，组件中的生命周期方法会覆盖当前的生命周期方法
-		created(){
-			this.taskId = this.$route.query.TaskId;
-			this.getUploadInfo()
-		}
-	})
-	export default class UploadScreenShot extends Vue {
-		//data属性
-		private taskId: string = ""	//编辑才存在
-		private uploadInfo: any = {}
-		private fileList: any[] = []	//需要上传的图片集合
-		private singleFile: any = {}	//单个图片
-		private form: any = {}
-		private dz : string = "0"
-		private clickStatus: number = 0	//防止用户连续点击导致重复上传
-		private isForceEdit: boolean = false	//是否强制编辑
-		
-		//computed计算属性
-		get allowEdit(): boolean {
-			//未提交好评截图， 或者好评截图不通过需要修改
-			return this.isForceEdit || this.uploadInfo.FStatus == 2 || this.uploadInfo.FStatus == 27
-		}
-		//methods方法
-		onClickLeft(): void {
-			this.$router.back();
-		}
-		refresh(): void {
-			this.isForceEdit = false
-			this.fileList = [];
-			this.singleFile = {};
-			this.getUploadInfo()
-		}
-		afterRead(file: any): void {
-		  	// 此时可以自行将文件上传至服务器
-		  	console.log(file);
-		  	//console.log(this.fileList)
-		  	this.singleFile = file
-		  	this.form.File1 = file.file
-		}
-		submit(): void {
-			let {txt_wangwang, txt_ordernum} = this.form
-			if(!utils.isNotEmptyAll(txt_wangwang, txt_ordernum)){
-				this.$toast("请同时填写好买家旺旺和订单编号！")
-				return;
-			}else if(this.fileList.length==0){
-				this.$toast("请上传订单好评截图！")
-				return;
-			}
-			if (this.dz == "1") {
-				this.$dialog.confirm({
-					title:"提示",
-					message:"此任务为定制评价,确定评价与商家要求一致？"
-				}).then(()=>{
-					this.hWUploadScreenShots()
-				})
-		    }else{
-		    	this.hWUploadScreenShots()
-		    }
-		}
-		hWUploadScreenShots(): void {
-			this.form.TaskId = this.taskId
-			if(this.clickStatus != 1){
-				this.clickStatus = 1;
-				this.isForceEdit = false
-				this.API.hWUploadScreenShots(this.form).then((data: any)=>{
-					this.clickStatus = 0;
-					if (data.ErrorCode == 100) {
-		                this.$toast({
-		                	duration: 600, // 持续展示 toast
-						  	forbidClick: true,
-						  	type: "success",
-						  	message: '绑定成功',
-						  	onClose:()=>{this.$router.back()}
-						});
-		            } else if (data.ErrorCode == 101) {
-		            	this.$toast({
-						  	//forbidClick: true,
-						  	type: "fail",
-						  	message: data.Content
-						});
-		            } else {
-		                this.$router.push("login")
-		            }
-				})
-			}
-		}
-		getUploadInfo(): void {
-			this.API.getUploadInfo({id: this.taskId, type:3}).then((data: any)=>{
-				this.uploadInfo = data
-				this.form = Object.assign({}, this.form, {txt_wangwang:data.user_ww, txt_ordernum:data.order_sn })
-				
-				this.$set(this.singleFile, "content",  data.img[0])
-				
-				return
-				if (data.FStatus != 2) {
-					if (data.FPingJiastatus == 0) {
-		                this.singleFile.content = data.FWellReceivedScreenshots
-		            } else {
-		                this.dz = "1";
-		                this.singleFile.content = data.FPingJiaImg
-		            }
-		        }else if (data.FPingJiastatus > 0 ) {
-					this.dz = "1";
-				}
-			})
-		}
-		forceEdit(): void {
-			this.$dialog.confirm({
-			  title: '编辑',
-			  message: '你确定要强制编辑吗?',
-			}).then(() => {
-			    this.isForceEdit = true
-			}).catch(() => {});
-		}
-	}
+import {Component, Provide, Vue, Watch, Emit } from 'vue-property-decorator'
+import utils from '@/utils/utils'
+@Component({
+  name: 'uploadScreenShot',
+  components: {},
+  // 生命周期, 也可以写在下面的组件方法中，组件中的生命周期方法会覆盖当前的生命周期方法
+  created() {
+    this.taskId = this.$route.query.TaskId;
+    this.getUploadInfo()
+  }
+})
+export default class UploadScreenShot extends Vue {
+  // data属性
+  private taskId: string = ''	// 编辑才存在
+  private uploadInfo: any = {}
+  private fileList: any[] = []	// 需要上传的图片集合
+  private singleFile: any = {}	// 单个图片
+  private form: any = {}
+  private dz: string = '0'
+  private clickStatus: number = 0	// 防止用户连续点击导致重复上传
+  private isForceEdit: boolean = false	// 是否强制编辑
+  
+  // computed计算属性
+  get allowEdit(): boolean {
+    // 未提交好评截图， 或者好评截图不通过需要修改
+    return this.isForceEdit || this.uploadInfo.FStatus == 2 || this.uploadInfo.FStatus == 27
+  }
+  // methods方法
+  public onClickLeft(): void {
+    this.$router.back();
+  }
+  public refresh(): void {
+    this.isForceEdit = false
+    this.fileList = [];
+    this.singleFile = {};
+    this.getUploadInfo()
+  }
+  public afterRead(file: any): void {
+      // 此时可以自行将文件上传至服务器
+      console.log(file);
+      // console.log(this.fileList)
+      this.singleFile = file
+      this.form.File1 = file.file
+  }
+  public submit(): void {
+    let {txt_wangwang, txt_ordernum} = this.form
+    if (!utils.isNotEmptyAll(txt_wangwang, txt_ordernum)) {
+      this.$toast('请同时填写好买家旺旺和订单编号！')
+      return;
+    } else if (this.fileList.length == 0) {
+      this.$toast('请上传订单好评截图！')
+      return;
+    }
+    if (this.dz == '1') {
+      this.$dialog.confirm({
+        title: '提示',
+        message: '此任务为定制评价,确定评价与商家要求一致？'
+      }).then(() => {
+        this.hWUploadScreenShots()
+      })
+      } else {
+        this.hWUploadScreenShots()
+      }
+  }
+  public hWUploadScreenShots(): void {
+    this.form.TaskId = this.taskId
+    if (this.clickStatus != 1) {
+      this.clickStatus = 1;
+      this.isForceEdit = false
+      this.API.hWUploadScreenShots(this.form).then((data: any) => {
+        this.clickStatus = 0;
+        if (data.ErrorCode == 100) {
+                  this.$toast({
+                    duration: 600, // 持续展示 toast
+              forbidClick: true,
+              type: 'success',
+              message: '绑定成功',
+              onClose: () => {this.$router.back()}
+          });
+              } else if (data.ErrorCode == 101) {
+                this.$toast({
+              // forbidClick: true,
+              type: 'fail',
+              message: data.Content
+          });
+              } else {
+                  this.$router.push('login')
+              }
+      })
+    }
+  }
+  public getUploadInfo(): void {
+    this.API.getUploadInfo({id: this.taskId, type: 3}).then((data: any) => {
+      this.uploadInfo = data
+      this.form = Object.assign({}, this.form, {txt_wangwang: data.user_ww, txt_ordernum: data.order_sn })
+      
+      this.$set(this.singleFile, 'content',  data.img[0])
+      
+      return
+      if (data.FStatus != 2) {
+        if (data.FPingJiastatus == 0) {
+                  this.singleFile.content = data.FWellReceivedScreenshots
+              } else {
+                  this.dz = '1';
+                  this.singleFile.content = data.FPingJiaImg
+              }
+          } else if (data.FPingJiastatus > 0 ) {
+        this.dz = '1';
+      }
+    })
+  }
+  public forceEdit(): void {
+    this.$dialog.confirm({
+      title: '编辑',
+      message: '你确定要强制编辑吗?',
+    }).then(() => {
+        this.isForceEdit = true
+    }).catch(() => {});
+  }
+}
 </script>	
 
 

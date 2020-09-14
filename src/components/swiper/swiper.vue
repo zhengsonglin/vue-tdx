@@ -46,29 +46,29 @@
 </script>
 -->
 <script lang="ts">
-	import { Component, Vue, Prop } from 'vue-property-decorator';
-	
-	@Component({
-		name: 'MySwiper',
-		created() {}
-	})
-	export default class MySwiper extends Vue {
-		@Prop({
-			 type: [String , Number],
-			 default: '3000'
-		}) autoplayTime?:string
-		@Prop({
-			 type: [String , Number],
-			 default: '200'
-		}) height?:string
-		
-		@Prop({
-			 type: Array,
-			 default: function(): String[] {
-				return ['img/s-1.jpg', 'img/s-2.jpg', 'img/s-3.jpg', 'img/s-4.jpg'];
-			 }
-		}) datas!:string[]
-	} 
+import { Component, Vue, Prop } from 'vue-property-decorator';
+
+@Component({
+  name: 'MySwiper',
+  created() {}
+})
+export default class MySwiper extends Vue {
+  @Prop({
+     type: [String , Number],
+     default: '3000'
+  }) public autoplayTime?: string
+  @Prop({
+     type: [String , Number],
+     default: '200'
+  }) public height?: string
+  
+  @Prop({
+     type: Array,
+     default(): string[] {
+      return ['img/s-1.jpg', 'img/s-2.jpg', 'img/s-3.jpg', 'img/s-4.jpg'];
+     }
+  }) public datas!: string[]
+}
 </script>
 <style scoped lang="scss">
 	.my-swipe .van-swipe-item {

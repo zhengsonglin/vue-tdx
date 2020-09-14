@@ -20,26 +20,26 @@
 </template>
 
 <script lang="ts">
-	import { Component, Vue, Prop } from 'vue-property-decorator';
-	
-	@Component({
-		name: 'advtisingVertical',
-		created() {}
-	})
-	export default class Login extends Vue {
-		/* @Prop(String) readonly title?: string */
-		
-		@Prop({
-			 type: String,
-			 default: ''
-		}) readonly title?: string
-		@Prop({
-			type: Array,
-			default: function(): String[] {
-				return [];
-			}
-		}) readonly datas?: string[]
-	} 
+import { Component, Vue, Prop } from 'vue-property-decorator';
+
+@Component({
+  name: 'advtisingVertical',
+  created() {}
+})
+export default class Login extends Vue {
+  /* @Prop(String) readonly title?: string */
+  
+  @Prop({
+     type: String,
+     default: ''
+  }) public readonly title?: string
+  @Prop({
+    type: Array,
+    default(): string[] {
+      return [];
+    }
+  }) public readonly datas?: string[]
+}
 </script>
 
 <style scoped lang="scss">

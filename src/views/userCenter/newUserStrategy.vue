@@ -65,23 +65,23 @@
 </template>
 
 <script lang="ts">
-	import { Component, Vue, Prop } from 'vue-property-decorator';
-	import utils from "@/utils/utils"
+import { Component, Vue, Prop } from 'vue-property-decorator';
+import utils from '@/utils/utils'
 
-	@Component({
-		name: 'newUserStrategy',
-		components: { },
-		created() {
-			
-		},
-		mounted() {}
-	})
-	export default class NewUserStrategy extends Vue {
-		//methods方法
-		onClickLeft(): void {
-			this.$router.back();
-		}
-	}
+@Component({
+  name: 'newUserStrategy',
+  components: { },
+  created() {
+    
+  },
+  mounted() {}
+})
+export default class NewUserStrategy extends Vue {
+  // methods方法
+  public onClickLeft(): void {
+    this.$router.back();
+  }
+}
 </script>	
 
 <style scoped lang="scss">

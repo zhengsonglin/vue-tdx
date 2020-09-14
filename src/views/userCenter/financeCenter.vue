@@ -55,56 +55,56 @@
 </template>
 
 <script lang="ts">
-	import { Component, Vue, Prop } from 'vue-property-decorator';
+import { Component, Vue, Prop } from 'vue-property-decorator';
 
-	@Component({
-		name: 'financeCenter',
-		components: { },
-		created() {
-			//console.log(this.moment("2020-07-16 09:36:18").format("YYYY-MM-DD HH:mm:ss"))
-			//console.log(this.moment(new Date()).format("YYYY-MM-DD HH:mm:ss"))
-			//console.log(this.moment().format('dddd'));
-		},
-		mounted() {}
-	})
-	export default class FinanceCenter extends Vue {
-		private list: any[] = []
-		private loading: boolean = false
-		private finished: boolean = false
-		
-		//methods方法
-		onClickLeft(): void {
-			this.$router.back();
-		}
-		//解析返款状态
-		parseRefundState(item: any): string {
-			let {FStatusID, RelationId} = item
-			let stateText = FStatusID == 10 ? "已完成" : (RelationId == 0 ? "待打款" : "待打款（请核实卡号后联系淘大熊客服）");
-			return stateText
-		}
-		onLoad(): void {
-			let params: any = {
-				status: 0,
-				type: 4,
-				start_time: "",
-				end_time: "",
-				page_no: 1,
-				page_size: 100,
-			}
-		  	// 异步更新数据
-		  	this.API.getPutForwardRecord(params).then((result: any) => {
-				let {data, error} = result
-				//console.log(data)
-				this.list.push(...data);
-				this.finished = true;
-			})
-		}
-		refresh(): void {
-			this.list = []
-			this.finished = false
-			this.onLoad()
-		}
-	}
+@Component({
+  name: 'financeCenter',
+  components: { },
+  created() {
+    // console.log(this.moment("2020-07-16 09:36:18").format("YYYY-MM-DD HH:mm:ss"))
+    // console.log(this.moment(new Date()).format("YYYY-MM-DD HH:mm:ss"))
+    // console.log(this.moment().format('dddd'));
+  },
+  mounted() {}
+})
+export default class FinanceCenter extends Vue {
+  private list: any[] = []
+  private loading: boolean = false
+  private finished: boolean = false
+  
+  // methods方法
+  public onClickLeft(): void {
+    this.$router.back();
+  }
+  // 解析返款状态
+  public parseRefundState(item: any): string {
+    let {FStatusID, RelationId} = item
+    let stateText = FStatusID == 10 ? '已完成' : (RelationId == 0 ? '待打款' : '待打款（请核实卡号后联系淘大熊客服）');
+    return stateText
+  }
+  public onLoad(): void {
+    let params: any = {
+      status: 0,
+      type: 4,
+      start_time: '',
+      end_time: '',
+      page_no: 1,
+      page_size: 100,
+    }
+      // 异步更新数据
+    this.API.getPutForwardRecord(params).then((result: any) => {
+      let {data, error} = result
+      // console.log(data)
+      this.list.push(...data);
+      this.finished = true;
+    })
+  }
+  public refresh(): void {
+    this.list = []
+    this.finished = false
+    this.onLoad()
+  }
+}
 </script>	
 
 

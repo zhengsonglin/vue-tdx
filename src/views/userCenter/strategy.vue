@@ -29,20 +29,20 @@
 </template>
 
 <script lang="ts">
-	import { Component, Vue, Prop } from 'vue-property-decorator';
-	@Component({
-		name: 'strategy',
-		components: { },
-		created() {
-		},
-		mounted() {}
-	})
-	export default class Strategy extends Vue {
-		//methods方法
-		onClickLeft(): void {
-			this.$router.back();
-		}
-	}
+import { Component, Vue, Prop } from 'vue-property-decorator';
+@Component({
+  name: 'strategy',
+  components: { },
+  created() {
+  },
+  mounted() {}
+})
+export default class Strategy extends Vue {
+  // methods方法
+  public onClickLeft(): void {
+    this.$router.back();
+  }
+}
 </script>	
 
 

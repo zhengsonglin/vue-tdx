@@ -18,67 +18,67 @@
 </template>
 
 <script lang="ts">
-	import { Component, Vue, Prop } from 'vue-property-decorator';
-	import utils from "@/utils/utils"
+import { Component, Vue, Prop } from 'vue-property-decorator';
+import utils from '@/utils/utils'
 
-	@Component({
-		name: 'changePwd',
-		components: { },
-		created() {
-			this.getUserInfo()
-		},
-		mounted() {}
-	})
-	export default class ChangePwd extends Vue {
-		private form: any = {
-			platform: "2c"
-		}
-		
-		//methods方法
-		onClickLeft(): void {
-			this.$router.back();
-		}
-		submit(): void {
-			let {old_pwd, new_pwd, re_pwd} = this.form;
-			if(utils.isEmpty(old_pwd)){
-				this.$toast('请输入原始密码');
-			}else if(utils.isEmpty(new_pwd)){
-				this.$toast('请输入新登录密码');
-			}else if(utils.isEmpty(re_pwd)){
-				this.$toast('请确认新登录密码');
-			}else if(new_pwd != re_pwd){
-				this.$toast('两次密码输入不一致');
-			}else{
-				//console.log(this.form)
-				this.API.updatePwd(this.form).then((result: any)=>{
-					let {data, error} = result
-					if (error.errno == 200) {
-						this.$toast({
-		                	duration: 600, // 持续展示 toast
-						  	forbidClick: true,
-						  	type: "success",
-						  	message: '修改成功！请重新登录',
-						  	onClose:()=>{this.$router.push("login")}
-						});
-						
-		            } else if (error.errno == 101) {
-		            	this.$toast({
-						  	//forbidClick: true,
-						  	type: "fail",
-						  	message: error.usermsg
-						});
-		            } else {
-		                //this.$router.push("login")
-		                this.$toast({
-						  	//forbidClick: true,
-						  	type: "fail",
-						  	message: error.usermsg
-						});
-		            }
-				})
-			}
-		}
-	}
+@Component({
+  name: 'changePwd',
+  components: { },
+  created() {
+    this.getUserInfo()
+  },
+  mounted() {}
+})
+export default class ChangePwd extends Vue {
+  private form: any = {
+    platform: '2c'
+  }
+  
+  // methods方法
+  public onClickLeft(): void {
+    this.$router.back();
+  }
+  public submit(): void {
+    let {old_pwd, new_pwd, re_pwd} = this.form;
+    if (utils.isEmpty(old_pwd)) {
+      this.$toast('请输入原始密码');
+    } else if (utils.isEmpty(new_pwd)) {
+      this.$toast('请输入新登录密码');
+    } else if (utils.isEmpty(re_pwd)) {
+      this.$toast('请确认新登录密码');
+    } else if (new_pwd != re_pwd) {
+      this.$toast('两次密码输入不一致');
+    } else {
+      // console.log(this.form)
+      this.API.updatePwd(this.form).then((result: any) => {
+        let {data, error} = result
+        if (error.errno == 200) {
+          this.$toast({
+                    duration: 600, // 持续展示 toast
+              forbidClick: true,
+              type: 'success',
+              message: '修改成功！请重新登录',
+              onClose: () => {this.$router.push('login')}
+          });
+          
+              } else if (error.errno == 101) {
+                this.$toast({
+              // forbidClick: true,
+              type: 'fail',
+              message: error.usermsg
+          });
+              } else {
+                  // this.$router.push("login")
+                  this.$toast({
+              // forbidClick: true,
+              type: 'fail',
+              message: error.usermsg
+          });
+              }
+      })
+    }
+  }
+}
 </script>
 	
 <style scoped lang="scss">

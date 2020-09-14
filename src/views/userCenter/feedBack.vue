@@ -37,35 +37,35 @@
 </template>
 
 <script lang="ts">
-	import { Component, Vue, Prop } from 'vue-property-decorator';
-	import utils from "@/utils/utils"
+import { Component, Vue, Prop } from 'vue-property-decorator';
+import utils from '@/utils/utils'
 
-	@Component({
-		name: 'feedBack',
-		components: { },
-		created() {
-			
-		},
-		mounted() {}
-	})
-	export default class FeedBack extends Vue {
-		private list: any[] = []
-		//methods方法
-		onClickLeft(): void {
-			this.$router.back();
-		}
-		addfeedBack(): void {
-			this.$router.push("addFeedBack")
-		}
-		getFeedBackList(): void {
-			this.API.getFeedBackList().then((data: any)=>{
-				this.list = data || []
-			})
-		}
-		toDetail(item: any): void {
-			this.$router.push({path:"/addFeedBack", query:{FID:item.FID}})
-		}
-	}
+@Component({
+  name: 'feedBack',
+  components: { },
+  created() {
+    
+  },
+  mounted() {}
+})
+export default class FeedBack extends Vue {
+  private list: any[] = []
+  // methods方法
+  public onClickLeft(): void {
+    this.$router.back();
+  }
+  public addfeedBack(): void {
+    this.$router.push('addFeedBack')
+  }
+  public getFeedBackList(): void {
+    this.API.getFeedBackList().then((data: any) => {
+      this.list = data || []
+    })
+  }
+  public toDetail(item: any): void {
+    this.$router.push({path: '/addFeedBack', query: {FID: item.FID}})
+  }
+}
 </script>
 	
 
