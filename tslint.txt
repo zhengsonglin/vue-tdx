@@ -34,9 +34,19 @@
         "ignore-comments",
         "ignore-jsdoc"
     ],
+    "triple-equals": false,	// true使用'===''!=='替代'==''!='
+		"triple-equals": [false, "allow-null-check"], // 当比较值为null时允许使用'==''!='
+		"triple-equals": [false, "allow-undefined-check"], // 当比较值为underfind时允许使用'==''!='
     "no-unnecessary-initializer": true,// 不允许没有必要的初始化
-	"no-empty": true,	// 函数体不允许空函数体不允许空
-	"no-console": true,// 不允许使用console对象
-	"no-invalid-this": true,// 不允许在class之外使用this
+		"no-empty": true,	// 函数体不允许空函数体不允许空
+		"no-console": true,// 不允许使用console对象
+		"no-invalid-this": true,// 不允许在class之外使用this
+		"prefer-const": true	// 尽量去使用const来代替let或者var(不推荐使用)
+		"max-line-length": [true, 120]	// 限制一行最大长度
+		"no-inferrable-types": true	// 不允许将显式声明的变量或参数指定类型为一个number，string或boolean
+		"only-arrow-functions": true // 不允许非箭头函数的函数表达式
+		"one-variable-per-declaration": true	// 在一个声明语句中不允许多个变量定义。
+		"no-require-imports": true	// 禁止使用require()
+		"no-var-requires": true	// 不允许使用require，使用import替代, // error example, var module = require("module") // success example, import foo = require('foo')
   }
 }
