@@ -5,6 +5,11 @@ import { showFullScreenLoading, tryHideFullScreenLoading } from './axiosLoading'
 import { Toast } from 'vant'
 import store from '../store'
 import router from '../router'
+import {AxiosStatus} from 'axios-status'
+const axiosStatus = new AxiosStatus({
+  timeout: 10, // default 10
+  autoRetry: false // default false
+})
 
 // 配置请求头
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8'
@@ -21,6 +26,27 @@ const $ = axios.create({
 	}
 
 })
+/* //两种方式开启其一即可
+axiosStatus.register($)
+let num = 0, timer = null
+axiosStatus.on('busy', (val) => {	//监听状态变化，每一个http请求会被监听2次状态(请求中，请求结束)，
+	//也可以在这里写方法代替下面（合并请求）loading监听
+	console.log("busy", val)
+	if (val) {
+        num++;
+        timer && clearTimeout(timer)
+        handleLoading(true)
+    } else {
+        num--
+        timer = setTimeout(()=>{
+            if(num<=0){
+                num = 0
+                handleLoading(false)
+            }
+        },100)
+    }
+})
+*/
 
 // 请求拦截器
 $.interceptors.request.use((config) => { //config 无法注入axios内置config之外的参数， 所以自定义config.showLoading 是无法接受的
@@ -86,7 +112,7 @@ const defaultConfig = {
 	showLoading:true
 }
 
-function handleLoading(showLoading){
+function handleLoading(showLoading){;
 	return new Promise((resolve, reject)=>{
 		if (showLoading) {
 			showFullScreenLoading().then(resolve)
