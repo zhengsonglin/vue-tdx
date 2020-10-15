@@ -1,6 +1,6 @@
 const path = require('path');
-const axios = require('axios')
-const qs = require('qs')
+// const axios = require('axios')
+// const qs = require('qs')
 
 function resolve(dir) {
 	return path.join(__dirname, dir)
@@ -22,20 +22,21 @@ module.exports = {
 			'/api': {
 				"target": 'https://www.taodaxiong.cn/', //对应自己的接口 如：http://127.0.0.1:8100/
 				"changeOrigin": true,
-				"ws": true,        //如果要代理 websockets，配置这个参数
-            	"secure": false,  // 如果是https接口，需要配置这个参数
+				"ws": true,        // 如果要代理 websockets，配置这个参数
+				"secure": false,  // 如果是https接口，需要配置这个参数
 				"pathRewrite": {
 					'^/api': ''
 				}
 			}
 		}, // string | Object
+		/*
 		before: app => {
-			/*app.post('/api/sys/login', function (req, res) {
+			app.post('/api/sys/login', function (req, res) {
 			  var url = 'https://www.taodaxiong.cn/sys/login'
-			
+
 			  console.log(123, req)
-			
-			  axios.post(url, {	//qs.stringify(data), 
+
+			  axios.post(url, {	//qs.stringify(data),
 			    headers: {
 			      //referer: 'https://www.taodaxiong.cn/uh5/index.html?',
 			      //host: 'www.taodaxiong.cn'
@@ -45,7 +46,7 @@ module.exports = {
 					pwd: "zl123456",
 					platform: "2c"
 			    }
-			    
+
 			  }).then((response) => {
 			  	console.log(err, response)
 			    res.json(response.data)
@@ -59,23 +60,23 @@ module.exports = {
 			  console.log(res)
 			  console.log(123)
 			  console.log(req)
-			  
+
 			  axios.post(url, {
 			    headers: {
 			      referer: 'http://www.taodaxiong.cn/Mobile/MobileLogin',
 			      host: 'www.taodaxiong.cn'
 			    },
 			    params: {"txt_UserName":"18598271043","txt_PassWord":"zsl123456"}
-			    
+
 			  }).then((response) => {
 			  	console.log(err, response)
 			    res.json(response.data)
 			  }).catch((e) => {
 			    console.log(e)
 			  })
-			})*/
-			
+			})
 		}
+		*/
 	},
 	lintOnSave: true,
 	chainWebpack: (config) => {

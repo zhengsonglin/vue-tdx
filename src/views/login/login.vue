@@ -9,10 +9,10 @@
 			</div>
 			<div class="login-form">
 				<div class="login-input text-input">
-					<input type="text" id="user" v-model="form.user" placeholder="请输入账号">
+					<input type="text" id="user" v-model="form.user" placeholder="请输入账号" autocomplete="off">
 				</div>
 				<div class="login-input pass-input">
-					<input type="password" id="pwd" v-model="form.pwd" placeholder="请输入密码">
+					<input type="password" id="pwd" v-model="form.pwd" placeholder="请输入密码" autocomplete="off">
 				</div>
 				<div class="other">
 					<span class="register fl" @click="toRegister">注册</span>
@@ -67,7 +67,7 @@
 					})
 				}
 			},
-			loginSuccess(data) {
+			loginSuccess() {
 				let type = "0"
 				if(type != "0") {
 					this.API.checkKDJ({
