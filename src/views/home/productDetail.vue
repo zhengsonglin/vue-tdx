@@ -377,10 +377,10 @@
         },
         created() {
             this.tId = this.$route.query.tId
-            this.getProductDetail();
+            //this.getProductDetail();
             /*
             setInterval(()=>{
-                this.API.getTheTask({t_id: this.tId}).then(({data, error, order_id})=>{
+                this.API.getTheTask({t_id: "440952"}).then(({data, error, order_id})=>{
                     console.log("setTimeout", data)
                 })
             },0)*/

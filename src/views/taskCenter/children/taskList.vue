@@ -252,7 +252,7 @@
                     } else {
                         message = data.Fbz == "" ? "暂无相关备注信息" : data.Fbz
                     }
-<<<<<<< HEAD
+
 					this.$dialog.alert({
 					  	title: '商家备注信息',
 					  	message: message,
@@ -268,30 +268,13 @@
 				this.API.handleChargeBack({ id: id, type:6 }).then(({data,error})=>{
 					if (error.errno == 200) {
                         this.$toast(error.usermsg||"退单成功！");
-=======
-                    this.$dialog.alert({
-                        title: '商家备注信息',
-                        message: message,
-                        confirmButtonText: "知道了"
-                    }).then(() => {
-                        // on close
-                    });
-                })
-
-            },
-            //开始退单
-            handleChargeBack(id) {
-                this.API.handleChargeBack({TaskId: id}).then((data) => {
-                    if (data.ErrorCode == 100) {
-                        this.$toast("退单成功！");
->>>>>>> aa67fd283a5ecade12555485ed25472d6fde3d1c
                         this.onRefresh()
                     } else {
                         this.$toast("退单失败！");
                     }
-<<<<<<< HEAD
-				})
-			},
+                })
+
+            },
 			//我要退单
 			chargeBack(item){
 				let {id, type=6} = item
@@ -352,70 +335,8 @@
 			}
 		}
 	}
-=======
-                })
-            },
-            //我要退单
-            chargeBack(item) {
-                let {FID, FStatus} = item
-                if (FStatus != 1) {
-                    this.$toast("该阶段不能退单");
-                    return;
-                }
 
-                this.$dialog.confirm({
-                    title: '提示',
-                    message: '确定退单？',
-                }).then(() => {
-                    this.handleChargeBack(FID);
-                });
-            },
-            //开始任务
-            startTask(item) {
-                this.$router.push({path: "/startTask", query: {TaskId: item.id}})
-            },
-            //查询售后订单列表(包括用户发起和商家发起)
-            getTaskSaleList() {
-                if (this.refreshing) {
-                    this.pageNo = 1;
-                    this.list = [];
-                    this.refreshing = false;
-                }
 
-                this.API.getTaskSaleList(this.queryForm, {showLoading: false}).then((data) => {
-                    this.list.push(...data);
-                    if (data.length < this.pageSize) {
-                        this.finished = true;
-                    } else {
-                        this.loading = false;
-                        this.pageNo++
-                    }
-                })
-            },
-            //也可以使用这种方式复制 (@click="doCopy")
-            doCopy(item) {
-                if (item.FOrderNumber != "") {
-                    this.$copyText(item.FOrderNumber).then((e) => {
-                        this.$toast('订单号复制成功')
-                        console.log(e)
-                    }, (e) => {
-                        this.$toast('订单号复制失败')
-                        console.log(e)
-                    })
-                }
-            },
-        },
-        watch: {
-            baseParam: {
-                handler(newValue, oldValue) {
-                    console.log(newValue, oldValue)
-                    this.onRefresh()
-                },
-                deep: true
-            }
-        }
-    }
->>>>>>> aa67fd283a5ecade12555485ed25472d6fde3d1c
 </script>
 
 <style lang="scss" scoped>

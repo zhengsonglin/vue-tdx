@@ -46,35 +46,36 @@ export const routes = [
         meta: {
             //keepAlive: true
         },
-        children: [{
-            path: '',
-            component: () =>
-                import('../views/home/index.vue'),
-            meta: {
-                title: '首页',
-                //keepAlive: true
-            },
-            children: [/*{
-						path: '/sortProduct',
-						name: "sortProduct",
-						component: () =>
-							import('../views/home/sortProduct.vue'),
-						meta: {
-							title: '商品分类',
-						},
-					},*/
-                /*{
-                    path: '/skillTaskList',
-                    name: "skillTaskList",
-                    component: () =>
-                        import('../views/home/skillTaskList.vue'),
-                    meta: {
-                        title: '熊抢购',
-                    },
-                }*/
+        children: [
+            {
+                path: '',
+                component: () =>
+                    import('../views/home/index.vue'),
+                meta: {
+                    title: '首页',
+                    //keepAlive: true
+                },
+                children: [/*{
+                            path: '/sortProduct',
+                            name: "sortProduct",
+                            component: () =>
+                                import('../views/home/sortProduct.vue'),
+                            meta: {
+                                title: '商品分类',
+                            },
+                        },*/
+                    /*{
+                        path: '/skillTaskList',
+                        name: "skillTaskList",
+                        component: () =>
+                            import('../views/home/skillTaskList.vue'),
+                        meta: {
+                            title: '熊抢购',
+                        },
+                    }*/
 
-            ]
-        },
+                ]
+            },
             {
                 path: '/sortProduct',
                 name: "sortProduct",
@@ -85,12 +86,12 @@ export const routes = [
                 },
             },
             {
-                path: '/question',
-                name: "question",
+                path: '/limitFree',
+                name: "limitFree",
                 component: () =>
-                    import('../views/question/index.vue'),
+                    import('../views/limitFree/index.vue'),
                 meta: {
-                    title: '问题集',
+                    title: '限量免单',
                     //keepAlive: true
                 },
             },
@@ -113,37 +114,8 @@ export const routes = [
                     title: '会员中心',
                     //keepAlive: true
                 },
-            },
-            {
-                path: '/refundRecord',
-                name: "refundRecord",
-                component: () =>
-                    import('../views/userCenter/refundRecord.vue'),
-                meta: {
-                    title: '返款记录'
-                },
             }
         ]
-    },
-    {
-        path: '/pictureTest1',
-        name: "pictureTest1",
-        component: () =>
-            import('../views/question/pictureTest1.vue'),
-        meta: {
-            title: '图片测试',
-            //keepAlive: true
-        },
-    },
-    {
-        path: '/pictureTest2',
-        name: "pictureTest2",
-        component: () =>
-            import('../views/question/pictureTest2.vue'),
-        meta: {
-            title: '图片测试',
-            //keepAlive: true
-        },
     },
     {
         path: '/recommendFriend',
@@ -152,6 +124,15 @@ export const routes = [
             import('../views/userCenter/recommendFriend.vue'),
         meta: {
             title: '推荐好友'
+        },
+    },
+    {
+        path: '/refundRecord',
+        name: "refundRecord",
+        component: () =>
+            import('../views/userCenter/refundRecord.vue'),
+        meta: {
+            title: '返款记录'
         },
     },
     {
@@ -182,12 +163,33 @@ export const routes = [
         },
     },
     {
-        path: '/financeCenter',
-        name: "financeCenter",
+        path: '/question',
+        name: "question",
         component: () =>
-            import('../views/userCenter/financeCenter.vue'),
+            import('../views/userCenter/question.vue'),
         meta: {
-            title: '财务中心'
+            title: '问题集',
+            //keepAlive: true
+        },
+    },
+    {
+        path: '/pictureTest1',
+        name: "pictureTest1",
+        component: () =>
+            import('../views/userCenter/pictureTest1.vue'),
+        meta: {
+            title: '图片测试',
+            //keepAlive: true
+        },
+    },
+    {
+        path: '/pictureTest2',
+        name: "pictureTest2",
+        component: () =>
+            import('../views/userCenter/pictureTest2.vue'),
+        meta: {
+            title: '图片测试',
+            //keepAlive: true
         },
     },
     {

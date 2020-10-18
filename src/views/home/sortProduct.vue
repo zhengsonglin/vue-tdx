@@ -69,11 +69,11 @@
 </template>
 
 <script>
+    import { mapState } from 'vuex'
     export default {
         name: 'sortProduct',
         data() {
             return {
-                categoryList: [],
                 productStatus: [
                     {name: "进行中", status: null},
                     {name: "即将开始", status: "1"},
@@ -102,7 +102,8 @@
                     is_family: null,
                     cid: this.category || 19
                 }
-            }
+            },
+            ...mapState(['categoryList'])
         },
         methods: {
             onClickLeft() {
@@ -117,12 +118,6 @@
             changeQueryStatus(item) {
                 this.status = item.status
                 this.onRefresh()
-            },
-            //查询所有商品类别
-            getCategory() {
-                return this.API.getCategory().then(({data}) => {
-                    this.categoryList = data
-                })
             },
             onLoad() {
                 if (this.refreshing) {
@@ -166,10 +161,7 @@
             }
         },
         created() {
-            this.getCategory().then(() => {
-                this.getProductList()
-            });
-
+            this.getProductList()
         }
     }
 </script>

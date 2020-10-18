@@ -44,13 +44,15 @@ import {
     Empty,
     DropdownMenu,
     DropdownItem,
-    TreeSelect
+    TreeSelect,
+    Progress
 } from 'vant';
 
 Vue.use(Button).use(NavBar).use(Toast).use(Tabbar).use(TabbarItem).use(Swipe).use(SwipeItem);
 Vue.use(Lazyload).use(Col).use(Row).use(Icon).use(List).use(PullRefresh).use(CellGroup).use(Cell).use(Grid).use(GridItem);
 Vue.use(Image).use(Search).use(Tab).use(Tabs).use(Dialog).use(Form).use(Field).use(RadioGroup).use(Radio).use(Uploader);
 Vue.use(Picker).use(Popup).use(Area).use(Overlay).use(Notify).use(Empty).use(DropdownMenu).use(DropdownItem).use(TreeSelect)
+Vue.use(Progress)
 
 
 import VueClipboard from 'vue-clipboard2'

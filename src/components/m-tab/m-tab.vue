@@ -8,7 +8,7 @@
                 <span>自定义</span>
               </van-tabbar-item>-->
         <van-tabbar-item icon="wap-home-o" to="/home">首页</van-tabbar-item>
-        <van-tabbar-item icon="question-o" to="/question">问题集</van-tabbar-item>
+        <van-tabbar-item icon="gift-card-o" to="/limitFree">限量免单</van-tabbar-item>
         <van-tabbar-item icon="orders-o" to="/taskCenter">订单</van-tabbar-item>
         <van-tabbar-item icon="manager" to="/userCenter">我</van-tabbar-item>
     </van-tabbar>

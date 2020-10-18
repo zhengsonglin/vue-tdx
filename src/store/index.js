@@ -7,10 +7,11 @@ import storage from 'good-storage';
 export default new Vuex.Store({
     state: {
         userLoginInfo: storage.get("userLoginInfo", {}),
-        advertisingList: [{
-            id: "1",
-            text: "全国商品免费包邮领取"
-        },
+        advertisingList: [
+            {
+                id: "1",
+                text: "全国商品免费包邮领取"
+            },
             {
                 id: "2",
                 text: "【紧急通知】禁止吸粉"
@@ -32,12 +33,18 @@ export default new Vuex.Store({
                 text: "【必读】放单节奏问题"
             },
         ],
+        categoryList: storage.session.get("categoryList", []),    //商品类别
     },
     mutations: {
         setUserLoginInfo(state, userLoginInfo) {
-            storage.set("userLoginInfo", userLoginInfo)
+            storage.session.set("userLoginInfo", userLoginInfo)
             //storage.set("tdx-Login", userLoginInfo);
             state.userLoginInfo = userLoginInfo
+        },
+        setCategoryList(state, categoryList) {
+            storage.session.set("categoryList", categoryList)
+            console.log(categoryList)
+            state.categoryList = categoryList
         }
     },
     actions: {},

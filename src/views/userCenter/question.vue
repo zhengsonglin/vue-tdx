@@ -1,6 +1,18 @@
 <template>
     <div class="page-question w100 h100 over-auto">
-        <p class="page-title text-c w100 c-fff">问题集</p>
+        <div class="header-wrap">
+            <van-nav-bar
+                    title="问题集"
+                    left-text=""
+                    right-text=""
+                    left-arrow
+                    fixed
+                    z-index="10"
+                    class="header"
+                    @click-left="onClickLeft"
+            >
+            </van-nav-bar>
+        </div>
         <p class="notice bg-fff bold">注意事项</p>
         <div class="row-o">
             <ul :class="['notice-item over-hidden', {'showAll':isShowAll}] ">
@@ -355,22 +367,24 @@
             return {
                 isShowAll: false
             }
+        },
+        methods: {
+            onClickLeft() {
+                this.$router.back();
+            },
         }
     }
 </script>
 
 <style lang="scss" scoped>
     .page-question {
-        .page-title {
-            position: fixed;
-            /*position: sticky;*/
-            top: 0;
-            left: 0;
-            height: 48px;
-            line-height: 48px;
-            background-color: #fd3c3c;
+        .header {
+            background: #EE580F;
             font-size: 17px;
-            z-index: 10;
+
+            /deep/ .van-icon, /deep/ .van-nav-bar__title {
+                color: #fff;
+            }
         }
 
         p.notice {

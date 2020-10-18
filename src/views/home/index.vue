@@ -244,7 +244,6 @@
             }
         },
         mounted() {
-            console.log(123)
             let box = document.getElementById("page-index")
             this.swiperHeight = document.getElementsByClassName("mySwiper")[0].offsetHeight
 

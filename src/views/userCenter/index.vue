@@ -1,10 +1,10 @@
 <template>
-    <div class="page-userCenter w100 h100 over-auto">
+    <div class="page-userCenter w100 h100 over-auto" v-show="!isLoading">
         <p class="page-title text-c w100 c-fff">个人中心</p>
         <div class="content">
             <div class="user-info">
                 <div class="order-num-info c-fff text-c">
-                    <p><span class="total-num">{{userInfo.AB30Count | parseExcludeZero(999) }}</span></p>
+                    <p><span class="total-num">{{userInfo.order_month_num | parseExcludeZero(999) }}</span></p>
                     <p><span class="total-num-desc">免单30天总单量</span></p>
                 </div><!--userInfo.FAccountBalance ? userInfo.FAccountBalance:999.98-->
                 <div class="btn-grop c-fff text-c">
@@ -78,13 +78,13 @@
                     <van-col span="12">
                         <div class="item bg-fff h100">
                             <p>推荐人数</p>
-                            <p class="red">{{userInfo.InviteCount | parseExcludeZero(998) }}</p>
+                            <p class="red">{{userInfo.fan_num | parseExcludeZero(998) }}</p>
                         </div>
                     </van-col>
                     <van-col span="12">
                         <div class="item bg-fff">
                             <p>免单总数</p>
-                            <p class="red">{{userInfo.ABCount | parseExcludeZero(999) }}</p>
+                            <p class="red">{{getABCount}}</p>
                         </div>
                     </van-col>
                 </van-row>
@@ -95,7 +95,7 @@
                     <van-grid-item text="分析给好友" to="/recommendFriend">
                         <span class="mui-icon iconfont icon-fenxiang bg-pink" slot="icon"></span>
                     </van-grid-item>
-                    <van-grid-item text="定制金返款" to="/refundRecord">
+                    <van-grid-item text="返款记录" to="/refundRecord">
                         <span class="mui-icon iconfont icon-baozhengjin1 bg-green" slot="icon"></span>
                     </van-grid-item>
                     <van-grid-item text="预定任务" to="/reservationRecord">
@@ -113,8 +113,10 @@
                     <van-grid-item text="账户提现" to="/withDrawCash">
                         <span class="mui-icon iconfont icon-tixian bg-blue" slot="icon"></span>
                     </van-grid-item>
-                    <van-grid-item text="财务中心" to="/financeCenter">
-                        <span class="mui-icon iconfont icon-caiwu bg-yellow" slot="icon"></span>
+                    <van-grid-item text="问题集" to="/question">
+<!--                        <span class="mui-icon iconfont icon-caiwu bg-yellow" slot="icon"></span>-->
+                        <van-icon class="mui-icon bg-yellow" name="question-o" />
+                        <span class="van-grid-item__text">问题集</span>
                     </van-grid-item>
                     <van-grid-item text="基本资料" to="/baseUserInfo">
                         <span class="mui-icon iconfont icon-iconfontgerenzhongxin bg-green" slot="icon"></span>
@@ -163,10 +165,15 @@
                         xqg: {}
                     }
                 },
+                isLoading: true,
                 orderType: 0,	//0淘抢购订单，1熊抢购订单
             }
         },
         computed: {
+            getABCount(){
+                let {free: { after_sale_num, submitted_num, pending_review_num, completed_num, received_num } } = this.userInfo.order_num
+                return (after_sale_num+submitted_num+pending_review_num+completed_num+received_num) || 999
+            },
             ...mapState(["userLoginInfo"])
         },
         methods: {
@@ -174,6 +181,7 @@
                 this.API.getIndexInfo().then(({data}) => {
                     //console.log(data)
                     this.userInfo = data
+                    this.isLoading = false
                 })
             },
             logout() {

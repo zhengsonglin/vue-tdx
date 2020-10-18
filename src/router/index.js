@@ -56,7 +56,7 @@ router.beforeEach((to, from, next)=>{
 
 router.afterEach((to, from) => {
     if (to.meta && to.meta.title) {
-        console.log(from)
+        //console.log(from)
         document.title = to.meta.title
     }
     //console.log(to)
