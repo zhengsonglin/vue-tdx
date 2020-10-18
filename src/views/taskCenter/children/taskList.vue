@@ -251,9 +251,9 @@
 			},
 			//开始退单
 			handleChargeBack(id){
-				this.API.handleChargeBack({ TaskId: id }).then((data)=>{
-					if (data.ErrorCode == 100) {
-                        this.$toast("退单成功！");
+				this.API.handleChargeBack({ id: id, type:6 }).then(({data,error})=>{
+					if (error.errno == 200) {
+                        this.$toast(error.usermsg||"退单成功！");
                         this.onRefresh()
                     } else {
                         this.$toast("退单失败！");
@@ -262,17 +262,17 @@
 			},
 			//我要退单
 			chargeBack(item){
-				let {FID, FStatus} = item
-				if (FStatus != 1) {
+				let {id, type=6} = item
+				/*if (id != 1) {
 	                this.$toast("该阶段不能退单");
 	                return;
-	            }
+	            }*/
 				
 				this.$dialog.confirm({
 					title: '提示',
 			      	message: '确定退单？',
 			    }).then(()=>{
-			    	this.handleChargeBack(FID);
+			    	this.handleChargeBack(id);
 			    });
 			},
 			//开始任务

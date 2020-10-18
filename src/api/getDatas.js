@@ -143,7 +143,7 @@ export default {
 		return rsp.data
     }),
     //我要退单(淘抢购退单)
-    handleChargeBack: (params, config) => $http.post("/MobileTaskCenter/ChargeBack", params, config).then((rsp) => {
+    handleChargeBack: (params, config) => $http.post("/o/orderaction", params, config).then((rsp) => {
 		return rsp.data
     }),
     //我要退单(熊抢购退单)
