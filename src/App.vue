@@ -14,4 +14,7 @@
 		background: #f4f4f4;
 		height: 100%;
 	}
+	input:-webkit-autofill{
+		-webkit-box-shadow:0 0 0 1000px white inset;
+	}
 </style>
