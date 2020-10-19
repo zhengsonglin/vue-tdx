@@ -19,7 +19,7 @@
         <div class="content">
             <div class="com-detail detail-title over-hidden">
                 <div class="cell-row row-1">
-                    <span class="platType fl c-fff text-c">淘宝</span><span class="productName fr">{{productInfo.FGoodsName}}</span>
+                    <span class="platType fl c-fff text-c">淘宝</span><span class="productName fr">{{productInfo.title}}</span>
                 </div>
                 <div class="cell-row row-2"><span class="price fl">￥{{productInfo.price}}</span>
                     <div class="title-price-sur fr">剩余商品 <span class="span_Num red">{{productInfo.remain_count}}</span>份
@@ -50,7 +50,7 @@
 
             <!-- 保险金 -->
             <div class="com-detail detail-insu">
-                <span class="iconfont icon-yinxingqia"></span>商家已存入保证金{{productInfo.FALLprice}}元平台担保返款
+                <span class="iconfont icon-yinxingqia"></span>商家已存入保证金{{productInfo.price}}元平台担保返款
             </div>
 
             <!-- 任务流程 -->
@@ -90,7 +90,7 @@
                     <van-col span="12">
                         <div class="wrap flex home">
                             <p><span class="mui-icon iconfont icon-menu1 f20"></span></p>
-                            <router-link tag="p" to="home">首页</router-link>
+                            <router-link tag="p" :to="`/quicklyBuy?tId=${tId}`">秒杀</router-link>
                         </div>
                     </van-col>
                     <van-col span="12">
@@ -377,7 +377,7 @@
         },
         created() {
             this.tId = this.$route.query.tId
-            //this.getProductDetail();
+            this.getProductDetail();
             /*
             setInterval(()=>{
                 this.API.getTheTask({t_id: "440952"}).then(({data, error, order_id})=>{

@@ -61,15 +61,17 @@
                 })
             },
             toProductDetail(item) {
-                console.log(item)
-                if (this.result.activity_type == 1) {
+                //console.log(item)
+                //跳转到淘抢购详情
+                if (this.result.module_type === "free") {
                     this.$router.push({
                         path: "/productDetail",
                         query: {
                             tId: item.t_id
                         }
                     });
-                } else if (this.result.activity_type == 2) {
+                } else if (this.result.module_type == "xqg") {
+                    //跳转到熊抢购详情
                     this.$router.push({
                         path: "/skillTaskDetail",
                         query: {

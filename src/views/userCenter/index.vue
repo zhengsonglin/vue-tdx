@@ -33,7 +33,7 @@
                             <div class="order-state text-c">
                                 <p><span class="li-icon iconfont icon-moban c_red f22" style="color:#d17575"></span>
                                 </p>
-                                <router-link :to="{name:'taskCenter', params:{activeIndex:1, orderType}}" tag="p">已申请
+                                <router-link :to="{name:'taskCenter', params:{activeIndex:5, orderType}}" tag="p">已领取
                                 </router-link>
                                 <p>
                                     {{orderType==0?userInfo.order_num.free.received_num:userInfo.order_num.xqg.received_num}}</p>

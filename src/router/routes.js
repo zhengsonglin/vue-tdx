@@ -320,6 +320,15 @@ export const routes = [
         },
     },
     {
+        path: '/quicklyBuy',	//淘抢购商品详情
+        name: "quicklyBuy",
+        component: () =>
+            import('../views/home/quicklyBuy.vue'),
+        meta: {
+            title: '自动抢购'
+        },
+    },
+    {
         path: '/skillTaskDetail',	//熊抢购商品详情
         name: "skillTaskDetail",
         component: () =>

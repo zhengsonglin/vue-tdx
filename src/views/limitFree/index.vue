@@ -13,7 +13,7 @@
                 </template>
             </van-search>
 
-            <van-tabs :swipe-threshold="6" @change="categoryChange">
+            <van-tabs :swipe-threshold="6" title-active-color="#ee0a24" @change="categoryChange">
                 <van-tab v-for="(item,index) in categoryList" :key="index" :title="item.short_name" :name="item.id"></van-tab>
             </van-tabs>
         </div>
@@ -25,14 +25,16 @@
         <div class="task-center-product">
             <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
                 <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
-                    <van-row gutter="10" class="bg-fff" style="padding: 10px;">
+                    <van-row gutter="10" class="bg-fff" style="padding: 0 10px;">
                         <van-col span="12" v-for="(item, index) in productList" :key="index" class="product-item">
                             <div class="item-wrap">
                                 <div class="picture w100"><img :src="item.img" alt="" class="w100"></div>
                                 <div class="info">
-                                    <div class="title">{{item.title}}</div>
+                                    <div class="title van-ellipsis">{{item.title}}</div>
                                     <div class="two_icons">
-                                        <span class="two_icons_first c-fff inline-block">需晒图</span>
+                                        <span class="two_icons_first c-fff inline-block" v-if="item.is_img===1">需晒图</span>
+                                        <span class="two_icons_last c-fff inline-block" v-if="item.integral>0">积分奖励{{item.integral}}</span>
+                                        <span class="inline-block" v-else> &nbsp;</span>
                                     </div>
                                     <div class="p-content flex">
                                         <span class="price">￥{{item.price}}</span>
@@ -43,7 +45,7 @@
                                             <div class="word">已抢<span>{{item.order_count}}</span>共{{item.task_count}}件</div>
                                         </div>
                                     </div>
-                                    <div class="btn text-c">马上抢</div>
+                                    <div class="btn text-c" @click="toProductDetail(item)">马上抢</div>
                                 </div>
                             </div>
                         </van-col>
@@ -96,8 +98,9 @@
         },
         methods: {
             onSearch(){
-
+                this.onRefresh()
             },
+            //切换商品分类
             categoryChange(name, title){
                 console.log(name, title)
                 this.category = name
@@ -108,6 +111,7 @@
                 this.status = item.status
                 this.onRefresh();
             },
+            //初始化首次加载
             onLoad() {
                 if (this.refreshing) {
                     this.pageNo = 1;
@@ -116,6 +120,7 @@
                 }
                 this.getProductList()
             },
+            //下拉刷新
             onRefresh() {
                 //下拉刷新调用onRefresh方法时内部已经处理refreshing = true, 但其他方法调用onRefresh时，并没有设置refreshing为true,所以下面再设置一次(兼容默认刷新)
                 this.refreshing = true;
@@ -150,6 +155,14 @@
             getPercentage(item){
                 let {order_count, task_count} = item
                 return Math.round((order_count/task_count)*100)
+            },
+            toProductDetail(item) {
+                this.$router.push({
+                    path: "/singleProductList",
+                    query: {
+                        paId: item.pa_id
+                    }
+                });
             }
         },
         created() {
@@ -199,11 +212,18 @@
                         font-weight: bold;
                     }
                     .two_icons{
+                        height: 20px;
                         padding: 4px 0;
-                        .two_icons_first{
-                            border-radius: 3px;
-                            background: linear-gradient(-90deg,#ff0c46,#ff797d);
+                        >span{
                             padding: 2px 8px;
+                            border-radius: 3px;
+                            margin-right: 10px;
+                            &.two_icons_first{
+                                background: linear-gradient(-90deg,#ff0c46,#ff797d);
+                            }
+                            &.two_icons_last{
+                                background: linear-gradient(90deg,#769dff,#316ded);
+                            }
                         }
                     }
                     .p-content{
