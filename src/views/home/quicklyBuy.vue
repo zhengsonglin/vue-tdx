@@ -99,11 +99,17 @@
                 })
             },
             submit() {
-                setInterval(() => {
+                let t1 = new Date(this.productInfo.task_start).getTime()
+                let tt = setInterval(() => {
                     this.API.getTheTask({t_id: this.tId}).then(({data, error}) => {
-                        console.log("setTimeout", data)
-                        if(error.errno === 200){
+                        if(error.errno === 200 ){
                             this.responseText = error.usermsg
+                            clearInterval(tt)
+                        }
+
+                        let t2 = new Date().getTime()
+                        if(t2 - t1>=2000){
+                            clearInterval(tt)
                         }
                     })
                 }, 0)

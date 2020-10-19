@@ -149,9 +149,9 @@
                     this.refreshing = false;
                 }
 
-                this.API.getSkillTaskOrderList(this.queryForm, {showLoading: false}).then((data) => {
-                    this.list.push(...data);
-                    if (data.length < this.pageSize) {
+                this.API.getSkillTaskOrderList(this.queryForm, {showLoading: false}).then(({orderList}) => { //{error, count, orderList}
+                    this.list.push(...orderList);
+                    if (orderList.length < this.pageSize) {
                         this.finished = true;
                     } else {
                         this.loading = false;
@@ -169,12 +169,7 @@
                 // 重新加载数据
                 // 将 loading 设置为 true，表示处于加载状态
                 this.loading = true;
-                if (this.activeIndex == 0) {
-                    this.getTaskSaleList()
-                } else {
-                    this.onLoad();
-                }
-
+                this.onLoad();
             },
             getTaskStatus(FStatus) {
                 let text = ""
@@ -292,24 +287,6 @@
             //开始任务
             startTask(item) {
                 this.$router.push({path: "/startSkillTask", query: {TaskId: item.FID}})
-            },
-            //查询售后订单列表(包括用户发起和商家发起)
-            getTaskSaleList() {
-                if (this.refreshing) {
-                    this.pageNo = 1;
-                    this.list = [];
-                    this.refreshing = false;
-                }
-
-                this.API.getTaskSaleList(this.queryForm, {showLoading: false}).then((data) => {
-                    this.list.push(...data);
-                    if (data.length < this.pageSize) {
-                        this.finished = true;
-                    } else {
-                        this.loading = false;
-                        this.pageNo++
-                    }
-                })
             },
         },
         watch: {

@@ -34,7 +34,7 @@ export default new Vuex.Store({
             },
         ],
         categoryList: storage.session.get("categoryList", []),    //商品类别
-        loginType: storage.get("loginType", "tdx"),    //登录类型, tdx或txx
+        loginType: storage.session.get("loginType", null),    //登录类型, tdx或txx
     },
     mutations: {
         setLoginType(state, loginType){
@@ -48,6 +48,13 @@ export default new Vuex.Store({
         setCategoryList(state, categoryList) {
             storage.session.set("categoryList", categoryList)
             state.categoryList = categoryList
+        },
+        cleanAllState(state){
+            state.loginType = null
+            state.userLoginInfo = {}
+            state.categoryList = []
+            storage.clear()
+            storage.session.clear()
         }
     },
     actions: {},

@@ -126,14 +126,10 @@ export default {
         return rsp.data
     }),
     //获取熊抢购订单列表（任务列表）
-    getSkillTaskOrderList: (params, config) => $http.post("/MobileSkill/GetTaskList", params, config).then((rsp) => {
+    getSkillTaskOrderList: (params, config) => $http.post("/o/orderlist", params, config).then((rsp) => {
         return rsp.data
     }),
 
-    //查看售后订单列表(包含用户发起和商家发起)
-    getTaskSaleList: (params, config) => $http.post("/MobileTaskCenter/GetTaskSale", params, config).then((rsp) => {
-        return rsp.data
-    }),
     //查看淘抢购商品信息
     getTaskInfo: (params, config) => $http.post("/o/detail", params, config).then((rsp) => {
         return rsp.data

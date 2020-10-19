@@ -92,7 +92,17 @@ export const routes = [
                     import('../views/limitFree/index.vue'),
                 meta: {
                     title: '限量免单',
-                    //keepAlive: true
+                    keepAlive: false
+                },
+            },
+            {
+                path: '/bearBuy',
+                name: "bearBuy",
+                component: () =>
+                    import('../views/limitFree/index.vue'),
+                meta: {
+                    title: '熊抢购',
+                    keepAlive: false
                 },
             },
             {

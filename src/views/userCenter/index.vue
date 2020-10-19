@@ -153,8 +153,7 @@
 </template>
 
 <script>
-    import {mapState} from 'vuex'
-    import storage from 'good-storage';
+    import {mapState, mapMutations} from 'vuex'
     export default {
         name: "userCenter",
         data() {
@@ -188,10 +187,12 @@
                 //this.$cookies.set("user_session","25j_7Sl6xDq2Kc3ym0fmrSSk2xV2XkUkX")
                 console.log(this.$cookies.get("UserInfo"))
                 console.log(document.cookie)
-                storage.clear()
-                storage.session.clear()
+                this.cleanAllState()
                 this.$router.push("login")
             },
+            ...mapMutations({
+                cleanAllState: "cleanAllState"
+            })
         },
         created() {
             this.getIndexInfo();

@@ -42,6 +42,7 @@
             <div :class="['tab-item', {'active':index==activeIndex}]" v-for="(item, index) in tabs" :key="index"
                  @click="onNavClick(item, index)">
                 <span>{{item.name}}</span>
+                <!--
                 <transition name="van-slide-down" v-if="item.children && item.children.length">
                     <div class="sub-menu bg-fff w100 relative" v-show="visible">
                         <p v-for="(sItem, sIndex) in item.children" :key="sIndex"
@@ -49,15 +50,16 @@
                            @click.stop="onChildNavClick(sItem, item, index)">{{sItem.name}}</p>
                     </div>
                 </transition>
+                -->
             </div>
         </div>
 
         <div class="content">
             <task-list ref="taskList" :activeIndex="activeIndex" :baseParam="queryBaseParam"
-                       v-if="orderType==0"></task-list>
+                       v-if="orderType=='1'"></task-list>
 
             <skill-task-list ref="skillTaskList" :activeIndex="activeIndex" :baseParam="queryBaseParam"
-                             v-if="orderType==1"></skill-task-list>
+                             v-if="orderType=='2'"></skill-task-list>
         </div>
 
 
@@ -75,10 +77,10 @@
         },
         data() {
             return {
-                orderType: 0,
+                orderType: '1',
                 option: [
-                    {text: '免单任务中心', value: 0},	//淘抢购订单
-                    {text: '返利任务中心', value: 1},	//熊抢购订单
+                    {text: '限量免单订单', value: '1'},	//淘抢购订单
+                    {text: '熊抢购订单', value: '2'},	//熊抢购订单
                 ],
                 tabs: [
                     {state: "0", name: "全部", num: 4},
@@ -88,12 +90,12 @@
                     {state: "1", name: "已领取", num: 5},
                     {
                         state: "5", name: "售后", num: 0,
-                        children: [{state: "B", name: "商家发起", num: 11, isActive: false}, {
+                        /*children: [{state: "B", name: "商家发起", num: 11, isActive: false}, {
                             state: "C",
                             name: "用户发起",
                             num: 12,
                             isActive: false
-                        }]
+                        }]*/
                     },
                 ],
                 activeIndex: 0,	//当前nav, 从0开始
@@ -119,7 +121,7 @@
                     ABOrTraffic: this.ABOrTraffic,
                     //Status: this.getActiveStatus || 'have',
                     status: this.getActiveStatus || 0,	//0全部
-                    order_type: 1,	//1限量免单，2熊抢购
+                    order_type: this.orderType,	//1限量免单，2熊抢购
                     task_end: "",	//2020-06-27
                     task_start: ""	//2020-06-01
                 }
@@ -157,20 +159,18 @@
                 console.log(value)
             },
             //tab导航切换
-            onNavClick({state, name, num}, index) {
-                console.log(state, name, index)
-                if (num) {
-                    let children = this.tabs[this.activeIndex].children
-                    if (children && children.length) {
-                        children.forEach((obj) => {
-                            obj.isActive = false
-                        })
-                    }
-                    this.activeIndex = index
-                    this.visible = false
-                } else {
-                    this.visible = !this.visible
+            onNavClick({state, name}, index) {
+                //console.log(state, name, index)
+
+                let children = this.tabs[this.activeIndex].children
+                if (children && children.length) {
+                    children.forEach((obj) => {
+                        obj.isActive = false
+                    })
                 }
+                this.activeIndex = index
+                this.visible = false
+
             },
             //tab子菜单切换
             onChildNavClick({state, name}, pItem, index) {
@@ -184,7 +184,7 @@
 
         },
         created() {
-            let {activeIndex = 1, orderType = 0} = this.$route.params
+            let {activeIndex = 1, orderType = '1'} = this.$route.params
             this.activeIndex = activeIndex
             this.orderType = orderType
         }

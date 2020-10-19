@@ -31,20 +31,39 @@
                                 <div class="picture w100"><img :src="item.img" alt="" class="w100"></div>
                                 <div class="info">
                                     <div class="title van-ellipsis">{{item.title}}</div>
-                                    <div class="two_icons">
-                                        <span class="two_icons_first c-fff inline-block" v-if="item.is_img===1">需晒图</span>
-                                        <span class="two_icons_last c-fff inline-block" v-if="item.integral>0">积分奖励{{item.integral}}</span>
-                                        <span class="inline-block" v-else> &nbsp;</span>
-                                    </div>
-                                    <div class="p-content flex">
-                                        <span class="price">￥{{item.price}}</span>
-                                        <div class="content-desc flex flex-1">
-                                            <div class="van-progress">
-                                                <van-progress pivot-text="" color="#f50" :percentage="getPercentage(item)" />
-                                            </div>
-                                            <div class="word">已抢<span>{{item.order_count}}</span>共{{item.task_count}}件</div>
+                                    <!--限量免单-->
+                                    <template v-if="module_type===1">
+                                        <div class="two_icons">
+                                            <span class="two_icons_first c-fff inline-block" v-if="item.is_img===1">需晒图</span>
+                                            <span class="two_icons_last c-fff inline-block" v-if="item.integral>0">积分奖励{{item.integral}}</span>
+                                            <span class="inline-block" v-else> &nbsp;</span>
                                         </div>
-                                    </div>
+                                        <div class="p-content flex">
+                                            <span class="price">￥{{item.price}}</span>
+                                            <div class="content-desc flex flex-1">
+                                                <div class="van-progress">
+                                                    <van-progress pivot-text="" color="#f50" :percentage="getPercentage(item)" />
+                                                </div>
+                                                <div class="word">已抢<span>{{item.order_count}}</span>共{{item.task_count}}件</div>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <!--熊抢购-->
+                                    <template v-if="module_type===2">
+                                        <div class="row-content-price flex" style="align-items: center; margin: 8px 0;">
+                                            <span style="color:#ff464f; text-decoration: line-through;font-size: 18px;">￥{{item.price}}</span>
+                                            <div style="border:1px solid #ff464f; color: #ff464f; margin-left: 20px;">
+                                                <span class="c-fff inline-block" style="background: #ff464f; padding: 1px 4px;">返利</span>
+                                                <span style="padding: 1px 12px;">￥{{toDecimal2(item.price - item.current_price)}}</span>
+                                            </div>
+                                        </div>
+                                        <div class="row-content-desc flex" style="align-items: center; justify-content: space-between; margin: 8px 0 10px;">
+                                            <span class="c-fff" style="background: #ff464f; border-radius: 0 16px 16px 0; padding: 2px 6px; font-size: 12px;">最低价
+                                                <i style="font-size: 16px; font: inherit;">{{item.current_price}}</i>元
+                                            </span>
+                                            <img width="20" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyFpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQyIDc5LjE2MDkyNCwgMjAxNy8wNy8xMy0wMTowNjozOSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIChXaW5kb3dzKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDpFQjJCMDI0RjBGRkExMUVBODczQUM4NTlDOTZCNTZBMSIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDpFQjJCMDI1MDBGRkExMUVBODczQUM4NTlDOTZCNTZBMSI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkVCMkIwMjREMEZGQTExRUE4NzNBQzg1OUM5NkI1NkExIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOkVCMkIwMjRFMEZGQTExRUE4NzNBQzg1OUM5NkI1NkExIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+7hv6RQAAA6BJREFUeNrEl2lsTVsUx3/3ltLWVDOlMVV4xmgiiCAR8xBi/GAInob4IAgxRoiIMcJ7RaSJRIiIKURiKCHGxFRjDaXmUjXX2JZrLes251ZvOSS9XcnK3WfvdfZ/r+m/z/Ug4psUHi4/U0THicZRPHJXdKPock9iTo7HD7pPtBuhkSOivb1+T0MFqtJVdKrXH95Qy1hvMeb0VxLnpYSkaGCPB6o2gIhKzlzlWGg9oODcX0qp4KBynoTt0KIv5H2BTWPh4g7omADdp8O3r7BrBhz732yr1JND1ody1SBMtvzwEp5chdeP/xC4epyB/rAoA50nwrX90GGMP05hUKMxTE6G2DZQplzw3R9egB3TIP1MYd+kj32FZktHwPzrUCnGng8tE89zpPvmFrT7KnM3DsNNac0H5+DFPfM4rgsMXgFRVcQmF1Z2tkP8FlilfHXJ50B49wyepsLMsxAe6QCGCe9kyOHWdIf3Lwq/32kCDF1t40u7IWm4i+KKjYdBcuKzWyDtuOVbQbOzYMMQAc4zu2epNtZi+1kzbzv71WrmIsea05FJYvwP1GkFiX1g/2LoMRM2/ws9ZzuetxliGkw2BMxXqOGinXzf4NxWyP0MNZtYAWlxLJYiqtcWWvaTXKZb6N5nOe8lS4Q2j3c096OzFlHRBbAWgxaTAimg9nL/hbamuc64Jt4MhltHZfMvAXfPKbi811Hd54/7WCVLbrG14t2SJ1Ctkc31nge1m8Psi4XtJ+wuOtQq4VGQ88EFsIpWrvbs60f2fHwdXNnrrPeaA5HR/rX1ctg7EqGGVvW5nwruFRj6X1KmyjBpB28p61Wlyp6zoN0oAzv6H3zOdmxTdhqLKdnoel5AGrRefD6XwP0WWMXqSym7ILouxLQ0jawcnGbziyhe3osKsMl+7jLHysfaPioXtsGnNwV5N16K69V9ocooZy5BuLxseesKZb62I5y1txkuqlpB+y/yt5aEJ3mljVMPCdhDG+tlMHCpUWK+Xfppo0YlHK2JfLr9wdkpv/E4rLTcNPWd58t7hIFu2VgrcnkHyfFoqFjL5vQWykyTVjoJTboazeqNFV1HUrXQodcT611eEg3aw/BEI4KfyL1IWfLYIhEo7zJtj9SDLoHzi0Xz5VZiWgjTNTWvtZWe3pAb67x5HGz7IoFL7NMnBMBpJYB72+v/WxFqSVJgbdTkEIIeEF3l1T9QMtAvOyFi7hQTmBawfpLMUDIWzLzvAgwAR7gnISyU8Z4AAAAASUVORK5CYII=" alt="">
+                                        </div>
+                                    </template>
                                     <div class="btn text-c" @click="toProductDetail(item)">马上抢</div>
                                 </div>
                             </div>
@@ -69,7 +88,7 @@
                     page_no: this.pageNo,
                     page_size: this.pageSize,
                     keywords: this.searchKey,
-                    module_type: 1,
+                    module_type: this.module_type,
                     status: this.status,
                     type: 2,
                     is_family: null,
@@ -80,6 +99,7 @@
         },
         data(){
             return {
+                module_type:null,
                 searchKey:"",
                 productStatus: [
                     {name: "进行中", status: 1},
@@ -157,16 +177,42 @@
                 return Math.round((order_count/task_count)*100)
             },
             toProductDetail(item) {
-                this.$router.push({
-                    path: "/singleProductList",
-                    query: {
-                        paId: item.pa_id
-                    }
-                });
+                if(this.module_type===1){
+                    this.$router.push({
+                        path: "/singleProductList",
+                        query: {
+                            paId: item.pa_id
+                        }
+                    });
+                }else if(this.module_type===2){
+                    this.$router.push({
+                        path: "/productDetail",
+                        query: {
+                            tId: item.t_id
+                        }
+                    });
+                }
             }
         },
         created() {
-            //this.getProductList()
+            let name = this.$route.name
+            this.module_type = (name==="bearBuy"?2:1)
+        },
+        beforeRouteEnter(to, from, next){
+            //console.log(this, 'beforeRouteUpdate'); //当前组件实例
+            //console.log(to, '组件独享守卫beforeRouteUpdate第一个参数');
+            //console.log(from, '组件独享守beforeRouteUpdate卫第二个参数');
+            //console.log(next, '组件独享守beforeRouteUpdate卫第三个参数');
+
+            next(vm => {
+                //因为当钩子执行前，组件实例还没被创建
+                // vm 就是当前组件的实例相当于上面的 this，所以在 next 方法里你就可以把 vm 当 this 来用了。
+                vm.module_type = (to.name==="bearBuy"?2:1)//当前组件的实例
+                if(from.name === "bearBuy" || from.name === "limitFree"){
+                    vm.status = 1
+                    vm.onRefresh()
+                }
+            });
         }
     }
 </script>

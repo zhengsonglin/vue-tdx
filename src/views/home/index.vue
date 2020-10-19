@@ -115,13 +115,16 @@
 <script>
     import MySwiper from 'components/swiper/swiper'
     import advertisingVertical from 'components/advertising/advertising-vertical'
+    import { mapState, mapMutations } from 'vuex'
 
     export default {
         components: {
             MySwiper,
             advertisingVertical
         },
-
+        computed: {
+            ...mapState(['categoryList'])
+        },
         data() {
             return {
                 advertisingList: this.$store.state.advertisingList,
@@ -241,7 +244,21 @@
                 this.pageType = 2;
                 this.pageNo = 1;
                 this.onRefresh();
-            }
+            },
+            //查询所有商品分类
+            getCategory() {
+                if (!this.categoryList || !this.categoryList.length){
+                    //查询所有商品类别
+                    this.API.getCategory().then(({data, error}) => {
+                        if(error.errno===200){
+                            this.setCategoryList(data)
+                        }
+                    })
+                }
+            },
+            ...mapMutations({
+                setCategoryList: 'setCategoryList'
+            })
         },
         mounted() {
             let box = document.getElementById("page-index")
@@ -250,7 +267,7 @@
             if (box) {
                 box.onscroll = this.setSearchBg
             }
-
+            this.getCategory()
         }
     }
 </script>

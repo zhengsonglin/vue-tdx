@@ -21,7 +21,7 @@ axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded
 // 创建axios实例
 const $ = axios.create({
     timeout: 600000,
-    baseURL: process.env.NODE_ENV === 'production' ? '/api' : '/api', // api的API_ROOT
+    baseURL: process.env.NODE_ENV === 'production' ? '/api2' : '/api2', // api的API_ROOT
     headers: {
         'Content-Type': 'application/json',
         //"token": 'XXXX'		//如果不需要token， headers一定不能多传参数
@@ -80,10 +80,12 @@ $.interceptors.request.use((config) => { //config 无法注入axios内置config�
 $.interceptors.response.use((response) => {
     handleLoading(false).then(() => {
         if (response.status == 200) {
-            if (response.data.error.errno && response.data.error.errno != "200") {
-                router.push("/login")
-                Toast.fail(response.data.errno.errmsg);
-
+            let {errno, errmsg, usermsg} = response.data.error
+            if (errno && errno != "200") {
+                if(errno === 431){  //未登录
+                    router.push("/login")
+                }
+                Toast.fail(usermsg || errmsg);
             }
         } else {
             Toast.fail(response.statusText);
