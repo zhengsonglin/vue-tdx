@@ -33,11 +33,11 @@
             <div class="com-detail detail-time">
                 <p>
                     <span class="iconfont icon-clock"></span>活动时间开始
-                    <span class="time-over bold red">{{productInfo.task_start}}</span>
+                    <span class="time-over bold f18 fr" style="color: deepskyblue">{{productInfo.task_start}}</span>
                 </p>
                 <p>
                     <span class="iconfont icon-clock"></span>活动时间结束
-                    <span class="time-over bold red">{{productInfo.task_end}}</span>
+                    <span class="time-over bold red fr">{{productInfo.task_end}}</span>
                 </p>
             </div>
 
@@ -53,7 +53,7 @@
                 <span class="iconfont icon-yinxingqia"></span>商家已存入保证金{{productInfo.price}}元平台担保返款
             </div>
             <div class="text-c">
-                <p class="f18" style="color:orangered">【~~~~~~建议提前1~2秒开始点击秒杀~~~~~~】</p>
+                <p class="f18" style="color:orangered">【~~~~~建议提前1~2秒点击秒杀~~~~~】</p>
                 <p class="f16">当前时间</p>
                 <p class="bold f22" style="color: blue">{{curTime}}</p>
                 <p>抢购结果:{{responseText}}</p>
@@ -157,7 +157,6 @@
             .red {
                 color: #ff0045;
             }
-
             .com-detail {
                 border-top: 1px solid #bbb;
                 min-height: 50px;

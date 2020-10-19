@@ -380,6 +380,11 @@
         }
 
         .task-center-order {
+            /deep/ .van-cell{
+                margin-top: 16px;
+                padding: 0;
+                line-height: initial;
+            }
             .order-item {
                 margin-top: 16px;
                 padding: 0;
@@ -403,25 +408,20 @@
                                 height: 24px;
                                 line-height: 24px;
                             }
-
                             &.task-top-seller {
                                 margin-left: 10px;
                             }
                         }
-
                     }
                 }
 
                 .order-item-mid {
                     font-size: 13px;
                     padding: 8px 8px 0;
-
                     .task-mid-left-box {
                         width: 40%;
-
                         .left-box-img {
                             height: 128px;
-
                             img {
                                 object-fit: cover;
                             }

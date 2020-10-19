@@ -19,16 +19,24 @@ module.exports = {
 		disableHostCheck: true,
 		// See https://github.com/vuejs/vue-cli/blob/dev/docs/cli-service.md#configuring-proxy
 		proxy: {
-			'/api': {
+			'/api/': {
 				"target": 'https://www.taodaxiong.cn/', //对应自己的接口 如：http://127.0.0.1:8100/
-				//"target": 'https://www.taoxiaoxiong.cn/',
 				"changeOrigin": true,
 				"ws": true,        // 如果要代理 websockets，配置这个参数
 				"secure": false,  // 如果是https接口，需要配置这个参数
 				"pathRewrite": {
-					'^/api': ''
+					'^/api/': ''
 				}
-			}
+			},
+			'/api2/': {
+				"target": 'https://www.taoxiaoxiong.cn/',	//对应自己的接口 如：http://127.0.0.1:8100/
+				"changeOrigin": true,
+				"ws": true,        // 如果要代理 websockets，配置这个参数
+				"secure": false,  // 如果是https接口，需要配置这个参数
+				"pathRewrite": {
+					'^/api2/': ''
+				}
+			},
 		}, // string | Object
 		/*
 		before: app => {

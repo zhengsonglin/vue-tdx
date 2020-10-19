@@ -18,8 +18,11 @@
 					<span class="register fl" @click="toRegister">注册</span>
 					<span class="forget fr" @click="forgetPass">忘记密码</span>
 				</div>
-				<div class="btn-grop c-fff text-c" @click="handleLogin">
-					<span class="btn">登录</span>
+				<div class="btn-grop c-fff text-c" @click="handleLogin('tdx')">
+					<span class="btn">大熊登录</span>
+				</div>
+				<div class="btn-grop c-fff text-c" @click="handleLogin('txx')">
+					<span class="btn">小熊登录</span>
 				</div>
 			</div>
 		</div>
@@ -42,11 +45,9 @@
 			}
 		},
 		methods: {
-			handleLogin() {
-				let {
-					user,
-					pwd
-				} = this.form
+			handleLogin(loginType) {
+				this.$store.commit("setLoginType", loginType)
+				let { user, pwd } = this.form
 				if(!checkMobilePhone(user)) {
 					this.$toast('请输入正确手机号');
 				} else if(pwd == "") {
@@ -145,7 +146,7 @@
 				}
 				.btn-grop {
 					width: 80%;
-					margin: 0 auto;
+					margin: 10px auto 20px;
 					background: #EE580F;
 					height: 40px;
 					line-height: 40px;

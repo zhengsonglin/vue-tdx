@@ -53,12 +53,16 @@ axiosStatus.on('busy', (val) => {	//监听状态变化，每一个http请求会�
 
 // 请求拦截器
 $.interceptors.request.use((config) => { //config 无法注入axios内置config之外的参数， 所以自定义config.showLoading 是无法接受的
-    //console.log(config);
-    let {token} = store.state
+    let {token, loginType} = store.state
     let {projectCode} = store.getters
 
     if (token) {
         config.headers['X-Token'] = token //getToken() // 让每个请求携带自定义token 请根据实际情况自行修改
+    }
+    if(loginType==="tdx"){
+        config.baseURL = "/api"
+    }else if(loginType==="txx"){
+        config.baseURL = "/api2"
     }
     if (projectCode) {
         if (config.method == "post" && !config.data.projectCode) {
@@ -77,20 +81,19 @@ $.interceptors.response.use((response) => {
     handleLoading(false).then(() => {
         if (response.status == 200) {
             if (response.data.error.errno && response.data.error.errno != "200") {
-                //Message.error(response.data.errorMsg);
-                Toast.fail(response.data.Content);
+                router.push("/login")
+                Toast.fail(response.data.errno.errmsg);
+
             }
         } else {
             Toast.fail(response.statusText);
-            //router.push("/login")
+            // router.push("/login")
         }
     })
     return response
 }, (error) => {
     handleLoading(false)
-
     if (error && error.response && error.response.status) {
-        console.log(error.response)
         switch (error.response.status) {
             case 404:
                 //Toast.fail('网络请求不存在');
@@ -134,7 +137,6 @@ export default {
             $.get(url, {params: data, ...mergeConfig}).then(res => {
                 resolve(res)
             }).catch(err => {
-                //console.log(err);
                 reject(err)
             })
         })

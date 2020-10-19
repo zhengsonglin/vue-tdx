@@ -40,13 +40,13 @@
         </div>
         <div class="define-tab fixed flex bg-fff w100">
             <div :class="['tab-item', {'active':index==activeIndex}]" v-for="(item, index) in tabs" :key="index"
-                 @click="onNavClick(item)">
+                 @click="onNavClick(item, index)">
                 <span>{{item.name}}</span>
                 <transition name="van-slide-down" v-if="item.children && item.children.length">
                     <div class="sub-menu bg-fff w100 relative" v-show="visible">
                         <p v-for="(sItem, sIndex) in item.children" :key="sIndex"
                            :class="['sub-tab-item', {'active':sItem.isActive}]"
-                           @click.stop="onChildNavClick(sItem, item)">{{sItem.name}}</p>
+                           @click.stop="onChildNavClick(sItem, item, index)">{{sItem.name}}</p>
                     </div>
                 </transition>
             </div>
@@ -81,6 +81,11 @@
                     {text: '返利任务中心', value: 1},	//熊抢购订单
                 ],
                 tabs: [
+                    {state: "0", name: "全部", num: 4},
+                    {state: "2", name: "已提交", num: 1},
+                    {state: "3", name: "待审核", num: 2},
+                    {state: "4", name: "已完成", num: 3},
+                    {state: "1", name: "已领取", num: 5},
                     {
                         state: "5", name: "售后", num: 0,
                         children: [{state: "B", name: "商家发起", num: 11, isActive: false}, {
@@ -90,13 +95,8 @@
                             isActive: false
                         }]
                     },
-                    {state: "2", name: "已提交", num: 1},
-                    {state: "3", name: "待审核", num: 2},
-                    {state: "4", name: "已完成", num: 3},
-                    {state: "0", name: "全部", num: 4},
-                    {state: "1", name: "已领取", num: 5},
                 ],
-                activeIndex: 1,	//当前nav, 从0开始
+                activeIndex: 0,	//当前nav, 从0开始
                 visible: false,
                 rightMenuShow: false,
                 leftDateShow: false,
@@ -157,8 +157,8 @@
                 console.log(value)
             },
             //tab导航切换
-            onNavClick({state, name, num}) {
-                console.log(state, name, num)
+            onNavClick({state, name, num}, index) {
+                console.log(state, name, index)
                 if (num) {
                     let children = this.tabs[this.activeIndex].children
                     if (children && children.length) {
@@ -166,18 +166,18 @@
                             obj.isActive = false
                         })
                     }
-                    this.activeIndex = num
+                    this.activeIndex = index
                     this.visible = false
                 } else {
                     this.visible = !this.visible
                 }
             },
             //tab子菜单切换
-            onChildNavClick({state, name, num}, pItem) {
-                console.log(state, name, num)
-                this.activeIndex = pItem.num;
+            onChildNavClick({state, name}, pItem, index) {
+                console.log(state, name, index)
+                this.activeIndex = index;
                 pItem.children.forEach((obj) => {
-                    obj.isActive = (obj.num == num)
+                    obj.isActive = (obj.num == index)
                 })
                 this.visible = !this.visible
             },
@@ -291,21 +291,22 @@
                 max-width: 60%;
                 margin: 0 auto;
                 font-size: 16px;
-
-                .van-dropdown-menu {
+                height: 100%;
+                /deep/ .van-dropdown-menu {
                     background: inherit;
                     color: inherit;
-                    height: 48px;
-
-                    /deep/ .van-dropdown-menu__bar {
+                    height: 100%;
+                    .van-dropdown-menu__bar {
                         background: inherit;
-
-                        .van-dropdown-menu__title {
+                        height: 100%;
+                        .van-dropdown-menu__title, .van-dropdown-menu__item {
                             color: inherit;
+                            background: inherit;
                         }
                     }
 
                     /deep/ .van-dropdown-menu__item {
+                        height: 100%;
                         .van-dropdown-menu__title {
                             color: inherit;
                         }

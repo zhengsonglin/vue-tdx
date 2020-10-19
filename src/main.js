@@ -3,6 +3,8 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import 'lib-flexible'
+import VConsole from 'vconsole';
+
 import VueExpandFn from '@/assets/js/vueExpandFn.js'
 
 Vue.use(VueExpandFn)
@@ -56,12 +58,13 @@ Vue.use(Progress)
 
 
 import VueClipboard from 'vue-clipboard2'
-
 Vue.use(VueClipboard)
 
 import VueCookies from 'vue-cookies'
-
 Vue.use(VueCookies)
+
+const isDebug = false; // 本地开发调试注入vConsole
+(isDebug && new VConsole())
 
 new Vue({
     router,
