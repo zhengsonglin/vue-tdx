@@ -138,13 +138,9 @@ export default {
     getSkillTaskInfo: (params, config) => $http.post("/MobileSkill/GetTaskInfo", params, config).then((rsp) => {
         return rsp.data
     }),
-    //我要退单(淘抢购退单)
+    //我要退单(淘抢购退单, 熊抢购退单)
     handleChargeBack: (params, config) => $http.post("/o/orderaction", params, config).then((rsp) => {
 		return rsp.data
-    }),
-    //我要退单(熊抢购退单)
-    handleSkillChargeBack: (params, config) => $http.post("/MobileSkill/SkillChargeBack", params, config).then((rsp) => {
-        return rsp.data
     }),
     //查看订单商家备注信息
     getBussinessTaskInfo: (params, config) => $http.post("/o/orderaction", params, config).then((rsp) => {
@@ -209,10 +205,6 @@ export default {
     }),
     //举报订单(提交)
     addOrderReport: (params, config) => $http.post("/MobileTaskCenter/AddOrderReport", params, config).then((rsp) => {
-        return rsp.data
-    }),
-    //熊抢购商品详情
-    getSkillTaskDetail: (params, config) => $http.post("MobileSkill/GetSkillTaskDetail", params, config).then((rsp) => {
         return rsp.data
     }),
     //提交测试图片反馈

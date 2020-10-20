@@ -43,7 +43,7 @@
                                 </van-col>
                                 <van-col span="16">
                                     <div class="product-info">
-                                        <div class="p-title">{{item.title}}</div>
+                                        <div class="p-title van-ellipsis">{{item.title}}</div>
                                         <div class="p-tag"><span class="inline-block" v-show="item.is_img==1">需晒图</span>
                                         </div>
                                         <div class="p-price over-auto"><span>垫付:</span><span class="price">￥{{item.price}}</span>
@@ -78,7 +78,7 @@
                                 <van-col span="16">
                                     <div class="product-info flex">
                                         <div class="ski-name">
-                                            <p class="ski-title">{{item.title}}</p>
+                                            <p class="ski-title van-ellipsis">{{item.title}}</p>
                                             <div class="desc inline-block" v-if="(item.price - item.current_price) > 0">
                                                 拍下后平台返还{{(item.price - item.current_price).toFixed(2)}}元
                                             </div>
@@ -215,30 +215,21 @@
                 this.onLoad();
             },
             toProductDetail(item) {
-
-                this.$router.push({
+                if(this.pageType == 1) {
+                    this.$router.push({
                     path: "/singleProductList",
                     query: {
                         paId: item.pa_id
                     }
                 });
-                /*
-                if(this.pageType == 1) {
-                    this.$router.push({
-                        path: "/productDetail",
-                        query: {
-                            shopId: item.FID
-                        }
-                    });
                 } else if(this.pageType == 2) {
                     this.$router.push({
                         path: "/skillTaskDetail",
                         query: {
-                            shopId: item.FID
+                            tId: item.t_id
                         }
                     });
                 }
-                */
             },
             changeSkillTaskList() {
                 this.pageType = 2;
@@ -385,7 +376,7 @@
 
                         .ski-name,
                         .ski-num {
-                            padding: 10px;
+                            padding:2px 10px;
 
                             .desc {
                                 font-size: 13px;

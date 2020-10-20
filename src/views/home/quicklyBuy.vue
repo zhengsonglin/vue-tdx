@@ -26,9 +26,6 @@
                     </div>
                 </div>
             </div>
-            <div class="com-detail" v-if="parseInt(productInfo.RemoteRegionIsDeliver) == 0">
-                <span class="detail-remark red">偏远地区不发货</span>
-            </div>
             <!-- 活动时间介绍 -->
             <div class="com-detail detail-time">
                 <p>
@@ -101,7 +98,7 @@
             submit() {
                 let t1 = new Date(this.productInfo.task_start).getTime()
                 let tt = setInterval(() => {
-                    this.API.getTheTask({t_id: this.tId}).then(({data, error}) => {
+                    this.API.getTheTask({t_id: this.tId}).then(({error}) => {
                         if(error.errno === 200 ){
                             this.responseText = error.usermsg
                             clearInterval(tt)

@@ -69,6 +69,7 @@
 <script>
     import taskList from "./children/taskList";
     import skillTaskList from './children/skillTaskList'
+    import { mapState, mapMutations } from 'vuex'
 
     export default {
         name: "userCenter",
@@ -77,7 +78,6 @@
         },
         data() {
             return {
-                orderType: '1',
                 option: [
                     {text: '限量免单订单', value: '1'},	//淘抢购订单
                     {text: '熊抢购订单', value: '2'},	//熊抢购订单
@@ -125,8 +125,16 @@
                     task_end: "",	//2020-06-27
                     task_start: ""	//2020-06-01
                 }
-            }
-
+            },
+            orderType:{
+                get(){
+                    return this.lastOrderType
+                },
+                set(value){
+                    this.setLastOrderType(value)
+                }
+            },
+            ...mapState(["lastOrderType"])
         },
         methods: {
             close() {
@@ -156,11 +164,12 @@
             },
             //切换订单类型(0淘抢购，1熊抢购)
             onDropDownMenuChange(value) {
-                console.log(value)
+                //console.log(value)
+                this.setLastOrderType(value)
             },
             //tab导航切换
             onNavClick({state, name}, index) {
-                //console.log(state, name, index)
+                console.log(state, name, index)
 
                 let children = this.tabs[this.activeIndex].children
                 if (children && children.length) {
@@ -181,12 +190,17 @@
                 })
                 this.visible = !this.visible
             },
-
+            ...mapMutations({
+                setLastOrderType: "setLastOrderType"
+            })
         },
         created() {
-            let {activeIndex = 1, orderType = '1'} = this.$route.params
+            let {activeIndex = 0, orderType} = this.$route.params
             this.activeIndex = activeIndex
-            this.orderType = orderType
+            if(orderType){
+                this.orderType = orderType
+            }
+
         }
     }
 </script>

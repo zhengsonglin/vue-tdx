@@ -35,6 +35,7 @@ export default new Vuex.Store({
         ],
         categoryList: storage.session.get("categoryList", []),    //商品类别
         loginType: storage.session.get("loginType", null),    //登录类型, tdx或txx
+        lastOrderType: storage.session.get("lastOrderType", '1')//缓存的订单类型 1.限量免单订单，2.熊抢购订单
     },
     mutations: {
         setLoginType(state, loginType){
@@ -49,10 +50,15 @@ export default new Vuex.Store({
             storage.session.set("categoryList", categoryList)
             state.categoryList = categoryList
         },
+        setLastOrderType(state, lastOrderType){
+            storage.session.set("lastOrderType", lastOrderType)
+            state.lastOrderType = lastOrderType
+        },
         cleanAllState(state){
             state.loginType = null
             state.userLoginInfo = {}
             state.categoryList = []
+            state.lastOrderType = '1'
             storage.clear()
             storage.session.clear()
         }

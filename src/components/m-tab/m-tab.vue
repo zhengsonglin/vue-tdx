@@ -9,7 +9,7 @@
               </van-tabbar-item>-->
         <van-tabbar-item icon="wap-home-o" to="/home">首页</van-tabbar-item>
         <van-tabbar-item icon="gift-card-o" to="/limitFree">限量免单</van-tabbar-item>
-        <van-tabbar-item icon="bag-o" to="/bearBuy">熊抢购</van-tabbar-item>
+        <van-tabbar-item icon="bag-o" to="/bearBuy" v-if="loginType==='tdx'">熊抢购</van-tabbar-item>
         <van-tabbar-item icon="orders-o" to="/taskCenter">订单</van-tabbar-item>
         <van-tabbar-item icon="manager" to="/userCenter">我</van-tabbar-item>
     </van-tabbar>
@@ -17,6 +17,7 @@
 </template>
 
 <script>
+    import { mapState } from 'vuex'
     export default {
         name: 'mTab',
         data() {
@@ -26,12 +27,13 @@
                     active: 'https://img.yzcdn.cn/vant/user-active.png',
                     inactive: 'https://img.yzcdn.cn/vant/user-inactive.png',
                 },
-
             }
         },
+        computed: {
+            ...mapState(["loginType"])
+        },
         methods: {},
-        created() {
-        }
+        created() {}
     }
 </script>
 

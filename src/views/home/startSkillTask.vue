@@ -62,24 +62,23 @@
                 <div class="right-text flex-1">
                     <p class="part-3">根据下面的商品信息找到需要购买的宝贝</p>
                     <p class="part-green">★店铺名称</p>
-                    <p class="shop-name">☆ <span>{{skillTaskInfo.FShopName}}<!--暖※※※※品--></span></p>
+                    <p class="shop-name">☆ <span>{{skillTaskInfo.title}}<!--暖※※※※品--></span></p>
                     <p class="part-green">★商品价格</p>
                     <p class="total-price"> ☆合计：
-                        <span class="total">{{ parseFloat(skillTaskInfo.FUnitPrice * 100) / 100 }}</span>元
-                        (<span class="single-price">{{parseFloat(skillTaskInfo.FUnitPrice * 100) / 100}}</span>元/件)
+                        <span class="total">{{ parseFloat(skillTaskInfo.price * 100) / 100 }}</span>元
+                        (<span class="single-price">{{parseFloat(skillTaskInfo.price * 100) / 100}}</span>元/件)
                     </p>
                     <p class="part-green">★发货地</p>
-                    <p class="place">☆ <span>{{skillTaskInfo.Ffhd}}</span></p>
+                    <p class="place">☆ <span>{{skillTaskInfo.area}}</span></p>
                     <p class="part-green"> ★价格区间</p>
                     <p>☆<span class="lbl_jgqj">
-						{{skillTaskInfo.Fjgqj != "" && skillTaskInfo.Fjgqj_end != "" ? (skillTaskInfo.Fjgqj + " - " + skillTaskInfo.Fjgqj_end) : ""}}</span>
+						{{(skillTaskInfo.price_start + " - " + skillTaskInfo.price_end) }}</span>
                     </p>
                     <p class="part-green">★备注</p>
-                    <p class="lbl_bz">☆<span>{{skillTaskInfo.Fbz}}</span></p>
+                    <p class="lbl_bz">☆<span>{{skillTaskInfo.mc_comment}}</span></p>
                     <p class="part-green">★商品主图</p>
                     <p class="img text-c">
-                        <img id="lbl_Img" height="100%"
-                             :src="skillTaskInfo.FShopImg && skillTaskInfo.FShopImg.replace('../', '/')">
+                        <img id="lbl_Img" height="100%" :src="skillTaskInfo.img">
                     </p>
                     <p class="part-red" v-if="parseInt(skillTaskInfo.RemoteRegionIsDeliver) != 0">★提示</p>
                     <p v-if="parseInt(skillTaskInfo.RemoteRegionIsDeliver) != 0">偏远地区不发货</p>
@@ -179,7 +178,7 @@
         name: 'startSkillTask',
         data() {
             return {
-                taskId: "",
+                orderId: "",
                 skillTaskInfo: {},
                 form: {},
                 productLink: "",	//商品链接或者淘口令
@@ -192,9 +191,9 @@
             ...mapState(["userLoginInfo"])
         },
         created() {
-            this.taskId = this.$route.query.TaskId;
+            this.orderId = this.$route.query.orderId;
             console.log(this.userLoginInfo)
-            console.log(this.taskId)
+            console.log(this.orderId)
             this.getSkillTaskInfo()
         },
         methods: {
@@ -202,7 +201,7 @@
                 this.$router.back();
             },
             getSkillTaskInfo() {
-                this.API.getSkillTaskInfo({TaskId: this.taskId}).then((data) => {
+                this.API.getTaskInfo({order_id: this.orderId}).then(({data}) => {
                     this.skillTaskInfo = data
                 })
             },
@@ -248,7 +247,7 @@
 
                 point = point == "" ? 0 : point;
                 this.API.complateSkillTask({
-                    TaskId: this.taskId,
+                    orderId: this.orderId,
                     OrderNum: orderNum,
                     remark,
                     price: orderPrice,
@@ -277,7 +276,7 @@
             //确定举报
             handleReport() {
                 let {FID} = this.skillTaskInfo
-                this.API.addOrderReport({orderId: this.taskId, fid: FID, reson: this.reportContent}).then((data) => {
+                this.API.addOrderReport({orderId: this.orderId, fid: FID, reson: this.reportContent}).then((data) => {
                     if (data.ErrorCode == 100) {
                         this.$toast({
                             duration: 600, // 持续展示 toast
@@ -310,10 +309,10 @@
                 if (this.productLink == "") {
                     this.$toast("请先填写宝贝链接地址!")
                 } else {
-                    console.log(this.taskId, this.productLink)
+                    console.log(this.orderId, this.productLink)
 
                     this.API.checkSkillGoodsUrl({
-                        "taskId": this.taskId,
+                        "orderId": this.orderId,
                         "goodsUrl": encodeURI(this.productLink)
                     }).then((data) => {
                         if (data.ErrorCode == 100) {
@@ -329,8 +328,6 @@
                     })
                 }
             }
-
-
         }
     }
 </script>

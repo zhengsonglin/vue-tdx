@@ -330,7 +330,7 @@ export const routes = [
         },
     },
     {
-        path: '/quicklyBuy',	//淘抢购商品详情
+        path: '/quicklyBuy',	//淘抢购商品详情,秒杀页面
         name: "quicklyBuy",
         component: () =>
             import('../views/home/quicklyBuy.vue'),

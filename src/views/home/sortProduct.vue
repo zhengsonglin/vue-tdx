@@ -33,7 +33,7 @@
                                             <div class="row-1 van-ellipsis">{{item.title}}</div>
                                             <div class="row-2">
                                                 <span class="storeTag"
-                                                      v-show="item.FGoodsObjectID == 25 && item.SlideShow == 1">需晒图</span>
+                                                      v-show="item.is_img==1">需晒图</span>
                                             </div>
                                             <div class="row-3 over-hidden">
                                                 <div class="left fl">
@@ -289,7 +289,7 @@
                                     .row-4 {
                                         width: 70%;
                                         height: 14px;
-                                        margin-top: 10px;
+                                        margin-top: 3px;
                                         background-color: #ecc5ba;
                                         border-radius: 6px;
                                         line-height: 1;

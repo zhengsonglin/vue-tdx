@@ -1,6 +1,6 @@
 <template>
     <!--skillTaskDetail-->
-    <div class="page-index productDetail bg-fff h100 over-auto" v-if="productInfo.FID">
+    <div class="page-index productDetail bg-fff h100 over-auto" v-if="productInfo.t_id">
         <my-swiper class="mySwiper" height="300" :datas="imgList" :autoplayTime="3500"
                    v-if="imgList.length"></my-swiper>
 
@@ -11,7 +11,7 @@
             <div class="menu-nav bold" v-show="showMenuNav" @click.stop="showMenuNav=false">
                 <router-link to="home" tag="p">首页</router-link>
                 <router-link to="taskCenter" tag="p">任务列表</router-link>
-                <router-link to="financeCenter" tag="p">我的财务</router-link>
+                <router-link to="refundRecord" tag="p">我的财务</router-link>
                 <router-link to="userCenter" tag="p">个人中心</router-link>
             </div>
         </div>
@@ -19,29 +19,29 @@
         <div class="content">
             <div class="com-detail detail-title over-hidden">
                 <div class="cell-row row-1">
-                    <span class="platType fl c-fff text-c">淘宝</span><span class="productName fr">{{productInfo.FGoodsName}}</span>
+                    <span class="productName bold">{{productInfo.title}}</span>
                 </div>
-                <div class="cell-row row-2"><span class="price fl">￥{{productInfo.price}}</span>
-                    <div class="title-price-sur fr">剩余商品 <span class="span_Num red">{{productInfo.Num}}</span>份</div>
+                <div class="cell-row row-2">任务金额<span class="price f18 red">￥{{productInfo.price}}</span>元
+                    <div class="title-price-sur fr">剩余 <span class="red f20">{{productInfo.remain_count}}</span>份 / 限购
+                        <span class="red f20">{{productInfo.task_count}}</span>份</div>
                 </div>
             </div>
-
+            <!-- 活动金额介绍 -->
+            <div class="com-detail detail-fl flex van-row--align-center">
+                <span >最低价 <span class="red f18"> {{productInfo.current_price}} 元</span></span>
+                <div class="flex-right red">
+                    <span class="c-fff inline-block span-1 bg-f00">返利</span>
+                    <span class="span-2">￥{{toDecimal2(productInfo.price - productInfo.current_price)}}</span>
+                </div>
+            </div>
             <!-- 活动时间介绍 -->
             <div class="com-detail detail-time">
-                <span class="iconfont icon-clock"></span>活动时间结束
-                <span class="time-over bold red">{{productInfo.fentime}}</span>
-            </div>
-
-            <!-- 活动金额介绍 -->
-            <div class="com-detail detail-num">
-                <span>任务金额：</span>
-                <span class="num red">￥{{productInfo.price}}</span>元 | 返还金额：
-                <span class="num red">￥{{productInfo.SkillPrice}}</span>元
+                <span class="time-over red">截止日期: {{productInfo.end_time}}</span>
             </div>
 
             <!-- 保险金 -->
-            <div class="com-detail bold detail-blue">
-                熊抢购非免单任务，返款金额=原价-优惠价+积分抵扣金额
+            <div class="com-detail detail-blue">
+                <span class="bg-f00 c-fff">熊抢购非免单任务，返款金额 = {{toDecimal2(productInfo.price - productInfo.current_price)}} + 积分金额</span>
             </div>
 
 
@@ -92,10 +92,8 @@
                 </van-col>
                 <van-col span="12">
                     <van-button size="large" block :color="btnInfo.color" :disabled="btnInfo.disabled" class="f18"
-                                @click="submit">{{btnInfo.text}}
+                                @click="showOverlay = true">{{btnInfo.text}}
                     </van-button>
-                    <!--<van-button  size="large" block color="#ff9800" class="f18" @click="StartTask">开始任务</van-button>
-                    <van-button  size="large" block color="#ea7d5a" class="f18" @click="Reservations_onclick">立即预定</van-button>-->
                 </van-col>
 
             </van-row>
@@ -106,37 +104,23 @@
                 <div class="dialog-header c-fff text-c">商品信息</div>
                 <div class="dialog-content">
                     <div class="row-item row-1 flex">
-                        <span class="title">商品名称:</span><span class="info flex-1">{{productInfo.FGoodsName}}</span>
+                        <span class="title">商品名称:</span><span class="info flex-1 text-r">{{productInfo.title}}</span>
                     </div>
                     <div class="row-item row-2 flex">
                         <span class="title">商品价格:</span><span
-                            class="info price flex-1 text-c">￥{{productInfo.price}}</span>
+                            class="info price flex-1 text-r">￥{{productInfo.price}}</span>
                     </div>
                     <div class="popout-red popout-item m-top10">
-                        注：领取任务后，<span>{{productInfo.HourDiff != "" ? productInfo.HourDiff : "2"}}</span>小时有效，超过<span>{{productInfo.HourDiff != "" ? productInfo.HourDiff : "2"}}</span>小时，任务自动退回，请在自动时间内退回
-
+                        <p>注：1.领取任务后，2小时有效，超过2小时，任务自动退回，请在自动时间内完成任务！</p>
+                        <p>2.每天00:00平台停止抢单，00:00没有提交任务的订单将会自动退单，请及时完成任务</p>
+                        <p class="bearTips"><i class="van-icon van-icon-warning" style="vertical-align: middle"><!----></i>
+                            此单为真实购买，只返款3.00元，请确认
+                        </p>
                     </div>
                 </div>
                 <div class="dialog-btn text-c c-fff" @click="handleBuy">确定</div>
             </div>
         </van-overlay>
-
-        <van-overlay :show="showReservation" @click="showReservation = false">
-            <div class="overlay-wrapper overlay2 bg-fff over-hidden" @click.stop>
-                <div class="dialog-header c-fff text-c"> 预订天数</div>
-                <div class="dialog-content">
-                    <div class="row-item">
-                        <select name="days" v-model="reservationDay" class="w100">
-                            <option value='' disabled selected style='display:none;'>请选择预定天数</option>
-                            <option :value="n" v-for="n in 7" :key="n">{{n}}天</option>
-                        </select>
-                    </div>
-
-                </div>
-                <div class="dialog-btn text-c c-fff" @click="AddYd">确定</div>
-            </div>
-        </van-overlay>
-
     </div>
 </template>
 
@@ -150,11 +134,9 @@
         },
         computed: {
             imgList() {
-                let {zpimg, FShopImg} = this.productInfo;
-                let img = zpimg == "" ? FShopImg.replace("../", "/") : zpimg;
+                let {img} = this.productInfo;
                 return [img, img]
             },
-
         },
         data() {
             return {
@@ -162,15 +144,12 @@
                 productInfo: {},
                 showOverlay: false,
                 showSomeProductInfo: true,
-                activeStatus: 1,	//1活动进行中, 2活动未开始，3活动已结束 , 4开始任务(取决于活动时间)
                 inventoryStatus: 1,	//库存充足， 0库存不足
                 btnInfo: {
-                    color: "",
-                    text: "",
+                    color: "#fd3c3c",
+                    text: "立即领取",
                     disabled: false,
                 },
-                showReservation: false,	//立即预定
-                reservationDay: '',	//预定天数(1-7)
             }
         },
         methods: {
@@ -178,156 +157,43 @@
                 this.$toast('如有疑问，请及时联系淘大熊客服（晴天或者熊大）！');
             },
             getSkillTaskDetail() {
-
-                this.API.getSkillTaskDetail({fid: this.fid}).then((data) => {
+                this.API.getProductDetail({t_id: this.tId}).then(({data}) => {
                     this.productInfo = data
-                    var d2 = new Date();//取今天的日期
-                    var d1 = new Date(Date.parse(data.fsttime));
-                    var d3 = new Date(Date.parse(data.fentime));
-
-                    if (d1 > d2) {
-                        this.activeStatus = 2
-                        this.btnInfo = {
-                            color: "#b1b5b4",
-                            text: "活动未开始",
-                            disabled: true
-                        }
-                        this.showSomeProductInfo = false
-                    } else if (d3 <= d2) {
-                        this.activeStatus = 3
-                        this.btnInfo = {
-                            color: "#b1b5b4",
-                            text: "活动已结束",
-                            disabled: true
-                        }
-                        this.showSomeProductInfo = false
-                    } else {
-                        if (data.Num <= 0) {
-                            this.activeStatus = 1
-                            this.inventoryStatus = 0
-                            this.btnInfo = {
-                                color: "#ea7d5a",
-                                text: "立即预定",
-                                disabled: false
-                            }
-                            this.showSomeProductInfo = false
-                        } else {
-                            this.btnInfo = {
-                                color: "#fd3c3c",
-                                text: "立即领取",
-                                disabled: false,
-                            }
-                        }
-                    }
-
                 })
             },
-            submit() {
-                let {activeStatus, inventoryStatus} = this
-                if (activeStatus == 1 && inventoryStatus == 1) {	//领取任务
-                    this.showOverlay = true
-                    return
-                }
-                if (activeStatus == 4) {	//开始任务
-                    this.$dialog.confirm({
-                        title: '温馨提示',
-                        message: '如果有任何疑问，请联系淘大熊微信客服哦！',
-                    }).then(() => {
-                        this.startTask();
-                    });
-                } else if (activeStatus == 1 && inventoryStatus == 0) {	//立即预定
-                    this.showReservation = true
-                }
-
-            },
             //开始任务
-            startTask() {
-                this.API.startTask({fid: this.fid}).then((data) => {
+            startTask(orderId) {
+                this.$router.push({path: "/startSkillTask", query: {orderId}})
+                /*this.API.startTask({tId: this.tId}).then((data) => {
                     if (data.ErrorCode == 100) {
                         this.$router.push({path: "/startSkillTask", query: {TaskId: data.Content}})
                     } else {
                         this.$router.push("login")
                     }
 
-                })
+                })*/
             },
             //领取任务
             handleBuy() {
                 this.showOverlay = false
-                this.API.getSkillTask({fid: this.fid, Mark: "M"}).then((data) => {
-                    if (data.ErrorCode == 100) {
+                //getTheTask
+                this.API.getTheTask({t_id: this.tId}).then(({error, order_id}) => {
+                    if (error.errno == 200) {
                         this.$dialog.alert({
                             title: '恭喜你',
                             message: '商品抢购成功，请按时完成任务！',
                         }).then(() => {
-                            this.activeStatus = 4;
-                            this.btnInfo = {
-                                color: "#ff9800",
-                                text: "开始任务",
-                                disabled: false
-                            }
+                            this.startTask(order_id)
                         })
-                    } else if (data.ErrorCode == 101) {
-                        if (data.Content == "请先进行实名认证!") {
-                            this.$dialog.alert({
-                                message: data.Content,
-                            }).then(() => {
-                                this.$router.push("realNameAuthentica")
-                            })
-                        } else {
-                            this.$toast({
-                                //forbidClick: true,
-                                type: "fail",
-                                message: data.Content
-                            });
-                        }
-                    } else if (data.ErrorCode == 200) {
-                        if (this.fid != "0") {
-                            this.$router.push({path: "/login", query: {type: this.fid}})
-                        } else {
-                            this.$router.push("login")
-                        }
-
+                    } else {
+                        this.$toast(error.usermsg || error.errmsg)
                     }
 
                 })
             },
-            //立即预定
-            AddYd() {
-                var tt = /^\d+$/g,
-                    days = this.reservationDay;
-                if (!tt.test(days)) {
-                    this.$notify('天数输入错误！');
-                    return;
-                }
-                this.showReservation = false
-                this.API.reservations({fid: this.fid, days}).then((data) => {
-                    if (data.ErrorCode == 100) {
-                        this.$toast({
-                            duration: 600, // 持续展示 toast
-                            forbidClick: true,
-                            type: "success",
-                            message: '预订成功！',
-                            onClose: () => {
-                                this.$router.push("sortProduct")
-                            }
-                        });
-                    } else if (data.ErrorCode == 101) {
-                        this.$toast({
-                            //forbidClick: true,
-                            type: "fail",
-                            message: data.Content
-                        });
-                    } else {
-                        this.$router.push("login")
-                    }
-                })
-
-
-            }
         },
         created() {
-            this.fid = this.$route.query.shopId
+            this.tId = this.$route.query.tId
             this.getSkillTaskDetail();
         }
     }
@@ -388,46 +254,40 @@
                         line-height: 32px;
 
                         &.row-1 {
-                            .platType {
-                                width: 48px;
-                                height: 32px;
-                                line-height: 32px;
-                                background-color: orange;
-                            }
-
                             .productName {
                                 font-size: 16px;
+                                color: #333;
                             }
                         }
 
                         &.row-2 {
-                            .price {
-                                color: orange;
-                                text-decoration: line-through;
-                            }
-
                             .title-price-sur {
-                                font-size: 10px;
+                                font-size: 14px;
                             }
                         }
                     }
                 }
 
+                &.detail-fl{
+                    .flex-right{
+                        margin-left: 10px; border: 1px solid #fa2742;line-height: 20px;
+                        >span{
+                            padding:0 4px;
+                            font-size: 14px;
+                        }
+                    }
+                }
                 .detail-remark {
                     font-size: 16px;
                 }
 
                 &.detail-time {
-                    font-size: 13px;
-
-                    .icon-clock {
-                        font-size: 18px;
-                        vertical-align: middle;
-                    }
-                }
-
-                &.detail-num {
                     font-size: 14px;
+                    .time-over{
+                        border: 1px solid #fa2742;
+                        padding: 5px 14px;
+                        border-radius: 4px;
+                    }
                 }
 
                 &.detail-insu {
@@ -499,7 +359,11 @@
 
                 &.detail-blue {
                     font-size: 13px;
-                    color: #0107f7;
+                    >span{
+                        padding:4px 30px 4px 6px;
+                        margin-left: -10px;
+                        border-radius: 0 40px 40px 0;
+                    }
                 }
             }
         }
@@ -532,7 +396,7 @@
         }
 
         .overlay-wrapper {
-            width: 80%;
+            width: 86%;
             height: fit-content;
             position: absolute;
             left: 0;
@@ -550,7 +414,7 @@
             }
 
             .dialog-content {
-                padding: 25px 15px 35px;
+                padding: 15px 10px 25px;
 
                 .row-item {
                     font-size: 15px;
@@ -561,16 +425,23 @@
                         width: 70px;
                         flex-basis: 70px;
                     }
-
+                    .info{
+                        color: #888;
+                    }
                     .price {
                         color: #f94545;
                     }
                 }
 
                 .popout-red {
-                    color: #f94545;
-                    line-height: 30px;
-                    font-size: 14px;
+                    color: #666;
+                    font-size: 12px;
+                    line-height: 20px;
+                    .bearTips{
+                        font-size: 14px;
+                        color: #f94545;
+                        margin-top: 10px;
+                    }
                 }
             }
 

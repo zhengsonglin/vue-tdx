@@ -24,8 +24,8 @@
 
             <div class="card-info bg-fff">
                 <div class="row-1">
-                    <span :class="['free_activity', {'color_red':orderType==0}]" @click="orderType=0">限量免单任务</span>
-                    <span :class="['second_activity', {'color_red':orderType==1}]" @click="orderType=1">熊抢购任务</span>
+                    <span :class="['free_activity', {'color_red':orderType==='1'}]" @click="orderType='1'">限量免单任务</span>
+                    <span :class="['second_activity', {'color_red':orderType==='2'}]" @click="orderType='2'">熊抢购任务</span>
                 </div>
                 <div class="row-2">
                     <van-row>
@@ -36,17 +36,17 @@
                                 <router-link :to="{name:'taskCenter', params:{activeIndex:4, orderType}}" tag="p">已领取
                                 </router-link>
                                 <p>
-                                    {{orderType==0?userInfo.order_num.free.received_num:userInfo.order_num.xqg.received_num}}</p>
+                                    {{orderType==='1'?userInfo.order_num.free.received_num:userInfo.order_num.xqg.received_num}}</p>
                             </div>
                         </van-col>
-                        <van-col span="6" v-if="orderType==0">
+                        <van-col span="6" v-if="orderType==='1'">
                             <div class="order-state text-c">
                                 <p><span class="li-icon iconfont icon-tijiao c_blue f22" style="color:#509de8"></span>
                                 </p>
                                 <router-link :to="{name:'taskCenter', params:{activeIndex:1, orderType}}" tag="p">已提交
                                 </router-link>
                                 <p>
-                                    {{orderType==0?userInfo.order_num.free.submitted_num:userInfo.order_num.xqg.submitted_num}}</p>
+                                    {{orderType==='1'?userInfo.order_num.free.submitted_num:userInfo.order_num.xqg.submitted_num}}</p>
                             </div>
                         </van-col>
                         <van-col span="6">
@@ -56,7 +56,7 @@
                                 <router-link :to="{name:'taskCenter', params:{activeIndex:2, orderType}}" tag="p">待审核
                                 </router-link>
                                 <p>
-                                    {{orderType==0?userInfo.order_num.free.pending_review_num:userInfo.order_num.xqg.pending_review_num}}</p>
+                                    {{orderType==='1'?userInfo.order_num.free.pending_review_num:userInfo.order_num.xqg.pending_review_num}}</p>
                             </div>
                         </van-col>
                         <van-col span="6">
@@ -66,7 +66,7 @@
                                 <router-link :to="{name:'taskCenter', params:{activeIndex:3, orderType}}" tag="p">已完成
                                 </router-link>
                                 <p>
-                                    {{orderType==0?userInfo.order_num.free.completed_num:userInfo.order_num.xqg.completed_num}}</p>
+                                    {{orderType==='1'?userInfo.order_num.free.completed_num:userInfo.order_num.xqg.completed_num}}</p>
                             </div>
                         </van-col>
                     </van-row>
@@ -165,7 +165,7 @@
                     }
                 },
                 isLoading: true,
-                orderType: 0,	//0淘抢购订单，1熊抢购订单
+                orderType: '1',	//1限量免单订单，2熊抢购订单
             }
         },
         computed: {

@@ -14,68 +14,47 @@
                         <div class="order-item-top c-fff">
                             <div class="task-top-left-box fl ">
                                 <div class="task-top-tb text-c inline-block">{{item.FHttp || "淘宝"}}</div>
-                                <div class="task-top-seller">{{item.FShopName || "无※※※※点"}}</div>
+                                <div class="task-top-seller">{{item.shop_ww || "无※※※※点"}}</div>
                             </div>
-                            <div class="task-top-right-box fr">任务状态：{{getTaskStatus(item.FStatus)}}</div>
+                            <div class="task-top-right-box fr">任务状态：{{getTaskStatus(item.status)}}</div>
                         </div>
                         <div class="order-item-mid w100 over-hidden border-box">
                             <div class="task-mid-left-box fl">
                                 <div class="left-box-img w100">
-                                    <img :src="(item.FIMGUrl == '' ? item.goodimg : item.FIMGUrl)" width="100%"
-                                         height="100%" v-lazy="(item.FIMGUrl == '' ? item.goodimg : item.FIMGUrl)">
+                                    <img :src="(item.img == '' ? item.sipping_url : item.img)" width="100%"
+                                         height="100%" v-lazy="(item.img == '' ? item.sipping_url : item.img)">
                                 </div>
                             </div>
                             <div class="task-mid-right-box fr border-box">
-                                <div class="task-right-info"> {{item.FGoodsName}}</div>
-                                <div class="task-right-ordernum">订单编号：{{parseAttribute(item.FOrderNumber, "(未填写)")}}
-                                </div>
+                                <div class="task-right-info"> {{item.title}}</div>
                                 <div class="user-account">
                                     <span class="red">账号：{{item.FWang || "zold845517008"}}</span>
                                 </div>
-                                <!--
-                                <div class="task-right-price">
-                                    <span>总价：</span><span class="red">￥ {{item.FUnitPrice + "（" + item.FGoodsNum + "件*" + toDecimal2(item.price2) + "）"}}</span>
+                                <div>
+                                    <p class="row-price-1 flex">
+                                        <span class="flex-1">优惠价:<span class="red">{{item.current_price}}</span></span>
+                                        <span class="flex-1">返利:<span class="red">{{toDecimal2(item.reality_price - item.current_price)}}</span></span>
+                                    </p>
+                                    <p class="row-price-2">
+                                        <span>原价:<span class="red">{{item.reality_price}}</span></span>
+                                    </p>
                                 </div>
-                                <div class="task-right-trueprice">
-                                    <span> 实拍：</span><span class="red">￥{{toDecimal2(item.FUnitPrice - item.FdiffPrice)}}</span>
-                                </div>
-                                <div class="" v-if="item.IsPoint == 1">
-                                    赠送积分：<span style="color:#fd3c3c"> {{item.PointNum}}</span>
-                                </div>
-                                <div v-if="item.FActivityTypeID == 1">
-                                    红包金额：<span style="color:#fd3c3c">￥{{item.RedEnvelopes}}</span>
-                                </div>
-                                <div class="task-right-well over-auto bold">
-                                    <div class="task-right-goods fl w40" @click="showGoodsInfo(item)">商品信息</div>
-                                    <div class="task-right-goodpic fr" @click="uploadImg(item)">{{parseStateName(item)}}</div>
-                                    <div class="task-right-goodpic fl w40 red" @click="toRefundAfter(item)"
-                                        v-if="item.FStatus != 1 && item.TaskID > 0">查看售后</div>
-                                    <div class="task-right-goodpic fl w40 red" @click="applyAftersale(item)"
-                                        v-if="item.FStatus != 1 && item.TaskID <= 0">申请售后</div>
-                                    <div class="task-right-goodpic fr" @click="checkRemark(item)">查看商家备注</div>
-                                </div>
-                                -->
+                                <div class="task-right-ordernum">订单编号：{{parseAttribute(item.FOrderNumber, "(未填写)")}}</div>
                             </div>
                         </div>
                         <div class="order-item-bot over-hidden">
-                            <div class="over-hidden">
+                            <div class="over-hidden f12">
                                 <div class="fl text-l">
-                                    <p>优惠价：<span class="price red bold">￥ 12.25</span></p>
-                                    <p>原价：<span class="line-through">￥ 12.25</span></p>
-                                    <p>申请时间：<span class="time">{{moment(item.FTime).format("YYYY-MM-DD HH:mm")}}</span>
-                                    </p>
+                                    申请时间：<span class="time">{{item.create_time}}</span>
                                 </div>
                                 <div class="fr text-r">
-                                    <p>返利：<span class="price red bold">￥ 12.25</span></p>
-                                    <p>实拍：<span class="">￥ 12.25</span></p>
-                                    <p>完成时间：<span class="time">{{item.FStatus == 4?moment(item.FCompletionTime).format("YYYY-MM-DD HH:mm"):"(未完成)"}}</span>
-                                    </p>
+                                   完成时间：<span class="time">{{item.finish_time !== 0?item.finish_time:"(未完成)"}}</span>
                                 </div>
                             </div>
                             <!--<div class="AB-assets" v-if="item.FPingJiastatus != 0 && item.FPingJiastatus != 3 && item.FNewStar != '作废'">
                                 <router-link class="red" :to="{path:'/customEvaluation', query:{TaskId:item.FID}}" tag="span">点击查看评价内容 （请按商家要求评价，奖励{{item.FBuyUserPrice}}元哦）</router-link>
                             </div>-->
-                            <div class="if_do flex" v-if="item.FStatus == 1">
+                            <div class="if_do flex" v-if="item.status == 1">
                                 <div class="if_no inline-block text-c flex-1" @click="chargeBack(item)">我要退单</div>
                                 <div class="if_is inline-block text-c flex-1" @click="startTask(item)">开始任务</div>
                             </div>
@@ -260,8 +239,8 @@
             },
             //开始退单（熊抢购退单）
             handleChargeBack(id) {
-                this.API.handleSkillChargeBack({fid: id}).then((data) => {
-                    if (data.ErrorCode == 100) {
+                this.API.handleChargeBack({id: id, type:6}).then(({error}) => {
+                    if (error.errno == 200) {
                         this.$toast("退单成功！");
                         this.onRefresh()
                     } else {
@@ -271,8 +250,8 @@
             },
             //我要退单
             chargeBack(item) {
-                let {FID, FStatus} = item
-                if (FStatus != 1) {
+                let {id, status} = item
+                if (status != 1) {
                     this.$toast("该阶段不能退单");
                     return;
                 }
@@ -281,12 +260,12 @@
                     title: '提示',
                     message: '确定退单？',
                 }).then(() => {
-                    this.handleChargeBack(FID);
+                    this.handleChargeBack(id);
                 });
             },
             //开始任务
             startTask(item) {
-                this.$router.push({path: "/startSkillTask", query: {TaskId: item.FID}})
+                this.$router.push({path: "/startSkillTask", query: {orderId: item.id}})
             },
         },
         watch: {
@@ -345,7 +324,6 @@
                 margin-bottom: 16px;
                 padding: 0;
                 line-height: initial;
-
                 .order-item-top {
                     height: 32px;
                     line-height: 32px;
@@ -392,9 +370,7 @@
                     .task-mid-right-box {
                         width: 60%;
                         padding-left: 10px;
-
                         > div {
-                            padding: 4px 0;
 
                             &.task-right-well {
                                 .w40 {
@@ -416,20 +392,12 @@
                 }
 
                 .order-item-bot {
-                    padding: 0 8px 8px;
+                    padding: 6px 8px 8px;
                     font-size: 13px;
 
                     > div {
                         p {
                             line-height: 26px;
-                        }
-
-                        .price {
-                            font-size: 18px;
-                        }
-
-                        .time {
-                            font-size: 16px;
                         }
                     }
 
