@@ -74,6 +74,9 @@
             MySwiper,
         },
         computed: {
+            taskStart(){
+                return new Date(this.productInfo.task_start).getTime()
+            },
             imgList() {
                 let {img, sipping_url} = this.productInfo;
                 return [img, sipping_url]
@@ -84,41 +87,56 @@
                 showMenuNav: false,
                 productInfo: {},
                 curTime: new Date().toLocaleString(),
-                responseText: ""
+                responseText: "",
+                timer: null
             }
         },
         methods: {
+            //刷新当前时间
+            setCurrentTime(){
+                setInterval(()=>{
+                    this.curTime =  new Date().toLocaleString()
+                    this.stopBuy()
+
+                },500)
+            },
+            //终止抢购定时器
+            stopBuy(){
+                //保险起见，再次清空timer
+                if(this.timer){
+                    let t2 = new Date().getTime()
+                    if(t2 - this.taskStart >= 2000){
+                        window.clearInterval(this.timer)
+                        this.timer = null
+                    }
+                }
+            },
+            //查询商品详情
             getProductDetail() {
                 this.API.getProductDetail({
                     t_id: this.tId
                 }).then(({data}) => {
                     this.productInfo = data
+                    this.setCurrentTime()
                 })
             },
             submit() {
-                let t1 = new Date(this.productInfo.task_start).getTime()
-                let tt = setInterval(() => {
+                //轮循查询
+                this.timer = setInterval(() => {
                     this.API.getTheTask({t_id: this.tId}).then(({error}) => {
                         if(error.errno === 200 ){
                             this.responseText = error.usermsg
-                            clearInterval(tt)
+                            window.clearInterval(this.timer)
                         }
-
-                        let t2 = new Date().getTime()
-                        if(t2 - t1>=2000){
-                            clearInterval(tt)
-                        }
+                        this.stopBuy()
                     })
                 }, 0)
 
             },
         },
         created() {
-            setInterval(()=>{
-                this.curTime =  new Date().toLocaleString()
-            },500)
             this.tId = this.$route.query.tId
-            this.getProductDetail();
+            this.getProductDetail()
         }
     }
 </script>

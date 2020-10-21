@@ -8,7 +8,7 @@
         </div>
 
         <div class="task-center-order">
-            <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
+            <van-pull-refresh v-model="refreshing" style="min-height: 100vh;" @refresh="onRefresh">
                 <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
                     <van-cell v-for="(item, index) in list" :key="index" class="order-item bg-fff">
                         <div class="order-item-top c-fff">
