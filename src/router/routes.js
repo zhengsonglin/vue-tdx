@@ -173,6 +173,15 @@ export const routes = [
         },
     },
     {
+        path: '/financeCenter',
+        name: "financeCenter",
+        component: () =>
+            import('../views/userCenter/financeCenter.vue'),
+        meta: {
+            title: '资金明细'
+        },
+    },
+    {
         path: '/question',
         name: "question",
         component: () =>

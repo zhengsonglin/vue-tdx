@@ -107,7 +107,7 @@
                     <van-grid-item text="银行卡绑定" to="/cardBind">
                         <span class="mui-icon iconfont icon-yinxingqia bg-orange" slot="icon"></span>
                     </van-grid-item>
-                    <van-grid-item text="提现记录" to="/financeCenter">
+                    <van-grid-item text="资金明细" to="/financeCenter">
                         <span class="mui-icon iconfont icon-tixianfc bg-blue" slot="icon"></span>
                     </van-grid-item>
                     <van-grid-item text="账户提现" to="/withDrawCash">

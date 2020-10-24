@@ -54,7 +54,12 @@ li{
 .red{
 	color: #fd3c3c !important;
 }
-	
+.f8{
+	font-size: 8px;
+}
+.f10{
+	font-size: 10px;
+}
 .f12{
 	font-size: 12px;
 }

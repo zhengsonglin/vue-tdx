@@ -81,6 +81,10 @@ export default {
     bindCardInfo: (params, config) => $http.post("/MobileUserCenter/BindCardInfo", params, config).then((rsp) => {
         return rsp.data
     }),
+    //查询账户总额信息
+    getFundsummary: (params, config) => $http.post("/u/fundsummary", params, config).then((rsp) => {
+        return rsp.data
+    }),
     //财务中心交易明细
     getPutForwardRecord: (params, config) => $http.post("/u/transactiondetail", params, config).then((rsp) => {
         return rsp.data

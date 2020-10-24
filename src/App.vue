@@ -15,8 +15,10 @@
 	}
 </script>
 
+<!--通过style的src方式引入的外部css单位px也会被转换成rem， 而通过import方式则会保留px-->
+<style src="assets/css/common.css"></style>
 <style>
-	@import 'assets/css/common.css';
+	/*@import 'assets/css/common.css';*/
 	@import 'assets/css/iconfont/icon-font.css';
 	#app {
 		background: #f4f4f4;

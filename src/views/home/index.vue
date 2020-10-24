@@ -1,5 +1,5 @@
 <template>
-    <div class="page-index h100 over-auto" id="page-index">
+    <div class="page-index h100 over-auto" id="page-index" ref="product">
         <van-search v-model="searchKey" shape="round" :background="searchBg" placeholder="请输入搜索关键词" @search="onSearch"
                     class="search-com w100"/>
         <my-swiper class="mySwiper" height="200"></my-swiper>
@@ -105,6 +105,10 @@
             </van-pull-refresh>
             <!--<router-view></router-view>-->
         </div>
+
+        <div class="scroll-top fixed" v-show="showScrollTopBtn">
+            <div class="bg-img" @click="handleScrollTop"></div>
+        </div>
         <!--子页面
         <router-view></router-view>-->
 
@@ -140,6 +144,8 @@
                 swiperHeight: "",
                 pageType: 1, //1淘抢购， 2熊抢购
                 skillTaskList: [], //熊抢购礼品列表
+                scrollTop: 0,   //滚动条滑动距离(便于显示回到顶部按钮)
+                showScrollTopBtn: false,
             }
         },
         methods: {
@@ -197,7 +203,8 @@
                 this.onLoad();
             },
             setSearchBg() {
-                var wScoll = document.getElementById("page-index").scrollTop,
+                //var wScoll = document.getElementById("page-index").scrollTop,
+                let wScoll = this.$refs.product.scrollTop,
                     ratio = (wScoll / this.swiperHeight).toFixed(2);
                 if (ratio < 0.2) {
                     ratio = 0.2
@@ -247,6 +254,22 @@
                     })
                 }
             },
+            //设置页面滚动条高度
+            scrollToTop(){
+                let scrollTop = this.$refs.product.scrollTop
+                this.scrollTop = scrollTop
+                this.showScrollTopBtn = this.scrollTop > 120
+            },
+            //回到顶部
+            handleScrollTop(){
+                let timer = setInterval(() => {
+                    let isPeed = Math.floor(-this.scrollTop / 5)
+                    this.$refs.product.scrollTop = this.scrollTop + isPeed
+                    if (this.scrollTop === 0) {
+                        clearInterval(timer)
+                    }
+                }, 16)
+            },
             ...mapMutations({
                 setCategoryList: 'setCategoryList'
             })
@@ -259,7 +282,16 @@
                 box.onscroll = this.setSearchBg
             }
             this.getCategory()
-        }
+
+            window.addEventListener('scroll', this.scrollToTop)
+            this.$refs.product.addEventListener('scroll', this.scrollToTop)
+        },
+        destroyed () {
+            if(this.$refs.product){
+                this.$refs.product.removeEventListener('scroll', this.scrollToTop)
+            }
+
+        },
     }
 </script>
 
@@ -408,6 +440,22 @@
 
             /deep/ .van-list__finished-text {
                 margin-top: -10px;
+            }
+        }
+        .scroll-top{
+            right: 10px;
+            bottom: 60px;
+            cursor: pointer;
+            z-index: 100;
+            .bg-img{
+                width: 32px;
+                height: 32px;
+                transition: all .2s ease-in-out;
+                border-radius: 50%;
+                border: 2px solid hsla(0,0%,70.6%,.5);
+                box-shadow: 0 0 2px 2px hsla(0,0%,86.3%,.1);
+                background: #fff url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 31 39'%3E%3Cg fill-rule='evenodd'%3E%3Cpath d='M1.41 0C.63 0 0 .672 0 1.5S.63 3 1.41 3h28.18C30.37 3 31 2.328 31 1.5S30.369 0 29.59 0H1.41zM17 7.5a1.5 1.5 0 0 0-3 0v30a1.5 1.5 0 1 0 3 0v-30zm-8.56 4.94l-8 8a1.5 1.5 0 1 0 2.12 2.12l8-8a1.5 1.5 0 1 0-2.12-2.12z'/%3E%3Cpath d='M16.56 6.44l14 14a1.5 1.5 0 1 1-2.12 2.12l-14-14a1.5 1.5 0 1 1 2.12-2.12z'/%3E%3C/g%3E%3C/svg%3E") no-repeat 50%;
+                background-size: 18px 18px;
             }
         }
     }
