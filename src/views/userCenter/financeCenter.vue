@@ -96,7 +96,7 @@
                     {type:2, text:"定制金额", index:1},
                     {type:3, text:"售后金额", index:2},
                     {type:4, text:"提现记录", index:3},
-                    {type:1, text:"订单变更", index:4},
+                    {type:5, text:"订单变更", index:4},
                 ],
                 showStatusPicker: false,
                 statusColumns:[
