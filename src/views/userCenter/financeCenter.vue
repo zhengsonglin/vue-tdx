@@ -101,7 +101,7 @@
                 showStatusPicker: false,
                 statusColumns:[
                     {status:0, text:"全部", index:0},
-                    {status:1, text:"待打款", index:1},
+                    {status:2, text:"待打款", index:1},
                     {status:3, text:"已打款", index:2},
                 ]
             }
