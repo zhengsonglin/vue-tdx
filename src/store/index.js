@@ -6,7 +6,7 @@ import storage from 'good-storage';
 
 export default new Vuex.Store({
     state: {
-        userLoginInfo: storage.get("userLoginInfo", {}),
+        userLoginInfo: storage.session.get("userLoginInfo", {}),
         advertisingList: [
             {
                 id: "1",
