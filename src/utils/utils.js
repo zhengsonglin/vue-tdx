@@ -26,6 +26,21 @@ export default {
         }
         return result;
     },
+    // 另一种深拷贝
+    deepCloneOther(source) {
+        if (!source && typeof source !== 'object') {
+            throw new Error('error arguments', 'deepClone')
+        }
+        const targetObj = source.constructor === Array ? [] : {}
+        Object.keys(source).forEach(keys => {
+            if (source[keys] && typeof source[keys] === 'object') {
+                targetObj[keys] = this.deepCloneOther(source[keys])
+            } else {
+                targetObj[keys] = source[keys]
+            }
+        })
+        return targetObj
+    },
     //验证手机号码
     isPhone(phone) {
         return /^1(3|4|5|7|8)\d{9}$/.test(phone)

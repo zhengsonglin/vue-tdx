@@ -37,7 +37,10 @@
     "vue-clipboard2": "^0.3.1",
     "vue-cookies": "^1.7.0",
     "vue-template-compiler": "^2.6.11",
-    "http-proxy-middleware": "^0.19.1"
+    "http-proxy-middleware": "^0.19.1",
+    "mockjs": "1.0.1-beta3",
+    "chokidar": "2.1.5",
+    "chalk": "2.4.2"
   },
   "eslintConfig": {
     "root": true,

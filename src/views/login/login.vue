@@ -55,10 +55,8 @@
 				} else {
 					this.hasCommit = true
 					this.API.login(this.form).then(({data, error}) => {
-						console.log(data)
 						if(error.errno == 200) {
 							//this.loginSuccess(data)
-							storage.set("tdx-Token", "faketoken");
 							this.$store.commit("setUserLoginInfo", data)
 							this.$router.push("home")
 						} else {

@@ -125,7 +125,7 @@
                 finished: false,
                 refreshing: false,
                 pageNo: 1,
-                pageSize: 30,
+                pageSize: 20,
                 showProductDialog: false,
                 productItem: {},	//商品信息
             }

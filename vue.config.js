@@ -1,3 +1,8 @@
+// 你可以在 vue.config.js 文件中计算环境变量。它们仍然需要以 VUE_APP_ 前缀开头。这可以用于版本信息:
+process.env.VUE_APP_VERSION = require('./package.json').version
+
+// import handleBefore from './mock/mock-server.js'
+
 const path = require('path');
 // const axios = require('axios')
 // const qs = require('qs')
@@ -8,7 +13,7 @@ function resolve(dir) {
 module.exports = {
 	runtimeCompiler: true,
 	productionSourceMap: false,
-	publicPath: '/', // 设置打包文件相对路径
+	publicPath: '/', // 设置打包文件相对路径,默认为'/', 等同于环境变量中的BASE_URL, (BASE_URL为内置的环境变量，只能通过当前的publicPath修改，在env文件中修改是无效的)
 	outputDir: 'dist',
 	devServer: {
 		// open: process.platform === 'darwin',
@@ -37,7 +42,9 @@ module.exports = {
 					'^/api2/': ''
 				}
 			},
+
 		}, // string | Object
+		// before: require('./mock/mock-server.js'),	// 通过express重新发送请求，mock响应数据(服务端mock)，本地请求拦截main.js配置即可
 		/*
 		before: app => {
 			app.post('/api/sys/login', function (req, res) {

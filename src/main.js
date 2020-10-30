@@ -64,7 +64,17 @@ import VueCookies from 'vue-cookies'
 Vue.use(VueCookies)
 
 const isDebug = false; // 本地开发调试注入vConsole
-(isDebug && new VConsole())
+( isDebug && new VConsole() )
+
+// 本地开启mock模拟, 此处是拦截ajax请求，如果是拦截响应数据(请求已发送)，需要在vue.config.js中配置before函数，然后调用mock-server中
+// 本地拦截请求是无法在浏览器观察到xhr请求信息，响应拦截请求则是通过express服务重新发送一个请求，然后mock模拟返回值,可以看到xhr请求信息
+// vue.config.js中配置before函数是编译时调用，而main.js文件是运行时调用，如同时开启本地mock会覆盖mock-server
+const openMock = false;
+if(openMock){
+    const { mockXHR } = require('../mock')
+    mockXHR()
+}
+// ( openMock && mockXHR() )
 
 new Vue({
     router,
